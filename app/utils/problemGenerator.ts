@@ -451,7 +451,7 @@ function n111() {
 }
 
 function nmod() {
-  let n = Math.floor(Math.random() * (99999 - 10 + 1)) + 10;
+  let n = Math.floor(Math.random() * (9999 - 10 + 1)) + 10;
   let x = Math.floor(Math.random() * (11 - 3 + 1)) + 3;
   const small = window.innerWidth <= 768;
   return {
@@ -462,8 +462,8 @@ function nmod() {
   };
 }
 function nminus() {
-  let n = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
-  let x = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
+  let n = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+  let x = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
   return {
     body: `${n} - ${x}`,
     ans: "" + (n - x),
@@ -471,8 +471,8 @@ function nminus() {
 }
 
 function nplus() {
-  let n = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
-  let x = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
+  let n = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
+  let x = Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
   return {
     body: `${n} + ${x}`,
     ans: "" + (n + x),
@@ -520,7 +520,7 @@ function nTens() {
 
 function nSum() {
   let n = Math.floor(Math.random() * (25 - 5 + 1)) + 5;
-  let x = Math.floor(Math.random() * (8 - 1 + 1)) + 1;
+  let x = Math.floor(Math.random() * (4 - 1 + 1)) + 1;
 
   return {
     body: `${x} + ${x * 2} + ${x * 3} + \\dots + ${x * n}`,
@@ -746,7 +746,7 @@ function romanNum() {
     }
     return result;
   }
-  const number = Math.floor(Math.random() * 3990) + 10;
+  const number = Math.floor(Math.random() * 1990) + 10;
   const romanNumeral = toRoman(number);
   function toArabic(roman: string): number {
     let result = 0;
@@ -990,7 +990,7 @@ function toBaseX() {
   if (x === 2) {
     let n: number = Math.floor(Math.random() * (256 - 10 + 1)) + 10;
   }
-  let n: number = Math.floor(Math.random() * (999 - 10 + 1)) + 10;
+  let n: number = Math.floor(Math.random() * (499 - 10 + 1)) + 10;
   const small = window.innerWidth <= 768;
   function convertToBaseX(number: number, base: number): string {
     let result: string = "";
@@ -1426,8 +1426,8 @@ function calculateMean() {
   let requiredSum = targetMean * count;
   let lastNumber = requiredSum - sum;
 
-  if (lastNumber < 10 || lastNumber > 99) {
-    lastNumber = Math.max(10, Math.min(99, lastNumber));
+  if (lastNumber < 10 || lastNumber > 49) {
+    lastNumber = Math.max(10, Math.min(49, lastNumber));
     requiredSum = sum + lastNumber;
     targetMean = Math.round((requiredSum / count) * 2) / 2;
   }
