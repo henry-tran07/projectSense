@@ -108,9 +108,9 @@ export default function Home() {
               className="hover:text-2xl md:hover:text-5xl hover:p-3 duration-300 ease-in-out absolute left-[51%] md:left-[60%] m-3 hover:cursor-pointer p-2 rounded-3xl text-white text-xl md:text-4xl flex items-center"
             >
               <img
-                src="/psrobot.png"
-                alt="Robot"
-                className="h-6 md:h-12 text-red-400"
+                src="/appapa.png"
+                alt="Api"
+                className="h-6 md:h-20 text-red-400"
               />
             </button>
 
