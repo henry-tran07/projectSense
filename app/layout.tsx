@@ -15,6 +15,16 @@ export const metadata: Metadata = {
     card: "summary_large_image",
   },
   metadataBase: new URL("https://project-sense.vercel.app/"),
+  keywords: [
+    "TMSCA",
+    "UIL",
+    "Number Sense",
+    "Project Sense",
+    "Math",
+    "Test",
+    "Question",
+    "Speed"
+  ],
 };
 
 
