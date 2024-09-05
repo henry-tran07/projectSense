@@ -15,6 +15,9 @@ import { SettingsModal } from "../components/settingsModal";
 import { ChangelogModal } from "../components/changeLog";
 import { VideoModal } from "../components/videoModal";
 import { GameModal } from "../components/gameModal";
+import { FaRandom } from "react-icons/fa";
+import { GiRetroController } from "react-icons/gi";
+import { SiVitest } from "react-icons/si";
 
 export default function Home() {
   const router = useRouter();
@@ -103,17 +106,6 @@ export default function Home() {
             >
               <FaTrophy />
             </button>
-            <button
-              onClick={() => router.push(`/api`)}
-              className="hover:text-2xl md:hover:text-5xl hover:p-3 duration-300 ease-in-out absolute left-[51%] md:left-[60%] m-3 hover:cursor-pointer p-2 rounded-3xl text-white text-xl md:text-4xl flex items-center"
-            >
-              <img
-                src="/appapa.png"
-                alt="Api"
-                className="h-6 md:h-20 text-red-400"
-              />
-            </button>
-
             <div className="ml-[-100px] md:ml-[0px] absolute text-xl md:text-3xl">
               Project Sense
             </div>
@@ -140,18 +132,24 @@ export default function Home() {
         <div className="flex flex-row justify-center gap-x-2 ">
           <button
             onClick={() => router.push(`/home/practice/randomizer`)}
-            className="text-orange-300 rounded-2xl bg-white font-semibold py-1 md:py-2 px-4 md:px-8 mb-2  md:mb-4 text-2xl md:text-4xl font-serif shadow-sm md:shadow-md hover:bg-gray-200 hover:scale-105 "
+            className="flex flex-row items-center  justify-center gap-x-2 text-orange-300 rounded-2xl bg-white font-semibold py-1 md:py-2 px-2 md:px-8 mb-2  md:mb-4 text-lg md:text-4xl font-serif shadow-sm md:shadow-md hover:bg-gray-200 hover:scale-105 "
           >
-            Randomizer
+            <FaRandom /> Random
           </button>
           <button
             onClick={() => router.push(`/multiplayer`)}
-            className="text-orange-300 rounded-2xl bg-white font-semibold py-1 md:py-2 px-4 md:px-8 mb-2  md:mb-4 text-2xl md:text-4xl font-serif shadow-sm md:shadow-md hover:bg-gray-200 hover:scale-105 "
+            className="flex flex-row items-center  justify-center gap-x-2 text-orange-300 rounded-2xl bg-white font-semibold py-1 md:py-2 px-2 md:px-8 mb-2  md:mb-4 text-lg md:text-4xl font-serif shadow-sm md:shadow-md hover:bg-gray-200 hover:scale-105 "
           >
-            Multiplayer
+            <GiRetroController /> Multiplayer
+          </button>
+          <button
+            onClick={() => router.push(`/api`)}
+            className="flex flex-row items-center  justify-center gap-x-2 text-orange-300 rounded-2xl bg-white font-semibold py-1 md:py-2 px-2 md:px-8 mb-2  md:mb-4 text-lg md:text-4xl font-serif shadow-sm md:shadow-md hover:bg-gray-200 hover:scale-105 "
+          >
+            <SiVitest /> AI Test
           </button>
         </div>
-        <div className=" text-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-3 gap-y-8 md:gap-y-16">
+        <div className=" text-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-3 gap-y-8 mt-4 md:gap-y-16">
           {keys.map((value) => (
             <div
               key={value}

@@ -72,7 +72,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 <FormControl
                   display="flex"
                   alignItems="center"
+                  justifyContent={"space-between"}
                   textAlign="center"
+                  width={"70%"}
+                  marginTop={""}
                   className="mx-auto items-center justify-center"
                 >
                   <FormLabel
@@ -96,8 +99,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                 </FormControl>
                 <FormControl
                   display="flex"
-                  alignItems="center"
+                  justifyContent={"space-between"}
                   textAlign="center"
+                  width={"70%"}
+                  marginTop={2}
                   className="mx-auto items-center justify-center"
                 >
                   <FormLabel
