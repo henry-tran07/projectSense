@@ -48,7 +48,7 @@ const Home = ({ params }: { params: { id: string } }) => {
     });
 
     return () => unsubscribe();
-  }, [colRef]);
+  }, [colRef, params.id]);
 
   useEffect(() => {
     let animationFrameId: number;
@@ -66,6 +66,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       cancelAnimationFrame(animationFrameId);
     };
   }, [startTime, stopTimer]);
+  
   useEffect(() => {
     if (questions === 5 && questionLimited && !randomizer) {
       setStopTimer(true);
@@ -79,7 +80,7 @@ const Home = ({ params }: { params: { id: string } }) => {
         );
       }
     }
-  }, [questions, questionLimited, user?.email, params.id, elapsedTime, user]);
+  }, [questions, questionLimited, user?.email, params.id, elapsedTime, user, randomizer]);
 
   const formatTime = (time: number) => {
     const milliseconds = Math.floor((time % 1000) / 10);

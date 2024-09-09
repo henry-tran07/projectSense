@@ -18,9 +18,32 @@ const Trick: React.FC<TrickProps> = ({
   rightLeft,
 }) => {
   const [userAns, setUserAns] = useState("");
+  const [startTime, setStartTime] = useState(Date.now());
+  const [elapsedTime, setElapsedTime] = useState(0);
   const [pair, setPair] = useState({ body: "", ans: "temp" });
   const [type, setType] = useState("");
   const [randomizer, setRandomizer] = useState(false);
+  const [questionTimes, setQuestionTimes] = useState<any>([]);
+  const [storedQuestions, setStoredQuestions] = useState<any>([]);
+  const [stopTimer, setStopTimer] = useState(false);
+
+  useEffect(() => {
+    let animationFrameId: number;
+
+    const updateElapsedTime = () => {
+      if (!stopTimer) {
+        setElapsedTime(Date.now() - startTime);
+        animationFrameId = requestAnimationFrame(updateElapsedTime);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(updateElapsedTime);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [startTime, stopTimer]);
+
   useEffect(() => {
     if (trick === "randomizer") {
       setRandomizer(true);
@@ -43,11 +66,27 @@ const Trick: React.FC<TrickProps> = ({
       }
     } else if (userAns === pair["ans"]) {
       if (randomizer) trick = String(Math.floor(Math.random() * 52) + 1);
+      setQuestionTimes([...questionTimes, formatTime(elapsedTime)]);
+      setStartTime(Date.now());
+      setStoredQuestions([
+        ...storedQuestions,
+        pair["body"] + " = " + pair["ans"],
+      ]);
       setPair(problemFunction[trick].function());
       setUserAns(""); // Reset user answer
       if (questionLimited && !randomizer) setQuestion(question + 1);
     }
   }, [userAns, pair, trick, setQuestion, question, questionLimited]);
+
+  const formatTime = (time: number) => {
+    const milliseconds = Math.floor((time % 1000) / 10);
+    const seconds = Math.floor((time / 1000) % 60);
+    const minutes = Math.floor((time / (1000 * 60)) % 60);
+
+    return `${minutes.toString().padStart(2, "0")}:${seconds
+      .toString()
+      .padStart(2, "0")}.${milliseconds.toString().padStart(2, "0")}`;
+  };
 
   return (
     <div
