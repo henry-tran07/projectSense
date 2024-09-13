@@ -330,7 +330,7 @@ export default function Multiplayer() {
                     if (gameId) {
                       const playerRef = ref(
                         database,
-                        `games/${gameId}/players/${playerId}`
+                        `games/${gameId}/players/${playerId.replace(/[.#$[\]]/g, '_')}`
                       );
                       remove(playerRef); // Remove the player from the game session
                       setGameState(null);
