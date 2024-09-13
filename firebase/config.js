@@ -56,12 +56,12 @@ function createGameSession() {
 }
 
 function joinGameSession(gameId, playerId, playerData) {
-    const playerRef = ref(database, `games/${gameId}/players/${playerId}`);
+    const playerRef = ref(database, `games/${gameId}/players/${playerId.replace(/[.#$[\]]/g, '_')}`);
     return set(playerRef, playerData);
 }
 
 function updatePlayerPosition(gameId, playerId, position) {
-    const playerPositionRef = ref(database, `games/${gameId}/players/${playerId}/position`);
+    const playerPositionRef = ref(database, `games/${gameId}/players/${playerId.replace(/[.#$[\]]/g, '_')}/position`);
     return update(playerPositionRef, position);
 }
 
