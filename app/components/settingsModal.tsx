@@ -74,7 +74,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   alignItems="center"
                   justifyContent={"space-between"}
                   textAlign="center"
-                  width={"70%"}
+                  width={"80%"}
                   marginTop={""}
                   className="mx-auto items-center justify-center"
                 >
@@ -101,7 +101,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   display="flex"
                   justifyContent={"space-between"}
                   textAlign="center"
-                  width={"70%"}
+                  width={"80%"}
                   marginTop={2}
                   className="mx-auto items-center justify-center"
                 >

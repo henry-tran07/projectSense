@@ -8,6 +8,8 @@ type TrickProps = {
   setQuestion: (value: React.SetStateAction<number>) => void;
   questionLimited: boolean;
   rightLeft: boolean;
+  setQuestionTiming: (value: React.SetStateAction<any>) => void;
+  setStoredQuestion: (value: React.SetStateAction<any>) => void;
 };
 
 const Trick: React.FC<TrickProps> = ({
@@ -16,6 +18,8 @@ const Trick: React.FC<TrickProps> = ({
   question,
   questionLimited,
   rightLeft,
+  setStoredQuestion,
+  setQuestionTiming,
 }) => {
   const [userAns, setUserAns] = useState("");
   const [startTime, setStartTime] = useState(Date.now());
@@ -23,8 +27,6 @@ const Trick: React.FC<TrickProps> = ({
   const [pair, setPair] = useState({ body: "", ans: "temp" });
   const [type, setType] = useState("");
   const [randomizer, setRandomizer] = useState(false);
-  const [questionTimes, setQuestionTimes] = useState<any>([]);
-  const [storedQuestions, setStoredQuestions] = useState<any>([]);
   const [stopTimer, setStopTimer] = useState(false);
 
   useEffect(() => {
@@ -66,12 +68,11 @@ const Trick: React.FC<TrickProps> = ({
       }
     } else if (userAns === pair["ans"]) {
       if (randomizer) trick = String(Math.floor(Math.random() * 52) + 1);
-      setQuestionTimes([...questionTimes, formatTime(elapsedTime)]);
+      setQuestionTiming((prevTimes: any) => [...prevTimes, formatTime(elapsedTime)]);
       setStartTime(Date.now());
-      setStoredQuestions([
-        ...storedQuestions,
-        pair["body"] + " = " + pair["ans"],
-      ]);
+      setStoredQuestion(
+        (prevTimes: any) => [...prevTimes,  pair["body"] + " = " + pair["ans"]]
+      );
       setPair(problemFunction[trick].function());
       setUserAns(""); // Reset user answer
       if (questionLimited && !randomizer) setQuestion(question + 1);
