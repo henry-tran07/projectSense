@@ -18,6 +18,8 @@ import { GameModal } from "../components/gameModal";
 import { FaRandom } from "react-icons/fa";
 import { GiRetroController } from "react-icons/gi";
 import { SiVitest } from "react-icons/si";
+import { MdOutlineMail } from "react-icons/md";
+import { MdOutlineHelpOutline } from "react-icons/md";
 
 export default function Home() {
   const router = useRouter();
@@ -97,7 +99,7 @@ export default function Home() {
     // <MathJaxContext>
     <ChakraProvider>
       <main className="absolute bg-orange-300 h-screen overflow-auto w-screen flex flex-col items-center">
-        <div className="bg-white text-orange-300 font-bold p-4 text-4xl   w-full">
+        <div className="shadow-inner bg-white text-orange-300 font-bold p-4 text-4xl   w-full">
           <div className="bg-white text-5xl  text-orange-300 flex font-bold justify-center items-center">
             <button
               onClick={() => router.push(`/leaderboard`)}
@@ -149,7 +151,7 @@ export default function Home() {
             <SiVitest /> AI Test
           </button>
         </div>
-        <div className=" text-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-3 gap-y-8 mt-4 md:gap-y-16">
+        <div className=" md:mb-8 mb-4 text-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-3 gap-y-8 mt-4 md:gap-y-16">
           {keys.map((value) => (
             <div
               key={value}
@@ -170,8 +172,21 @@ export default function Home() {
             </div>
           ))}
         </div>
-
-        <hr ref={ref} className="my-4"></hr>
+        <div ref={ref} className="shadow-inner mt-auto text-center flex font-semibold flex-col py-2 text-xl font-sans md:py-6 text-orange-300 w-full border-white border-t-[1px] bg-white items-center justify-center transition-all duration-500 ease-in-out">
+          <p>Built for <b>UIL Number Sense</b> by <b>Townview TAG's UIL Team 2025' </b></p>
+          <div className="text-3xl mt-2 items-center gap-x-2 justify-center w-full flex flex-row">
+            <p>
+              <a className="text-4xl" href="https://forms.gle/yneT5vZaBSaLX1vf8">
+                <MdOutlineHelpOutline className="hover:scale-105" />
+              </a>
+            </p>
+            <p>
+              <a href="mailto:projectsense.ns@gmail.com">
+                <MdOutlineMail className="text-4xl hover:scale-105" />
+              </a>
+            </p>
+          </div>
+        </div>
       </main>
     </ChakraProvider>
   );
