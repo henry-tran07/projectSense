@@ -208,6 +208,8 @@ const Home = ({ params }: { params: { id: string } }) => {
             </div>
             <button
               onClick={() => {
+                setQuestionTimes([])
+                setStoredQuestions([])
                 setQuestions(0);
                 setStartTime(Date.now()); // Reset the startTime to the current timestamp
                 setElapsedTime(0); // Reset the elapsedTime to 0

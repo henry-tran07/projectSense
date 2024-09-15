@@ -151,7 +151,7 @@ export default function Home() {
             <SiVitest /> AI Test
           </button>
         </div>
-        <div className=" md:mb-8 mb-4 text-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-3 gap-y-8 mt-4 md:gap-y-16">
+        <div className=" md:mb-28 mb-4 text-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-3 gap-y-8 mt-4 md:gap-y-16">
           {keys.map((value) => (
             <div
               key={value}
@@ -172,7 +172,8 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div ref={ref} className="shadow-inner mt-auto text-center flex font-semibold flex-col py-2 text-xl font-sans md:py-6 text-orange-300 w-full border-white border-t-[1px] bg-white items-center justify-center transition-all duration-500 ease-in-out">
+        <hr ref={ref} className="my-4"></hr>
+        <div className="fixed bottom-0 shadow-inner mt-auto text-center flex font-semibold flex-col py-2 text-xl font-sans md:py-6 text-orange-300 w-full  bg-white items-center justify-center transition-all duration-500 ease-in-out">
           <p>Built for <b>UIL Number Sense</b> by <b>Townview TAG's UIL Team 2025' </b></p>
           <div className="text-3xl mt-2 items-center gap-x-2 justify-center w-full flex flex-row">
             <p>
