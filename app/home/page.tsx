@@ -174,7 +174,7 @@ export default function Home() {
         </div>
         <hr ref={ref} className="my-4"></hr>
         <div className="fixed bottom-0 shadow-inner mt-auto text-center flex font-semibold flex-col py-2 text-xl font-sans md:py-6 text-orange-300 w-full  bg-white items-center justify-center transition-all duration-500 ease-in-out">
-          <p>Built for <b>UIL Number Sense</b> by <b>Townview TAG's UIL Team 2025' </b></p>
+          <p>Built for <b>UIL Number Sense</b> by <b>Townview TAG's UIL Team 2025</b>&apos; </p>
           <div className="text-3xl mt-2 items-center gap-x-2 justify-center w-full flex flex-row">
             <p>
               <a className="text-4xl" href="https://forms.gle/yneT5vZaBSaLX1vf8">
