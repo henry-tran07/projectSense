@@ -403,6 +403,7 @@ export const videoMap: { [key: number]: string } = {
   10: "sq41-59.mp4",
   5: "nmodx.mp4",
   3: "n101.mp4",
+  48: "fibseq.mp4",
 };
 
 function n11() {
