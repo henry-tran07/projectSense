@@ -554,7 +554,7 @@ function nEstim() {
 
 function nless100() {
   let n = Math.floor(Math.random() * (99 - 90 + 1)) + 90;
-  let x = Math.floor(Math.random() * (99 - 80 + 1)) + 80;
+  let x = Math.floor(Math.random() * (99 - 90 + 1)) + 90;
 
   return {
     body: `${n} \\times ${x}`,
@@ -563,8 +563,8 @@ function nless100() {
 }
 
 function nmore100() {
-  let n = Math.floor(Math.random() * (120 - 110 + 1)) + 101;
-  let x = Math.floor(Math.random() * (120 - 100 + 1)) + 101;
+  let n = Math.floor(Math.random() * (119 - 110 + 1)) + 110;
+  let x = Math.floor(Math.random() * (119 - 100 + 1)) + 100;
 
   return {
     body: `${n} \\times ${x}`,
@@ -576,7 +576,7 @@ function nmix100() {
   function getRandomN() {
     let n;
     do {
-      n = Math.floor(Math.random() * (95 - 80 + 1)) + 80;
+      n = Math.floor(Math.random() * (95 - 90 + 1)) + 90;
     } while (n === 100);
     return n;
   }
@@ -1353,6 +1353,7 @@ function ngon() {
     { sides: 8, name: "Octagon" },
     { sides: 9, name: "Nonagon" },
     { sides: 10, name: "Decagon" },
+    { sides: 12, name: "Dodecagon" },
   ];
   const small = window.innerWidth <= 768;
   let randomIndex = Math.floor(Math.random() * polygons.length);
@@ -1736,7 +1737,7 @@ function tripledigit() {
 function tripdigitsq() {
   let n = 100;
   let x = Math.floor(Math.random() * 10) + 1;
-  let b = Math.floor(Math.random() * 21) + 1;
+  let b = Math.floor(Math.random() * 20) + 1;
   let num = n * x + b;
   return {
     body: `${num}²`,
@@ -1745,8 +1746,8 @@ function tripdigitsq() {
 }
 function tripdigitcube() {
   let n = 100;
-  let x = Math.floor(Math.random() * 10) + 1;
-  let b = Math.floor(Math.random() * 16) + 1;
+  let x = Math.floor(Math.random() * 4) + 1;
+  let b = Math.floor(Math.random() * 10) + 1;
   let num = n * x + b;
   return {
     body: `${num}³`,
@@ -1755,8 +1756,8 @@ function tripdigitcube() {
 }
 
 function xcubedycubed() {
-  let x = Math.floor(Math.random() * 16) + 1;
-  let y = Math.floor(Math.random() * 16) + 1;
+  let x = Math.floor(Math.random() * 15) + 1;
+  let y = Math.floor(Math.random() * 15) + 1;
   let xx = Math.pow(x, 3);
   let yy = Math.pow(y, 3);
   let diff = x - y;
