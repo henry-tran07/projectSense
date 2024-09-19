@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -9,7 +10,8 @@ export const metadata: Metadata = {
     default: "Project Sense",
     template: "%s | Project S.",
   },
-  description: "Practice TMSCA/UIL Number Sense Questions using Project Sense and compete against others through a variety of different tricks (including tutorials)!",
+  description:
+    "Practice TMSCA/UIL Number Sense Questions using Project Sense and compete against others through a variety of different tricks (including tutorials)!",
   manifest: "/manifest.json",
   twitter: {
     card: "summary_large_image",
@@ -23,10 +25,9 @@ export const metadata: Metadata = {
     "Math",
     "Test",
     "Question",
-    "Speed"
+    "Speed",
   ],
 };
-
 
 export default function RootLayout({
   children,
@@ -35,7 +36,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        {children}
+        <Analytics />
+      </body>
     </html>
   );
 }
