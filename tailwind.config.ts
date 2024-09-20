@@ -12,7 +12,7 @@ const config: Config = {
         fadeInShrink: {
           '0%': { opacity: '0', scale: '1.5' },
           '80%': { opacity: '1', scale: '1' },
-          '85%': { transform: 'translateX(0)' }, 
+          '85%': { transform: 'translateX(0)' },
           '100%': { transform: 'translateX(-290%)', opacity: '0', scale: '.5' },
         },
         slideUp: {
@@ -28,9 +28,9 @@ const config: Config = {
         slideUp: 'slideUp .8s ease-in-out forwards ',
         shine: "shine 1s",
       },
-      
+
     },
   },
-  plugins: [],
+  plugins: [require('daisyui')],
 }
 export default config
