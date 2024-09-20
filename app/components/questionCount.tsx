@@ -17,14 +17,14 @@ const updateAnsweredQuestions = async () => {
   }
 };
 
-const updateGeneratedQuestions = async () => {
+const updateGeneratedQuestions = async (num: number) => {
     try {
       // Reference the document in the collection
       const docRef = doc(db, "statistics", "questions_generated");
 
       // Update the 'questions_answered' field by incrementing it by 1
       await updateDoc(docRef, {
-        total: increment(1), // Assumes the field you're incrementing is 'count'
+        total: increment(num), // Assumes the field you're incrementing is 'count'
       });
 
       console.log("Document successfully updated!");

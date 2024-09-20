@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { problemFunction } from "../utils/problemGenerator";
 import MathComponent from "./MathComponent";
+import {
+  updateAnsweredQuestions,
+  updateGeneratedQuestions,
+} from "@/app/components/questionCount";
 
 type TrickProps = {
   trick: string;
@@ -62,19 +66,34 @@ const Trick: React.FC<TrickProps> = ({
         Number(pair["ans"]) * 0.05
       ) {
         if (randomizer) trick = String(Math.floor(Math.random() * 52) + 1);
+        setQuestionTiming((prevTimes: any) => [
+          ...prevTimes,
+          formatTime(elapsedTime),
+        ]);
+        setStartTime(Date.now());
+        setStoredQuestion((prevTimes: any) => [
+          ...prevTimes,
+          pair["body"] + " = " + pair["ans"],
+        ]);
         setPair(problemFunction[trick].function());
         setUserAns(""); // Reset user answer
+        updateAnsweredQuestions();
         if (questionLimited && !randomizer) setQuestion(question + 1);
       }
     } else if (userAns === pair["ans"]) {
       if (randomizer) trick = String(Math.floor(Math.random() * 52) + 1);
-      setQuestionTiming((prevTimes: any) => [...prevTimes, formatTime(elapsedTime)]);
+      setQuestionTiming((prevTimes: any) => [
+        ...prevTimes,
+        formatTime(elapsedTime),
+      ]);
       setStartTime(Date.now());
-      setStoredQuestion(
-        (prevTimes: any) => [...prevTimes,  pair["body"] + " = " + pair["ans"]]
-      );
+      setStoredQuestion((prevTimes: any) => [
+        ...prevTimes,
+        pair["body"] + " = " + pair["ans"],
+      ]);
       setPair(problemFunction[trick].function());
       setUserAns(""); // Reset user answer
+      updateAnsweredQuestions();
       if (questionLimited && !randomizer) setQuestion(question + 1);
     }
   }, [userAns, pair, trick, setQuestion, question, questionLimited]);

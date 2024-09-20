@@ -6,6 +6,7 @@ import { test1, test2 } from './data';
 import { useResetProjection } from 'framer-motion';
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
+import { updateGeneratedQuestions } from '../components/questionCount';
 
 function Gemini() {
     const [text, setText] = useState(null);
@@ -54,6 +55,7 @@ function Gemini() {
     }
 
     async function run() {
+        updateGeneratedQuestions(40)
         try {
             const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig: { responseMimeType: "application/json" } });
             const prompt = `Create a math test with 40 questions. Each question should be a mathematical problem or equation, formatted as a string with a placeholder for the answer. The test should be output as a JSON object where the keys are question numbers and the values are the questions. Replace the numbers from the following examples with different numbers: ${JSON.stringify(test2)}`

@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { problemSet } from "@/app/utils/problemGenerator";
 import updateLeaderboard from "@/app/components/updateLeadeboard";
 import MathComponent from "@/app/components/MathComponent";
+import { updateGeneratedQuestions } from "@/app/components/questionCount";
 
 const Home = ({ params }: { params: { id: string } }) => {
   const MAX_QUESTION_COUNT = 5;
@@ -26,7 +27,9 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [stopTimer, setStopTimer] = useState(false);
   const [questionTimes, setQuestionTimes] = useState<any>([]);
   const [storedQuestions, setStoredQuestions] = useState<any>([]);
+  
   useEffect(() => {
+    updateGeneratedQuestions(5)
     if (params.id === "randomizer") setRandomizer(true);
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
