@@ -10,6 +10,9 @@ import {
 import { db } from "../../firebase/config";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { FcGoogle } from "react-icons/fc";
+import { TextField } from "@mui/material";
+import { MdMenuBook } from "react-icons/md";
+import { ParticleBackground } from "../components/ParticleBackground";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -76,46 +79,73 @@ const Register = () => {
       }
     } catch (error) {
       console.error("Error during sign-in:", error);
-      alert("An error occurred during sign-in. Please try again.");
+      alert("An error occurred during sign-in. Please try again. Account with Email may already in use.");
     }
   };
 
   return (
-    <main className="flex-col w-screen h-screen flex items-center justify-center bg-orange-300">
-      <h1 className="absolute top-12 text-orange-300 p-4 rounded-xl bg-white font-sans font-bold text-4xl">
-        Project Sense
-      </h1>
-      <div className="shadow-2xl bg-white w-72 h-[21.7rem] font-sans rounded-2xl text-center">
-        <div className="text-center w-full font-semibold pt-8 pb-4 text-2xl">
-          Register
-        </div>
-        <form onSubmit={onSubmit}>
-          <input
-            type="text"
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={"Email"}
-            className="shadow-lg rounded-lg focus:outline-none border-gray-300 p-3 border-b-2 mx-auto w-10/12 h-fit text-xl"
-          />
-          <input
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="shadow-lg rounded-lg mt-2 focus:outline-none border-gray-300 p-3 border-b-2 w-10/12 h-fit text-xl"
-          />
-          <div className="mt-3 hover:bg-slate-800 bg-black text-white w-fit mx-auto px-3 py-2 rounded-2xl">
-            <button type="submit">Register</button>
+    <>
+      <ParticleBackground />
+      <main
+        className="flex flex-row w-screen h-screen"
+      >
+        <div className="bg-transparent xl:w-[80%] w-[70%] overflow-y-clip">
+
+          <div className="font-sans text-6xl font-bold h-screen w-full flex flex-col items-center justify-center text-orange-400">
+            <h1>Project Sense</h1>
+            <p className="text-xl font-normal mt-2">
+              Your go-to platform for mastering mental math and number sense
+            </p>
           </div>
-        </form>
-        <hr className="my-2 mx-auto w-10/12" />
-        <button
-          onClick={handleGoogleSignIn}
-          className="hover:bg-gray-200 bg-white mt-4 items-center w-10/12 mx-auto text-xl flex py-2 rounded-2xl gap-x-2 justify-center font-serif border-[1px] border-black"
-        >
-          <FcGoogle className="" />
-          <span className="font-sans">Sign up with Google</span>
-        </button>
-      </div>
-    </main>
+        </div>
+        <div className="flex flex-col bg-orange-300 justify-center items-center xl:w-[20%] w-[30%] h-screen">
+          <button onClick={() => { window.open('https://project-sense.vercel.app/manual.pdf'); }} className="flex flex-row gap-x-2 items-center justify-center font-bold text-4xl font-sans absolute text-white top-5 underline hover:decoration-4">
+            User Guide<MdMenuBook className="text-5xl" />
+          </button>
+          <div className="flex flex-col gap-y-6 items-center justify-center w-[90%] bg-white p-4 rounded-2xl">
+            <h1 className="text-4xl font-sans font-bold mt-16">Sign Up</h1>
+            <form onSubmit={onSubmit} className="gap-y-6 w-full flex flex-col items-center">
+              <TextField
+                id="email"
+                className="w-[80%] font-bold text-white"
+                label="Email"
+                variant="standard"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)} // Store email in state
+              />
+              <TextField
+                id="password"
+                className="w-[80%] text-white"
+                label="Password"
+                variant="standard"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)} // Store password in state
+              />
+              <a
+                href="/register"
+                className=" invisible underline hover:decoration-2 w-[80%] text-md text-left"
+              >
+                Don&apos;t have an account?
+              </a>
+              <button
+                type="submit"
+                className="btn text-xl bg-orange-300 w-[80%] hover:bg-orange-400 text-white font-sans"
+              >
+                Sign Up
+              </button>
+            </form>
+            <button
+              onClick={handleGoogleSignIn}
+              className="mb-16 hover:scale-105 ease-in-out duration-200 hover:bg-gray-200 bg-white items-center w-[80%] mx-auto text-xl flex py-2 rounded-2xl gap-x-2 justify-center font-serif border-[1px] border-black"
+            >
+              <FcGoogle className="" />
+              <span className="font-sans">Sign Up with Google</span>
+            </button>
+          </div>
+        </div>
+      </main>
+    </>
   );
 };
 
