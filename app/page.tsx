@@ -5,7 +5,7 @@ import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
 import { auth, db } from "@/firebase/config";
 import TextField from "@mui/material/TextField";
-import ParticlesBackground from "./components/ParticleBackground";
+
 import {
   GoogleAuthProvider,
   signInWithEmailAndPassword,
