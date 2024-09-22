@@ -86,7 +86,10 @@ const MathGameComponent: React.FC = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const savedHighscore = parseInt(localStorage.getItem("highscore") || "0", 10);
+      const savedHighscore = parseInt(
+        localStorage.getItem("highscore") || "0",
+        10
+      );
       setHighscore(savedHighscore);
     }
   }, []);
