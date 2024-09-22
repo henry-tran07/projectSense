@@ -26,7 +26,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [stopTimer, setStopTimer] = useState(false);
   const [questionTimes, setQuestionTimes] = useState<any>([]);
   const [storedQuestions, setStoredQuestions] = useState<any>([]);
-  
+
   useEffect(() => {
     if (params.id === "randomizer") setRandomizer(true);
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
@@ -186,7 +186,10 @@ const Home = ({ params }: { params: { id: string } }) => {
           <div className="mt-6 flex flex-row items-center justify-center gap-x-8">
             <div>
               {questionTimes.map((item: any, index: any) => (
-                <div className="mt-4 text-3xl flex flex-row justify-between" key={index}>
+                <div
+                  className="mt-4 text-xl md:text-3xl flex flex-row justify-between"
+                  key={index}
+                >
                   <p className="mr-8">
                     <MathComponent
                       math={index + 1 + ")    " + storedQuestions[index]}
@@ -198,7 +201,7 @@ const Home = ({ params }: { params: { id: string } }) => {
             <div className="border-l-white border-l-2">
               {questionTimes.map((item: any, index: any) => (
                 <div
-                  className="ml-8 mt-3 text-3xl flex flex-row justify-between"
+                  className="ml-8 mt-4 md:mt-3 text-xl md:text-3xl flex flex-row justify-between"
                   key={index}
                 >
                   <MathComponent
@@ -209,19 +212,19 @@ const Home = ({ params }: { params: { id: string } }) => {
             </div>
             <button
               onClick={() => {
-                setQuestionTimes([])
-                setStoredQuestions([])
+                setQuestionTimes([]);
+                setStoredQuestions([]);
                 setQuestions(0);
                 setStartTime(Date.now()); // Reset the startTime to the current timestamp
                 setElapsedTime(0); // Reset the elapsedTime to 0
                 setStopTimer(false); // Ensure timer resumes after reset
               }}
-              className="ml-6 hover:bg-gray-200 bg-white mt-8 text-orange-300 p-3 rounded-3xl"
+              className="ml-6 hover:bg-gray-200 bg-white mt-8 text-orange-300 p-0 md:p-3 rounded-xl md:rounded-3xl"
             >
               <VscDebugRestart />
             </button>
           </div>
-          <p className="mt-4 text-4xl font-mono">
+          <p className="mt-8 md:mt-4 text-3xl md:text-4xl font-mono">
             <u>{averageTimeInSeconds(formatTime(elapsedTime), 5)}</u>s per
             question
           </p>
