@@ -20,6 +20,7 @@ import { GiRetroController } from "react-icons/gi";
 import { SiVitest } from "react-icons/si";
 import { MdOutlineMail } from "react-icons/md";
 import { MdOutlineHelpOutline } from "react-icons/md";
+import { updateGeneratedQuestions } from "../components/questionCount";
 
 export default function Home() {
   const router = useRouter();
@@ -162,7 +163,7 @@ export default function Home() {
               >
                 <button
                   value={value}
-                  onClick={() => router.push(`/home/practice/${value}`)}
+                  onClick={() => {updateGeneratedQuestions(5); router.push(`/home/practice/${value}`)}}
                   className="p-2 md:p-4 px-[2.7rem] md:w-[26rem] w-full overflow-y-hidden hover:scale-105 hover:bg-gray-200  flex justify-center items-center h-full duration-200 ease-in-out rounded-l-2xl bg-white text-lg md:text-xl"
                 >
                   <MathComponent math={problemSet[value]} />
@@ -173,17 +174,23 @@ export default function Home() {
           ))}
         </div>
         <hr ref={ref} className="my-4"></hr>
-        <div className="fixed bottom-0 shadow-inner mt-auto text-center flex font-semibold flex-col py-2 text-xl font-sans md:py-6 text-orange-300 w-full  bg-white items-center justify-center transition-all duration-500 ease-in-out">
-          <p>Built for <b>UIL Number Sense</b> by <b>Townview TAG&apos;s UIL Team 2025</b>&apos; </p>
-          <div className="text-3xl mt-2 items-center gap-x-2 justify-center w-full flex flex-row">
+        <div className="fixed bottom-0 shadow-inner mt-auto text-center flex font-semibold flex-col py-2 text-[.875rem] md:text-xl font-sans md:py-6 text-orange-300 w-full  bg-white items-center justify-center transition-all duration-500 ease-in-out h-20">
+          <p>
+            Built for <b>UIL Number Sense</b> by{" "}
+            <b>Townview TAG&apos;s UIL Team 2025</b>&apos;{" "}
+          </p>
+          <div className="text-3xl mt-2 items-center  gap-x-2 justify-center w-[90%] md:w-full flex flex-row">
             <p>
-              <a className="text-4xl" href="https://forms.gle/yneT5vZaBSaLX1vf8">
+              <a
+                className="text-3xl md:text-4xl"
+                href="https://forms.gle/yneT5vZaBSaLX1vf8"
+              >
                 <MdOutlineHelpOutline className="hover:scale-105" />
               </a>
             </p>
             <p>
               <a href="mailto:projectsense.ns@gmail.com">
-                <MdOutlineMail className="text-4xl hover:scale-105" />
+                <MdOutlineMail className="text-3xl md:text-4xl hover:scale-105" />
               </a>
             </p>
           </div>
