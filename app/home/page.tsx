@@ -20,7 +20,7 @@ import { GiRetroController } from "react-icons/gi";
 import { SiVitest } from "react-icons/si";
 import { MdOutlineMail } from "react-icons/md";
 import { MdOutlineHelpOutline } from "react-icons/md";
-import { updateGeneratedQuestions } from "../components/questionCount";
+
 export default function Home() {
   const router = useRouter();
   const colRef = collection(db, "users");
@@ -162,7 +162,7 @@ export default function Home() {
               >
                 <button
                   value={value}
-                  onClick={() => {updateGeneratedQuestions(5); router.push(`/home/practice/${value}`)}}
+                  onClick={() => router.push(`/home/practice/${value}`)}
                   className="p-2 md:p-4 px-[2.7rem] md:w-[26rem] w-full overflow-y-hidden hover:scale-105 hover:bg-gray-200  flex justify-center items-center h-full duration-200 ease-in-out rounded-l-2xl bg-white text-lg md:text-xl"
                 >
                   <MathComponent math={problemSet[value]} />
