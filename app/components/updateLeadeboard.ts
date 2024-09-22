@@ -56,8 +56,28 @@ export default async function updateLeaderboard(
   }
 }
 
+function isValidTime(newTime: string) {
+  // Check if newTime is exactly "00:00.00"
+  if (newTime === "00:00.00") return false;
+
+  // Regular expression to validate the time format MM:SS.DD
+  const timePattern = /^(\d{2}):([0-5]\d)\.(\d{2})$/;
+
+  // Check if newTime matches the pattern
+  const match = newTime.match(timePattern);
+  if (!match) return false;
+
+  const minutes = parseInt(match[1], 10);
+  const seconds = parseInt(match[2], 10);
+  const decimals = parseInt(match[3], 10);
+
+  // Return true if all checks pass
+  return minutes >= 0 && seconds >= 0 && seconds < 60 && decimals >= 0;
+}
+
 function isFasterTime(oldTime: string, newTime: string): boolean {
   if(newTime == "00:00.00") return false;
+  if(!isValidTime(newTime)) return false;
   if (!oldTime) return true;
   const parseTime = (time: string) => {
     const [min, sec] = time.split(":");
