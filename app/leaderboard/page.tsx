@@ -143,7 +143,7 @@ const Home = () => {
                 key={index}
                 className="my-3 gap-x-2 md:gap-x-4 w-[90%] md:w-[80%] mx-auto text-lg md:text-2xl flex flex-row items-center justify-between "
               >
-                <p className="bg-white px-4 text-orange-300 py-2 md:py-3 rounded-2xl font-bold text-center md:w-[4rem]">
+                <p className="bg-white px-4 text-orange-300 py-2 md:py-3 rounded-2xl font-bold text-center md:w-[4.1rem]">
                   {index + 1}
                 </p>
                 <p className="bg-white text-orange-300 py-2 md:py-3 rounded-2xl font-bold text-center flex-grow">
