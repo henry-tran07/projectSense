@@ -182,13 +182,13 @@ const Home = ({ params }: { params: { id: string } }) => {
       />
       {questions >= 5 ? (
         <div className="font-semibold text-6xl w-screen flex text-white flex-col justify-center items-center gap-x-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <h2 className="text-orange-300 bg-white rounded-2xl shadow-lg p-3 ">
+          <h2 className="text-orange-300 md:text-4xl text-2xl bg-white rounded-2xl shadow-lg p-3 ">
             {formatTime(elapsedTime)}
           </h2>
           <div className="mt-6 flex flex-row items-center justify-center gap-x-8">
             <div>
               {questionTimes.map((item: any, index: any) => (
-                <div className="mt-4 flex flex-row justify-between" key={index}>
+                <div className="mt-4 text-3xl flex flex-row justify-between" key={index}>
                   <p className="mr-8">
                     <MathComponent
                       math={index + 1 + ")    " + storedQuestions[index]}
@@ -200,7 +200,7 @@ const Home = ({ params }: { params: { id: string } }) => {
             <div className="border-l-white border-l-2">
               {questionTimes.map((item: any, index: any) => (
                 <div
-                  className="ml-8 mt-3 flex flex-row justify-between"
+                  className="ml-8 mt-3 text-3xl flex flex-row justify-between"
                   key={index}
                 >
                   <MathComponent
@@ -223,7 +223,7 @@ const Home = ({ params }: { params: { id: string } }) => {
               <VscDebugRestart />
             </button>
           </div>
-          <p className="mt-4 font-mono">
+          <p className="mt-4 text-4xl font-mono">
             <u>{averageTimeInSeconds(formatTime(elapsedTime), 5)}</u>s per
             question
           </p>
