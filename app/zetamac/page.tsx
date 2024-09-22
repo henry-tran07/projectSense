@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 class MathGame {
   private question: string;
@@ -32,10 +32,10 @@ class MathGame {
         [num1, num2] = [num2, num1];
       }
     } else if (operation === "*") {
-      num1 = Math.floor(Math.random() * 12 - 2 + 1) + 2;
+      num1 = Math.floor(Math.random() * 11 - 2 + 1) + 2;
       num2 = Math.floor(Math.random() * 99 - 2 + 1) + 2;
     } else if (operation === "/") {
-      num2 = Math.floor(Math.random() * 12 - 2 + 1) + 2;
+      num2 = Math.floor(Math.random() * 11 - 2 + 1) + 2;
       num1 = num2 * (Math.floor(Math.random() * 10) + 2);
     } else {
       throw new Error("Unknown operation");
@@ -83,43 +83,34 @@ const MathGameComponent: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(120);
   const [gameOver, setGameOver] = useState(false);
   const [highscore, setHighscore] = useState<number>(0);
-  const fixtime = useRef<number>(0);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const savedHighscore = parseInt(
-        localStorage.getItem("highscore") || "0",
-        10
-      );
+      const savedHighscore = parseInt(localStorage.getItem("highscore") || "0", 10);
       setHighscore(savedHighscore);
     }
   }, []);
 
   useEffect(() => {
     if (gameOver) return;
-    if (timeLeft === 120) {
-      fixtime.current = Date.now();
-    }
+
     const timer = setInterval(() => {
-      const elasped = Math.floor((Date.now() - fixtime.current) / 1000);
-      const timeleft = 120 - elasped;
-      if (timeleft <= 0) {
-        clearInterval(timer);
-        setGameOver(true);
-        if (score > highscore) {
-          setHighscore(score);
-          localStorage.setItem("highscore", score.toString());
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timer);
+          setGameOver(true);
+          if (score > highscore) {
+            setHighscore(score);
+            localStorage.setItem("highscore", score.toString());
+          }
+          return 0;
         }
-        setTimeLeft(0);
-      } else {
-        setTimeLeft(timeleft);
-      }
+        return prevTime - 1;
+      });
     }, 1000);
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, [gameOver, score, highscore, timeLeft]);
+    return () => clearInterval(timer);
+  }, [gameOver, score, highscore]);
 
   useEffect(() => {
     if (!gameOver) {
@@ -149,13 +140,9 @@ const MathGameComponent: React.FC = () => {
     setGame(newGame);
     setCurrentQuestion(newGame.getQuestion());
     setScore(newGame.getScore());
-    setTimeLeft(120);
+    setTimeLeft(120); // Reset timer immediately
     setGameOver(false);
   }, []);
-  const [displayedTime, setDisplayedTime] = useState(timeLeft);
-  useEffect(() => {
-    setDisplayedTime(timeLeft);
-  }, [timeLeft]);
 
   return (
     <div className="relative min-h-screen flex flex-col bg-orange-300 p-4">
@@ -186,7 +173,7 @@ const MathGameComponent: React.FC = () => {
       ) : (
         <div className="flex flex-col items-center justify-center flex-grow -mt-16">
           <div className="text-2xl font-semibold text-white -mt-16 mb-4 underline">
-            Time Left: {displayedTime}
+            Time Left: {timeLeft}
           </div>
           <div className="flex items-center">
             <div className="text-5xl font-semibold text-white mr-4">
