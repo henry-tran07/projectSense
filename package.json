@@ -18,6 +18,7 @@
     "@google/generative-ai": "^0.16.0",
     "@mui/icons-material": "^6.1.1",
     "@mui/material": "^6.1.1",
+    "@next/swc-win32-x64-msvc": "^14.2.13",
     "@tsparticles/engine": "^3.5.0",
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.5.0",
