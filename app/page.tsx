@@ -72,7 +72,7 @@ const Home = () => {
     <>
       <ParticleBackground />
       <main
-        className="flex flex-row w-screen h-screen"
+        className="flex flex-col md:flex-row w-screen h-screen"
       >
         <div className="bg-transparent xl:w-[80%] w-[70%] overflow-y-clip">
 

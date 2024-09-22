@@ -57,6 +57,7 @@ export default async function updateLeaderboard(
 }
 
 function isFasterTime(oldTime: string, newTime: string): boolean {
+  if(newTime == "00:00.00") return false;
   if (!oldTime) return true;
   const parseTime = (time: string) => {
     const [min, sec] = time.split(":");

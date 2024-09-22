@@ -29,7 +29,7 @@ const Home = ({ params }: { params: { id: string } }) => {
   const [storedQuestions, setStoredQuestions] = useState<any>([]);
   
   useEffect(() => {
-    updateGeneratedQuestions(5)
+    // updateGeneratedQuestions(5)
     if (params.id === "randomizer") setRandomizer(true);
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
