@@ -37,7 +37,7 @@ export const problemSet: { [key: number]: string } = {
   36: "x^2 + (x+1)^2",
   37: "\\frac{a}{b} + \\frac{b}{a}",
   38: "\\# \\text{ of distinct diagonals in a polygon}",
-  39: "\\text{Sum of } n \\text{ cubes}",
+  39: "\\text{Sum of } n \\text{ sqaures}",
   40: "\\text{Alternating Sum of } n \\text{ Squares}",
   41: "\\text{Mean/Median}",
   42: "\\text{Geometric Mean}",
@@ -1371,7 +1371,7 @@ function ngon() {
 
 function sumofncub() {
   let n = Math.floor(Math.random() * (20 - 5 + 1)) + 5;
-  let squaredN = `${n}\u{00B3}`;
+  let squaredN = `${n}\u{00B2}`;
   let sum = ((n * (n + 1)) / 2) ** 2;
   return {
     body: "1\u{00B2} + 2\u{00B2} + 3\u{00B2} + ... + " + squaredN,
