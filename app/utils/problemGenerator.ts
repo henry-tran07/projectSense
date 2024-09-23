@@ -37,7 +37,7 @@ export const problemSet: { [key: number]: string } = {
   36: "x^2 + (x+1)^2",
   37: "\\frac{a}{b} + \\frac{b}{a}",
   38: "\\# \\text{ of distinct diagonals in a polygon}",
-  39: "\\text{Sum of } n \\text{ sqaures}",
+  39: "\\text{Sum of } n \\text{ Squares}",
   40: "\\text{Alternating Sum of } n \\text{ Squares}",
   41: "\\text{Mean/Median}",
   42: "\\text{Geometric Mean}",
