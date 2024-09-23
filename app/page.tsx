@@ -4,11 +4,7 @@ import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { auth, db } from "@/firebase/config";
 import TextField from "@mui/material/TextField";
-import {
-  GoogleAuthProvider,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-} from "firebase/auth";
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup,} from "firebase/auth";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { ParticleBackground } from "./components/ParticleBackground";
 import { MdMenuBook } from "react-icons/md";
