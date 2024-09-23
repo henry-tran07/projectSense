@@ -1,10 +1,14 @@
-"use client"
+"use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { auth, db } from "@/firebase/config";
 import TextField from "@mui/material/TextField";
-import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup,} from "firebase/auth";
+import {
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { ParticleBackground } from "./components/ParticleBackground";
 import { MdMenuBook } from "react-icons/md";
@@ -67,11 +71,8 @@ const Home = () => {
   return (
     <>
       <ParticleBackground />
-      <main
-        className="flex flex-col md:flex-row w-screen h-screen"
-      >\
+      <main className="flex flex-col md:flex-row w-screen h-screen overflow-y-auto md:overflow-y-clip">
         <div className="bg-transparent flex flex-col md:h-full h-[80%] w-full xl:w-[80%] md:w-[70%] overflow-y-clip">
-
           <div className="font-sans md:text-6xl text-4xl font-bold h-screen w-full flex flex-col items-center justify-center text-orange-400">
             <h1>Project Sense</h1>
             <p className="md:text-xl text-base font-normal md:mt-2 text-center">
@@ -79,13 +80,22 @@ const Home = () => {
             </p>
           </div>
         </div>
-        <div className="flex  flex-col bg-orange-300 justify-center items-center w-full xl:w-[20%] md:w-[30%] h-screen md:py-0 py-8">
-          <button  onClick={() => { window.open('https://project-sense.vercel.app/manual.pdf'); }} className="flex flex-row gap-x-2 items-center justify-center font-bold text-4xl font-sans absolute md:text-white text-orange-400 top-5 underline hover:decoration-4">
-            User Guide<MdMenuBook className="text-5xl md:text-white text-orange-400" />
+        <div className="flex  flex-col bg-orange-300 justify-center items-center w-full xl:w-[30%] md:w-[40%] h-screen md:py-0 py-8">
+          <button
+            onClick={() => {
+              window.open("https://project-sense.vercel.app/manual.pdf");
+            }}
+            className="flex flex-row gap-x-2 items-center justify-center font-bold text-4xl font-sans absolute md:text-white text-orange-400 top-5 underline hover:decoration-4"
+          >
+            User Guide
+            <MdMenuBook className="text-5xl md:text-white text-orange-400" />
           </button>
           <div className="flex flex-col gap-y-6 items-center justify-center w-[90%] bg-white p-4 rounded-2xl">
             <h1 className="text-4xl font-sans font-bold mt-16">Login</h1>
-            <form onSubmit={onSubmit} className="gap-y-6 w-full flex flex-col items-center">
+            <form
+              onSubmit={onSubmit}
+              className="gap-y-6 w-full flex flex-col items-center"
+            >
               <TextField
                 id="email"
                 className="w-[80%] font-bold text-white"
