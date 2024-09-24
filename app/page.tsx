@@ -71,7 +71,7 @@ const Home = () => {
   return (
     <>
       <ParticleBackground />
-      <main className="flex flex-col md:flex-row w-screen h-screen overflow-y-auto md:overflow-y-clip">
+      <main className="md:flex md:flex-row w-screen h-screen overflow-y-auto md:overflow-y-clip">
         <div className="bg-transparent flex flex-col md:h-full h-[80%] w-full xl:w-[80%] md:w-[70%] overflow-y-clip">
           <div className="font-sans md:text-6xl text-4xl font-bold h-screen w-full flex flex-col items-center justify-center text-orange-400">
             <h1>Project Sense</h1>
