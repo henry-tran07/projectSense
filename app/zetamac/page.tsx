@@ -97,23 +97,28 @@ const MathGameComponent: React.FC = () => {
   useEffect(() => {
     if (gameOver) return;
 
+    const startTime = Date.now();
+    const endTime = startTime + timeLeft * 1000;
+
     const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timer);
-          setGameOver(true);
-          if (score > highscore) {
-            setHighscore(score);
-            localStorage.setItem("highscore", score.toString());
-          }
-          return 0;
+      const currentTime = Date.now();
+      const remainingTime = Math.max(
+        Math.floor((endTime - currentTime) / 1000),
+        0
+      );
+      setTimeLeft(remainingTime);
+      if (remainingTime <= 0) {
+        clearInterval(timer);
+        setGameOver(true);
+        if (score > highscore) {
+          setHighscore(score);
+          localStorage.setItem("highscore", score.toString());
         }
-        return prevTime - 1;
-      });
+      }
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [gameOver, score, highscore]);
+  }, [gameOver, highscore]);
 
   useEffect(() => {
     if (!gameOver) {
