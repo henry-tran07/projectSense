@@ -1759,6 +1759,9 @@ function tripdigitcube() {
 function xcubedycubed() {
   let x = Math.floor(Math.random() * 15) + 1;
   let y = Math.floor(Math.random() * 15) + 1;
+  while (x === y) {
+    y = Math.floor(Math.random() * 15) + 1;
+  }
   let xx = Math.pow(x, 3);
   let yy = Math.pow(y, 3);
   let diff = x - y;
