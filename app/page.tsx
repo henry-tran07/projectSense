@@ -75,7 +75,7 @@ const Home = () => {
         <div className="bg-transparent flex flex-col md:h-full h-[80%] w-full xl:w-[80%] md:w-[70%] overflow-y-clip">
           <div className="font-sans md:text-6xl text-4xl font-bold h-screen w-full flex flex-col items-center justify-center text-orange-400">
             <h1>Project Sense</h1>
-            <p className="md:text-xl text-base font-normal md:mt-2 text-center">
+            <p className="w-[85%] md:text-xl text-base font-normal md:mt-2 text-center">
               Your go-to platform for mastering mental math and number sense
             </p>
           </div>
