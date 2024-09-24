@@ -507,7 +507,7 @@ function nSq2() {
 
 function nTens() {
   let tensDigit = Math.floor(Math.random() * 6) + 1;
-  let nOnesDigit = Math.floor(Math.random() * 10) + 1;
+  let nOnesDigit = Math.floor(Math.random() * 9) + 1;
   let xOnesDigit = 10 - nOnesDigit;
 
   let n = tensDigit * 10 + nOnesDigit;
@@ -773,7 +773,7 @@ function romanNum() {
   };
 }
 function nCube() {
-  let n = Math.floor(Math.random() * (20 + 1)) + 1;
+  let n = Math.floor(Math.random() * 20) + 1;
 
   return {
     body: `{${n} ^ 3}`,
