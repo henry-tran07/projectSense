@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import GoogleAnalytics from "./components/GoogleAnalytics";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

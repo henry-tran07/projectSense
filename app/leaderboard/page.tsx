@@ -79,11 +79,11 @@ const Home = () => {
     email: string;
   }
   const disableScroll = () => {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   };
 
   const enableScroll = () => {
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   };
   return (
     <ChakraProvider>
@@ -104,7 +104,8 @@ const Home = () => {
           <MenuButton
             color="rgb(253, 186, 116)"
             backgroundColor="white"
-            className="w-fit ml-4 mt-3 md:mt-4 py-2 px-2 md:py-4 md:px-6 text-sm md:text-base"
+            marginX={"auto"}
+            className="w-fit  ml-4 mt-3 md:mt-4 py-2 px-2 md:py-4 md:px-6 text-sm md:text-base"
             as={Button}
             rightIcon={<ChevronDownIcon />}
           >
@@ -113,6 +114,7 @@ const Home = () => {
 
           <MenuList
             maxH="10rem"
+            marginX={"auto"}
             overflowY="auto"
             style={{ maxHeight: "10rem", width: "100%", maxWidth: "20rem" }}
           >
@@ -124,7 +126,7 @@ const Home = () => {
                   }}
                   key={value}
                 >
-                <MathComponent math=  {problemSet[value]} />
+                  <MathComponent math={problemSet[value]} />
                 </MenuItem>
               ) : (
                 <></>

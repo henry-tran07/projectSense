@@ -12,7 +12,6 @@ import MathComponent from "../components/MathComponent";
 import { loadMore } from "../components/loadMore";
 import { useInView } from "react-intersection-observer";
 import { SettingsModal } from "../components/settingsModal";
-import { ChangelogModal } from "../components/changeLog";
 import { VideoModal } from "../components/videoModal";
 import { GameModal } from "../components/gameModal";
 import { FaRandom } from "react-icons/fa";
@@ -24,7 +23,6 @@ import { MdOutlineHelpOutline } from "react-icons/md";
 export default function Home() {
   const router = useRouter();
   const colRef = collection(db, "users");
-
   const [user, setUser] = useState<null | User>(null);
   const [rightLeft, setRightLeft] = useState(false);
   const [questionLimited, setQuestionLimited] = useState(true);
@@ -93,12 +91,12 @@ export default function Home() {
       }
     });
     return () => unsubscribe();
-  }, [colRef, router, user]);
+  }, [colRef, user]);
 
   return (
     // <MathJaxContext>
     <ChakraProvider>
-      <main className="absolute bg-orange-300 h-screen overflow-auto w-screen flex flex-col items-center">
+      <main className="absolute bg-orange-300  h-auto overflow-x-hidden overflow-y-auto w-full flex flex-col items-center">
         <div className="shadow-inner bg-white text-orange-300 font-bold p-4 text-4xl   w-full">
           <div className="bg-white text-5xl  text-orange-300 flex font-bold justify-center items-center">
             <button
@@ -113,7 +111,6 @@ export default function Home() {
             </div>
             <div className=" ml-auto">
               <GameModal />
-              <ChangelogModal />
               <SettingsModal
                 loading={loading}
                 rightLeft={rightLeft}
@@ -173,26 +170,26 @@ export default function Home() {
           ))}
         </div>
         <hr ref={ref} className="my-4"></hr>
-        <div className="fixed bottom-0 shadow-inner mt-auto text-center flex font-semibold flex-col py-2 text-[.875rem] md:text-xl font-sans md:py-6 text-orange-300 w-full  bg-white items-center justify-center transition-all duration-500 ease-in-out h-20 ">
+        <div className=" overflow-x-hidden fixed bottom-0 shadow-inner mt-auto text-center flex font-semibold flex-row py-2 text-[.6rem] md:text-xl font-sans md:py-4 text-orange-300 w-full  bg-white items-center justify-center transition-all duration-500 ease-in-out">
           <p>
             Built for <b>UIL Number Sense</b> by{" "}
             <b>Townview TAG&apos;s UIL Team 2025</b>&apos;{" "}
           </p>
-          <div className="text-3xl mt-2 items-center  gap-x-2 justify-center w-[90%] md:w-full flex flex-row">
-            <p>
-              <a
-                className="text-3xl md:text-4xl"
-                href="https://forms.gle/yneT5vZaBSaLX1vf8"
-              >
-                <MdOutlineHelpOutline className="hover:scale-105" />
-              </a>
-            </p>
-            <p>
-              <a href="mailto:projectsense.ns@gmail.com">
-                <MdOutlineMail className="text-3xl md:text-4xl hover:scale-105" />
-              </a>
-            </p>
-          </div>
+          <p className="md:pb-1 px-1 font-normal">|</p>
+          <p>
+            <a
+              className="text-[1rem] md:text-2xl"
+              href="https://forms.gle/yneT5vZaBSaLX1vf8"
+            >
+              <MdOutlineHelpOutline className="hover:scale-105" />
+            </a>
+          </p>
+          <p className="md:pb-1 px-1 font-normal">|</p>
+          <p>
+            <a href="mailto:projectsense.ns@gmail.com">
+              <MdOutlineMail className="text-[1rem] md:text-2xl hover:scale-105" />
+            </a>
+          </p>
         </div>
       </main>
     </ChakraProvider>

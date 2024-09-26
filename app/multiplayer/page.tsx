@@ -324,6 +324,24 @@ export default function Multiplayer() {
           <div className="w-screen">
             {gameState && gameState.state === "in_progress" ? (
               <div>
+                <div className="absolute flex flex-col right-0 text-right p-4">
+                  {gameState ? (
+                    Object.keys(gameState.players).map((playerId, index) => (
+                      <>
+                        <div key={index} className="flex flex-row items-center">
+                          <label className="mr-2 font-semibold text-lg text-slate-100">{playerId}</label>
+                          <progress
+                            className="progress progress-info w-72 h-4"
+                            value={gameState.players[playerId]?.questionsSolved}
+                            max="5"
+                          ></progress>
+                        </div>
+                      </>
+                    ))
+                  ) : (
+                    <></>
+                  )}
+                </div>
                 <button
                   onClick={() => {
                     setIndex(0);
