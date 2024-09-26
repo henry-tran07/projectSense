@@ -324,7 +324,7 @@ export default function Multiplayer() {
           <div className="w-screen">
             {gameState && gameState.state === "in_progress" ? (
               <div>
-                <div className="absolute flex flex-col right-0 text-right p-4">
+                <div className="absolute flex flex-col right-0 text-right p-4 justify-between">
                   {gameState ? (
                     Object.keys(gameState.players).map((playerId, index) => (
                       <>
@@ -422,7 +422,7 @@ export default function Multiplayer() {
                 >
                   {"<"}
                 </button>
-                <div className="gap-y-4 font-mono text-white text-5xl md:text-8xl font-extrabold gap-x-4 items-center  justify-center flex flex-row fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="gap-y-4 font-mono text-white text-5xl md:text-8xl font-extrabold gap-x-4 items-center  justify-center flex flex-row fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-screen">
                   <FaCrown />
                   Winner: {winner}
                 </div>
