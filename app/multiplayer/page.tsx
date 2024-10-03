@@ -328,11 +328,18 @@ export default function Multiplayer() {
                   {gameState ? (
                     Object.keys(gameState.players).map((playerId, index) => (
                       <>
-                        <div key={index} className="flex flex-row items-center">
-                          <label className="mr-2 font-semibold text-lg text-slate-100">{playerId}</label>
+                        <div
+                          key={index}
+                          className="flex flex-row items-center justify-between text-right"
+                        >
+                          <label className="mr-2 font-semibold text-lg text-slate-100">
+                            {playerId}
+                          </label>
                           <progress
                             className="progress progress-info w-72 h-4"
-                            value={gameState.players[playerId]?.questionsSolved}
+                            value={
+                              gameState.players[playerId]?.questionsSolved - 1
+                            }
                             max="5"
                           ></progress>
                         </div>
