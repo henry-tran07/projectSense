@@ -142,7 +142,7 @@ export default function Home() {
             <GiRetroController /> Multiplayer
           </button>
           <button
-            onClick={() => router.push(`/api`)}
+            onClick={() => router.push(`/testGen`)}
             className="flex flex-row items-center  justify-center gap-x-2 text-orange-300 rounded-2xl bg-white font-semibold py-1 md:py-2 px-2 md:px-8 mb-2  md:mb-4 text-lg md:text-4xl font-serif shadow-sm md:shadow-md hover:bg-gray-200 hover:scale-105 "
           >
             <SiVitest /> AI Test

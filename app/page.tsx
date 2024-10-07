@@ -16,17 +16,9 @@ import { MdMenuBook } from "react-icons/md";
 const Home = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [visible, setVisible] = useState(false);
   const router = useRouter();
   const provider = new GoogleAuthProvider();
   const colRef = collection(db, "users");
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setVisible(true);
-    }, 1825);
-    return () => clearTimeout(timer);
-  }, []);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
