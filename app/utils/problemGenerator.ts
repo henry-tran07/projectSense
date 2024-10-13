@@ -1371,10 +1371,10 @@ function ngon() {
 
 function sumofncub() {
   let n = Math.floor(Math.random() * (20 - 5 + 1)) + 5;
-  let squaredN = `${n}\u{00B2}`;
+  let squaredN = `${n}\u{00B3}`;
   let sum = ((n * (n + 1)) / 2) ** 2;
   return {
-    body: "1\u{00B2} + 2\u{00B2} + 3\u{00B2} + ... + " + squaredN,
+    body: "1\u{00B3} + 2\u{00B3} + 3\u{00B3} + ... + " + squaredN,
     ans: "" + sum,
   };
 }
@@ -1726,8 +1726,8 @@ function fib() {
 }
 
 function tripledigit() {
-  let n = Math.floor(Math.random() * 999 - 100 + 1) + 100;
-  let x = Math.floor(Math.random() * 999 - 100 + 1) + 100;
+  let n = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
+  let x = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
 
   return {
     body: `${n} \\times ${x}`,
