@@ -38,7 +38,7 @@ export const problemSet: { [key: number]: string } = {
   37: "\\frac{a}{b} + \\frac{b}{a}",
   38: "\\# \\text{ of distinct diagonals in a polygon}",
   39: "\\text{Sum of } n \\text{ Squares}",
-  40: "\\text{Alternating Sum of } n \\text{ Squares}",
+  40: "\\text{Alternating Sum of } n \\text{ Cubes}",
   41: "\\text{Mean/Median}",
   42: "\\text{Geometric Mean}",
   43: "\\text{Harmonic Mean}",
