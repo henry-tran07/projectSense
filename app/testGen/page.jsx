@@ -5,7 +5,7 @@ import { FaPaperPlane } from "react-icons/fa";
 import { test1, test2 } from "./data";
 import { useResetProjection } from "framer-motion";
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 import { updateGeneratedQuestions } from "../components/questionCount";
 
 function Gemini() {
