@@ -5,7 +5,8 @@ import { FaPaperPlane } from "react-icons/fa";
 import { test1, test2 } from "./data";
 import { useResetProjection } from "framer-motion";
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
+
 import { updateGeneratedQuestions } from "../components/questionCount";
 
 function Gemini() {
@@ -27,7 +28,7 @@ function Gemini() {
     setSubmitting(true);
     try {
       const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
+        model: "gemini-2.0-flash",
         generationConfig: { responseMimeType: "application/json" },
       });
       const prompt1 = `You are tasked with generating an answer key for a set of math problems. For each problem in the JSON object provided, compute the correct answer and return the answer key as a JSON object with the same keys but with the computed answers.
@@ -60,6 +61,7 @@ function Gemini() {
   async function run() {
     updateGeneratedQuestions(40);
     try {
+      setGenerating(true);
       const model = genAI.getGenerativeModel({
         model: "gemini-1.5-flash",
         generationConfig: { responseMimeType: "application/json" },
@@ -74,6 +76,12 @@ function Gemini() {
       setText(json);
     } catch (error) {
       console.error("Error generating content:", error);
+      // Reset generating state on error
+      setGenerating(false);
+      // You might want to show an error message to the user here
+    } finally {
+      // Always reset generating state when done
+      setGenerating(false);
     }
   }
 
