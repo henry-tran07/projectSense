@@ -3,12 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { auth, db } from "@/firebase/config";
-import TextField from "@mui/material/TextField";
-import {
-  GoogleAuthProvider,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-} from "firebase/auth";
+import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { ParticleBackground } from "./components/ParticleBackground";
 import { MdMenuBook } from "react-icons/md";
@@ -16,19 +11,20 @@ import { MdMenuBook } from "react-icons/md";
 const Home = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const provider = new GoogleAuthProvider();
   const colRef = collection(db, "users");
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        router.push("/home");
-      })
-      .catch(() => {
-        alert("Incorrect Email or Password");
-      });
+    setError(null);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      router.push("/home");
+    } catch {
+      setError("Incorrect Email or Password");
+    }
   };
 
   const handleGoogleSignIn = async () => {
@@ -56,7 +52,7 @@ const Home = () => {
       }
     } catch (error) {
       console.error("Error during sign-in:", error);
-      alert("An error occurred during sign-in. Please try again.");
+      setError("An error occurred during sign-in. Please try again.");
     }
   };
 
@@ -84,26 +80,22 @@ const Home = () => {
           </button>
           <div className="flex flex-col gap-y-6 items-center justify-center w-[90%] bg-white p-4 rounded-2xl">
             <h1 className="text-4xl font-sans font-bold mt-16">Login</h1>
-            <form
-              onSubmit={onSubmit}
-              className="gap-y-6 w-full flex flex-col items-center"
-            >
-              <TextField
+            <form onSubmit={onSubmit} className="gap-y-6 w-full flex flex-col items-center">
+              <input
                 id="email"
-                className="w-[80%] font-bold text-white"
-                label="Email"
-                variant="standard"
+                className="w-[80%] font-bold border-b border-gray-400 bg-transparent outline-none py-2 px-1 text-black"
+                placeholder="Email"
+                type="text"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)} // Store email in state
+                onChange={(e) => setEmail(e.target.value)}
               />
-              <TextField
+              <input
                 id="password"
-                className="w-[80%] text-white"
-                label="Password"
-                variant="standard"
+                className="w-[80%] border-b border-gray-400 bg-transparent outline-none py-2 px-1 text-black"
+                placeholder="Password"
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)} // Store password in state
+                onChange={(e) => setPassword(e.target.value)}
               />
               <a
                 href="/register"
@@ -111,6 +103,7 @@ const Home = () => {
               >
                 Don&apos;t have an account?
               </a>
+              {error && <p className="text-red-500 text-sm w-[80%] text-center">{error}</p>}
               <button
                 type="submit"
                 className="btn text-xl bg-orange-300 w-[80%] hover:bg-orange-400 text-white font-sans"

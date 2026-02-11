@@ -4,14 +4,7 @@ import { collection, doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useMemo } from "react";
 import { problemSet } from "@/app/utils/problemGenerator";
-import {
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
-  Button,
-  ChakraProvider,
-} from "@chakra-ui/react";
+import { Menu, MenuButton, MenuList, MenuItem, Button, ChakraProvider } from "@chakra-ui/react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { FaTrophy } from "react-icons/fa";
 import { BlockMath } from "react-katex";
@@ -46,9 +39,7 @@ const Home = () => {
       scoreEntries.sort((a, b) => compareTimes(a.time, b.time));
 
       // Convert back to an array of strings
-      const sortedScores = scoreEntries.map(
-        (entry) => `${entry.time} ${entry.email}`
-      );
+      const sortedScores = scoreEntries.map((entry) => `${entry.time} ${entry.email}`);
 
       return sortedScores;
     };
@@ -58,10 +49,8 @@ const Home = () => {
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
-          const map = data["scores"];
-          const resultArray = Object.entries(map).map(
-            ([key, value]) => `${value} ${key}`
-          );
+          const map = data.scores;
+          const resultArray = Object.entries(map).map(([key, value]) => `${value} ${key}`);
           const performSort = sortScoresByTime(resultArray);
           setSortedScores(performSort);
         } else {
@@ -90,8 +79,8 @@ const Home = () => {
       <main className="w-full min-h-screen overflow-y-hidden flex-col flex bg-orange-300 overflow-x-hidden">
         <div className="bg-white text-3xl p-4 font-bold text-orange-300 w-full flex flex-row justify-center relative">
           <button
-            onClick={async () => {
-              await Promise.all([router.push("/home")]);
+            onClick={() => {
+              router.push("/home");
             }}
             className="absolute left-3 text-white hover:bg-orange-500 hover:text-gray-300 text-4xl px-3 rounded-2xl pb-1 bg-orange-300"
           >

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
+import { evaluate } from "mathjs";
 
 class MathGame {
   private question: string;
@@ -17,8 +18,7 @@ class MathGame {
   }
 
   private generateQuestion() {
-    const operation =
-      this.operations[Math.floor(Math.random() * this.operations.length)];
+    const operation = this.operations[Math.floor(Math.random() * this.operations.length)];
     let num1 = Math.floor(Math.random() * 100) + 1;
     let num2 = Math.floor(Math.random() * 100) + 1;
 
@@ -42,7 +42,7 @@ class MathGame {
     }
 
     this.question = `${num1} ${operation} ${num2}`;
-    this.answer = eval(this.question);
+    this.answer = evaluate(this.question) as number;
   }
 
   public getQuestion() {
@@ -86,10 +86,7 @@ const MathGameComponent: React.FC = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const savedHighscore = parseInt(
-        localStorage.getItem("highscore") || "0",
-        10
-      );
+      const savedHighscore = parseInt(localStorage.getItem("highscore") || "0", 10);
       setHighscore(savedHighscore);
     }
   }, []);
@@ -102,10 +99,7 @@ const MathGameComponent: React.FC = () => {
 
     const timer = setInterval(() => {
       const currentTime = Date.now();
-      const remainingTime = Math.max(
-        Math.floor((endTime - currentTime) / 1000),
-        0
-      );
+      const remainingTime = Math.max(Math.floor((endTime - currentTime) / 1000), 0);
       setTimeLeft(remainingTime);
       if (remainingTime <= 0) {
         clearInterval(timer);
@@ -166,9 +160,7 @@ const MathGameComponent: React.FC = () => {
       )}
       {gameOver ? (
         <div className="flex flex-col items-center justify-center flex-grow mt-16">
-          <h2 className="text-4xl font-bold text-white -mt-16 mb-4">
-            Game Over
-          </h2>
+          <h2 className="text-4xl font-bold text-white -mt-16 mb-4">Game Over</h2>
           <p className="text-2xl text-white">Your Score: {score}</p>
           <Highscore highscore={highscore} />
           <button
@@ -184,12 +176,8 @@ const MathGameComponent: React.FC = () => {
             Time Left: {timeLeft}
           </div>
           <div className="flex items-center">
-            <div className="text-5xl font-semibold text-white mr-4">
-              {currentQuestion}
-            </div>
-            <div className="text-[2.25rem] md:text-5xl font-semibold text-white mr-4">
-              =
-            </div>
+            <div className="text-5xl font-semibold text-white mr-4">{currentQuestion}</div>
+            <div className="text-[2.25rem] md:text-5xl font-semibold text-white mr-4">=</div>
             <input
               type="text"
               value={userAnswer}

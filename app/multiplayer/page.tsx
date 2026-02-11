@@ -18,14 +18,7 @@ import { HiRefresh } from "react-icons/hi";
 import MathComponent from "../components/MathComponent";
 import { FaCrown } from "react-icons/fa";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import {
-  Menu,
-  MenuButton,
-  Button,
-  MenuList,
-  MenuItem,
-  ChakraProvider,
-} from "@chakra-ui/react";
+import { Menu, MenuButton, Button, MenuList, MenuItem, ChakraProvider } from "@chakra-ui/react";
 import { problemSet } from "../utils/problemGenerator";
 import { useRouter } from "next/navigation";
 
@@ -52,9 +45,7 @@ export interface Matchmaking {
 }
 
 export default function Multiplayer() {
-  const [availableGames, setAvailableGames] = useState<[string, GameState][]>(
-    []
-  );
+  const [availableGames, setAvailableGames] = useState<[string, GameState][]>([]);
   const [currentBoard, setCurrentBoard] = useState(1);
   const [gameState, setGameState] = useState<GameState | null>(null);
   const [gameId, setGameId] = useState<string | null>(null);
@@ -78,29 +69,19 @@ export default function Multiplayer() {
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
         setUser(authUser);
-        if (user) {
-          const email = user.email;
-          if (email) setEmail(email.substring(0, email.indexOf("@")));
-        }
+        const email = authUser.email;
+        if (email) setEmail(email.substring(0, email.indexOf("@")));
       }
     });
     return () => unsubscribe();
-  }, [colRef, user]);
+  }, [colRef]);
 
   useEffect(() => {
-    if (
-      gameState &&
-      gameState.questions &&
-      userAns === gameState.questions[questionsSolved].ans
-    ) {
+    if (gameState && gameState.questions && userAns === gameState.questions[questionsSolved].ans) {
       setQuestionsSolved(questionsSolved + 1);
-      const playerPositionRef = ref(
-        database,
-        `games/${gameId}/players/${playerId}`
-      );
+      const playerPositionRef = ref(database, `games/${gameId}/players/${playerId}`);
       update(playerPositionRef, { questionsSolved: questionsSolved + 1 });
       setUserAns("");
-      console.log(questionsSolved);
     }
   }, [userAns]);
 
@@ -122,7 +103,6 @@ export default function Multiplayer() {
   }, [refresh]);
 
   const handleCreateGame = async () => {
-    console.log(currentBoard);
     const newGameId = await createGameSession();
     await joinGameSession(newGameId, playerId, playerData);
     setGameId(newGameId);
@@ -166,7 +146,7 @@ export default function Multiplayer() {
       setStopTimer(false);
       setStartTime(Date.now()); // Reset the startTime to the current timestamp
       setElapsedTime(0);
-    } else if (gameState && gameState.state == "ended") {
+    } else if (gameState && gameState.state === "ended") {
       setStopTimer(true);
       setStartTime(Date.now()); // Reset the startTime to the current timestamp
       setElapsedTime(0);
@@ -175,13 +155,11 @@ export default function Multiplayer() {
       update(gameRef, { state: "ended" });
       gameState
         ? Object.keys(gameState.players).map((playerIdd) => {
-            gameState.players[playerIdd]?.questionsSolved === 6
-              ? setWinner(playerIdd)
-              : null;
+            gameState.players[playerIdd]?.questionsSolved === 6 ? setWinner(playerIdd) : null;
           })
         : null;
       remove(gameRef);
-    } else if (gameState && gameState.state == "end_clicked") {
+    } else if (gameState && gameState.state === "end_clicked") {
       setIndex(0);
     }
   }, [gameState?.state]);
@@ -209,9 +187,7 @@ export default function Multiplayer() {
       update(gameRef, { state: "ended" });
       gameState
         ? Object.keys(gameState.players).map((playerId) => {
-            gameState.players[playerId]?.questionsSolved === 6
-              ? setWinner(playerId)
-              : null;
+            gameState.players[playerId]?.questionsSolved === 6 ? setWinner(playerId) : null;
           })
         : null;
       setTimeout(() => {
@@ -240,7 +216,7 @@ export default function Multiplayer() {
         >
           Project Sense
         </button>
-        {index == 0 ? (
+        {index === 0 ? (
           <div className="gap-y-8 md:gap-y-4 -mt-8 md:mt-0 font-mono text-white text-[3.25rem] md:text-8xl font-extrabold items-start justify-center flex flex-col fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11/12 md:w-auto">
             <button
               className="relative group "
@@ -264,16 +240,13 @@ export default function Multiplayer() {
               <span className="absolute -bottom-1 left-0 w-0 h-2 bg-white transition-all group-hover:w-full duration-700"></span>
             </button>
           </div>
-        ) : index == 1 ? (
+        ) : index === 1 ? (
           <div>
             <button
               onClick={() => {
                 setIndex(0);
                 if (gameId) {
-                  const playerRef = ref(
-                    database,
-                    `games/${gameId}/players/${playerId}`
-                  );
+                  const playerRef = ref(database, `games/${gameId}/players/${playerId}`);
                   remove(playerRef); // Remove the player from the game session
                   setGameState(null);
                   setGameId(null);
@@ -337,9 +310,7 @@ export default function Multiplayer() {
                           </label>
                           <progress
                             className="progress progress-info w-72 h-4"
-                            value={
-                              gameState.players[playerId]?.questionsSolved - 1
-                            }
+                            value={gameState.players[playerId]?.questionsSolved - 1}
                             max="5"
                           ></progress>
                         </div>
@@ -355,10 +326,7 @@ export default function Multiplayer() {
                     if (gameId) {
                       const playerRef = ref(
                         database,
-                        `games/${gameId}/players/${playerId.replace(
-                          /[.#$[\]]/g,
-                          "_"
-                        )}`
+                        `games/${gameId}/players/${playerId.replace(/[.#$[\]]/g, "_")}`
                       );
                       remove(playerRef); // Remove the player from the game session
                       setGameState(null);
@@ -388,11 +356,7 @@ export default function Multiplayer() {
                   <>
                     <div className={`text-center md:text-left ml-[0px] `}>
                       <MathComponent
-                        math={
-                          gameState.questions
-                            ? gameState.questions[questionsSolved].body
-                            : ""
-                        }
+                        math={gameState.questions ? gameState.questions[questionsSolved].body : ""}
                       />
                     </div>
                     <div className="text-center md:text-left">=</div>
@@ -414,10 +378,7 @@ export default function Multiplayer() {
                   onClick={() => {
                     setIndex(0);
                     if (gameId) {
-                      const playerRef = ref(
-                        database,
-                        `games/${gameId}/players/${playerId}`
-                      );
+                      const playerRef = ref(database, `games/${gameId}/players/${playerId}`);
                       remove(playerRef); // Remove the player from the game session
                       setGameState(null);
                       setGameId(null);
@@ -440,10 +401,7 @@ export default function Multiplayer() {
                   onClick={() => {
                     setIndex(0);
                     if (gameId) {
-                      const playerRef = ref(
-                        database,
-                        `games/${gameId}/players/${playerId}`
-                      );
+                      const playerRef = ref(database, `games/${gameId}/players/${playerId}`);
                       remove(playerRef); // Remove the player from the game session
                       setGameState(null);
                       setGameId(null);

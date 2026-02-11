@@ -2,23 +2,40 @@
 import { useState } from "react";
 import { SpinnerDotted } from "spinners-react";
 import { FaPaperPlane } from "react-icons/fa";
-import { test1, test2 } from "./data";
-import { useResetProjection } from "framer-motion";
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY);
+import { test2 } from "./data";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-import { updateGeneratedQuestions } from "../components/questionCount";
+const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
+
+import { updateGeneratedQuestions } from "../components/QuestionCount";
+
+interface TestQuestion {
+  [key: string]: string;
+}
+
+interface FeedbackItem {
+  question: number;
+  userAnswer: string;
+  correctAnswer: string;
+  isCorrect: boolean;
+}
+
+interface GradeResult {
+  number_correct: number;
+  score: number;
+  feedback: FeedbackItem[];
+}
 
 function Gemini() {
-  const [text, setText] = useState(null);
+  const [text, setText] = useState<Record<string, string> | null>(null);
   const [generating, setGenerating] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [results, setResults] = useState(null);
-  const [answers, setAnswers] = useState(new Array(40).fill(""));
-  const [answerKey, setAnswerKey] = useState(null);
+  const [results, setResults] = useState<GradeResult | null>(null);
+  const [answers, setAnswers] = useState<string[]>(new Array(40).fill(""));
+  const [answerKey, setAnswerKey] = useState<Record<string, string> | null>(null);
   const [lastQuestion, setLastQuestion] = useState(0);
 
-  const handleInputChange = (index) => (event) => {
+  const handleInputChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const newAnswers = [...answers];
     newAnswers[index] = event.target.value;
     setAnswers(newAnswers);
@@ -37,24 +54,24 @@ function Gemini() {
       3. Include units where specified
       4. For base conversions, write the answer in the target base
       5. For word problems, provide the exact numerical answer
-      
+
       Here is the list of math problems: ${JSON.stringify(text)}`;
       const result = await model.generateContent([prompt1]);
       const accumulatedText = result.response.text();
-      console.log("Answer key:", accumulatedText);
       const json = JSON.parse(accumulatedText);
       setAnswerKey(json);
 
       // Convert user answers to a more comparable format
-      const userJson = answers.reduce((obj, item, index) => {
-        if (item.trim() !== "") {
-          obj[index + 1] = item.trim();
-          setLastQuestion(index + 1);
-        }
-        return obj;
-      }, {});
-
-      console.log("User answers:", userJson);
+      const userJson: Record<string, string> = answers.reduce(
+        (obj: Record<string, string>, item: string, index: number) => {
+          if (item.trim() !== "") {
+            obj[index + 1] = item.trim();
+            setLastQuestion(index + 1);
+          }
+          return obj;
+        },
+        {}
+      );
 
       // Use AI to compare answers and calculate score
       const prompt2 = `You are grading a UIL Number Sense test. Compare the user's answers to the correct answers and return a JSON object with:
@@ -65,26 +82,24 @@ function Gemini() {
          - userAnswer: the user's answer
          - correctAnswer: the correct answer
          - isCorrect: boolean indicating if the answer is correct
-      
+
       Consider answers correct if they match exactly or are equivalent (e.g., "1/2" and "0.5" are equivalent).
-      
+
       Answer key: ${JSON.stringify(json)}
       User's Answers: ${JSON.stringify(userJson)}
       Last Question Answered: ${lastQuestion}`;
 
       const grade = await model.generateContent([prompt2]);
       const gradeText = grade.response.text();
-      console.log("Grading result:", gradeText);
       const gradeResult = JSON.parse(gradeText);
       setResults(gradeResult);
     } catch (error) {
-      console.error("Error generating content:", error);
       setSubmitting(false);
     }
   };
 
   // Helper function to compare answers
-  function compareAnswers(userAnswer, correctAnswer) {
+  function compareAnswers(userAnswer: string, correctAnswer: string): boolean {
     // Remove spaces and convert to lowercase for comparison
     const user = userAnswer.trim().toLowerCase();
     const correct = correctAnswer.trim().toLowerCase();
@@ -110,7 +125,7 @@ function Gemini() {
   }
 
   // Helper function to convert mixed numbers and decimals to fractions
-  function convertToFraction(str) {
+  function convertToFraction(str: string): string | null {
     // Handle mixed numbers (e.g., "1 1/2")
     const mixedMatch = str.match(/^(\d+)\s+(\d+)\/(\d+)$/);
     if (mixedMatch) {
@@ -139,12 +154,12 @@ function Gemini() {
   }
 
   // Helper function to find Greatest Common Divisor
-  function findGCD(a, b) {
+  function findGCD(a: number, b: number): number {
     return b === 0 ? a : findGCD(b, a % b);
   }
 
   // Helper function to calculate score
-  function calculateScore(lastQuestion, correctCount) {
+  function calculateScore(lastQuestion: number, correctCount: number): number {
     if (lastQuestion === 0) return 0;
     return lastQuestion * 5 - 9 * (lastQuestion - correctCount);
   }
@@ -180,11 +195,9 @@ function Gemini() {
       Return the test as a JSON object where keys are question numbers and values are the questions.`;
       const result = await model.generateContent([prompt]);
       const accumulatedText = result.response.text();
-      console.log(accumulatedText);
       const json = JSON.parse(accumulatedText);
       setText(json);
     } catch (error) {
-      console.error("Error generating content:", error);
       setGenerating(false);
     } finally {
       setGenerating(false);
@@ -195,15 +208,8 @@ function Gemini() {
     <main className="w-full h-screen bg-orange-300 items-center flex justify-center">
       {generating ? (
         <div className="flex flex-col items-center gap-4">
-          <SpinnerDotted
-            color="white"
-            size={150}
-            thickness={150}
-            enabled={generating}
-          />
-          <p className="text-white text-xl">
-            Generating UIL Number Sense Test...
-          </p>
+          <SpinnerDotted color="white" size={150} thickness={150} enabled={generating} />
+          <p className="text-white text-xl">Generating UIL Number Sense Test...</p>
         </div>
       ) : (
         <button
@@ -221,23 +227,17 @@ function Gemini() {
   ) : submitting ? (
     !(results === null) ? (
       <main className="font-bold font-mono overflow-y-clip w-full h-screen bg-orange-300 text-white">
-        <h1 className="text-center p-6 text-4xl md:text-6xl border-b-2 border-white">
-          Answer Key
-        </h1>
+        <h1 className="text-center p-6 text-4xl md:text-6xl border-b-2 border-white">Answer Key</h1>
         <div className="w-full h-full flex flex-row justify-center">
           <div className="w-[70%] text-2xl md:text-4xl h-full flex flex-row justify-between items-center">
             <div className="w-[50%] flex flex-col h-full border-r-2 border-white overflow-y-auto">
               <h1 className="p-4 text-center">Your Answers</h1>
-              {results?.feedback?.map((item, index) => (
+              {results?.feedback?.map((item: FeedbackItem, index: number) => (
                 <div key={index} className="p-2 text-center">
                   <p className="text-lg">
                     {item.question}. {text[item.question]}
                   </p>
-                  <p
-                    className={`${
-                      item.isCorrect ? "text-green-500" : "text-red-500"
-                    }`}
-                  >
+                  <p className={`${item.isCorrect ? "text-green-500" : "text-red-500"}`}>
                     Your answer: {item.userAnswer}
                   </p>
                 </div>
@@ -247,7 +247,7 @@ function Gemini() {
             <div className="w-[50%] flex flex-col h-full overflow-y-auto">
               <h1 className="p-4 text-center">Correct Answers</h1>
               {answerKey &&
-                Object.entries(answerKey).map(([key, item], index) => (
+                Object.entries(answerKey).map(([key, item], index: number) => (
                   <div key={index} className="p-2 text-center">
                     <p className="text-lg">
                       {index + 1}. {text[index + 1]}
@@ -260,9 +260,7 @@ function Gemini() {
           </div>
           <div className="border-l-2 border-white w-[30%] text-2xl md:text-4xl font-bold h-full flex flex-col items-center justify-center">
             <label className="-mt-64 md:mt-0 underline mb-4">Score</label>
-            <label className="text-4xl md:text-6xl">
-              {results?.score || 0}
-            </label>
+            <label className="text-4xl md:text-6xl">{results?.score || 0}</label>
             <label className="text-xl md:text-2xl text-center">
               Questions Correct: {results?.number_correct || 0}
             </label>
@@ -275,22 +273,14 @@ function Gemini() {
     ) : (
       <main className="w-full h-screen bg-orange-300 items-center flex justify-center">
         <div className="flex flex-col items-center gap-4">
-          <SpinnerDotted
-            color="white"
-            size={150}
-            thickness={150}
-            enabled={generating}
-          />
+          <SpinnerDotted color="white" size={150} thickness={150} enabled={generating} />
           <p className="text-white text-xl">Grading your test...</p>
         </div>
       </main>
     )
   ) : (
     <main className="text-white text-2xl font-mono w-full overflow-y-scroll h-screen bg-orange-300 ">
-      <button
-        className="flex mx-auto p-4 text-4xl md:text-6xl font-semibold"
-        onClick={run}
-      >
+      <button className="flex mx-auto p-4 text-4xl md:text-6xl font-semibold" onClick={run}>
         UIL Number Sense Practice
       </button>
       <label
@@ -301,7 +291,7 @@ function Gemini() {
       </label>
       <div className="flex w-[90%] md:w-[80%] flex-col mx-auto items-start font-bold text-lg md:text-3xl">
         {text &&
-          Object.entries(text).map(([key, item], index) => (
+          Object.entries(text).map(([key, item], index: number) => (
             <div className="w-full flex flex-row items-center" key={index}>
               {item ? (
                 <>

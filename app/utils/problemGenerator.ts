@@ -545,10 +545,7 @@ function nEstim() {
   }
 
   return {
-    body:
-      operation === "multiply"
-        ? `${num1} \\times ${num2}`
-        : `${num1} \\div ${num2}`,
+    body: operation === "multiply" ? `${num1} \\times ${num2}` : `${num1} \\div ${num2}`,
     ans: correctAnswer,
   };
 }
@@ -618,9 +615,7 @@ function fractodec() {
     answer = (numerator / denominator).toString().replace(/^0\./, ".");
   } else {
     answer = decimalValue.includes(".")
-      ? decimalValue
-          .substring(0, decimalValue.indexOf(".") + 4)
-          .replace(/^0+/, "")
+      ? decimalValue.substring(0, decimalValue.indexOf(".") + 4).replace(/^0+/, "")
       : decimalValue + ".000";
   }
 
@@ -677,8 +672,7 @@ function decToFrac() {
   percentage = percentage.replace(/\.00$/, "");
 
   const isRepeating =
-    decimal.toString().includes("...") ||
-    examples.some((e) => e.decimal === decimal);
+    decimal.toString().includes("...") || examples.some((e) => e.decimal === decimal);
 
   const ans = isRepeating ? fraction : percentage;
 
@@ -1251,10 +1245,8 @@ function complexNumber() {
   let dFormatted = d >= 0 ? `+ ${d}i` : `- ${Math.abs(d)}i`;
   return {
     body: small
-      ? `(${a} ${bFormatted})(${c} ${dFormatted})` +
-        " \\newline \\text{ a + b }"
-      : `(${a} ${bFormatted})(${c} ${dFormatted})` +
-        "  \\text{ = a + bi. a + b }",
+      ? `(${a} ${bFormatted})(${c} ${dFormatted})` + " \\newline \\text{ a + b }"
+      : `(${a} ${bFormatted})(${c} ${dFormatted})` + "  \\text{ = a + bi. a + b }",
     ans: "" + sum,
   };
 }
@@ -1280,8 +1272,7 @@ function unitConversion() {
   const integerPart = Math.floor(convertedValue);
   let fractionalPart = convertedValue - integerPart;
 
-  let exactFractionalPart =
-    validEndings.find((v) => Math.abs(fractionalPart - v) < 0.0001) ?? 0;
+  let exactFractionalPart = validEndings.find((v) => Math.abs(fractionalPart - v) < 0.0001) ?? 0;
   convertedValue = integerPart + exactFractionalPart;
 
   const formattedValue = Number.isInteger(convertedValue)
@@ -1571,8 +1562,7 @@ function harmonicMean() {
 
 function estimation() {
   function cuberoot() {
-    let hugeNumber =
-      Math.floor(Math.random() * (Math.pow(10, 9) - 100000 + 1)) + 100000;
+    let hugeNumber = Math.floor(Math.random() * (Math.pow(10, 9) - 100000 + 1)) + 100000;
     let cubeRoot = Math.cbrt(hugeNumber);
     return {
       body: `³√${hugeNumber}`,
@@ -1623,10 +1613,7 @@ function aboverc() {
   ): number {
     let result;
     do {
-      result = getRandomInt(
-        Math.max(min, base - range),
-        Math.min(max, base + range)
-      );
+      result = getRandomInt(Math.max(min, base - range), Math.min(max, base + range));
     } while (result === base || gcd(base, result) !== 1);
     return result;
   }
@@ -1650,9 +1637,7 @@ function aboverc() {
   let integerPart = Math.floor(numerator / c);
   let remainder = numerator % c;
   let mixedNumber =
-    integerPart > 0
-      ? "" + integerPart + " " + remainder + "/" + c
-      : "" + remainder + "/" + c;
+    integerPart > 0 ? "" + integerPart + " " + remainder + "/" + c : "" + remainder + "/" + c;
 
   return {
     body: body,

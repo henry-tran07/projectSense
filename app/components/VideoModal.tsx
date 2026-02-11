@@ -28,12 +28,7 @@ export const VideoModal: React.FC<videoModalProps> = ({ trick }) => {
       >
         ?
       </button>
-      <Modal
-        size={{ base: "xs", md: "3xl" }}
-        isOpen={isOpen}
-        isCentered
-        onClose={onClose}
-      >
+      <Modal size={{ base: "xs", md: "3xl" }} isOpen={isOpen} isCentered onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader
@@ -65,10 +60,7 @@ export const VideoModal: React.FC<videoModalProps> = ({ trick }) => {
                   height: "100%",
                 }}
               >
-                <source
-                  src={`/project sense vids/${videoMap[trick]}`}
-                  type="video/mp4"
-                />
+                <source src={`/project sense vids/${videoMap[trick]}`} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
             </div>

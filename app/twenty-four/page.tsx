@@ -24,7 +24,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (currentComb.length == 1 && currentComb[0] === "24") {
+    if (currentComb.length === 1 && currentComb[0] === "24") {
       const temp = combs[Math.floor(Math.random() * combs.length)].split(" ");
       setCurrentComb(temp);
       setSave(temp);
@@ -34,27 +34,25 @@ export default function Home() {
   }, [currentComb]);
 
   useEffect(() => {
-    if (selectedNums.length === 2 && symbol != "") {
+    if (selectedNums.length === 2 && symbol !== "") {
       try {
         // Evaluate the expression in ans
-        console.log(selectedNums)
-        const evalResult = evaluate(currentComb[selectedNums[0]] + symbol + currentComb[selectedNums[1]]);
-        console.log(evalResult);
+        const evalResult = evaluate(
+          currentComb[selectedNums[0]] + symbol + currentComb[selectedNums[1]]
+        );
 
         // Update currentComb by filtering out selected indices
-        const newComb = currentComb.filter(
-          (_, index) => !selectedNums.includes(index)
-        );
+        const newComb = currentComb.filter((_, index) => !selectedNums.includes(index));
         setCurrentComb([...newComb, String(evalResult)]);
 
         // Clear selectedNums and ans after evaluation
         setSelectedNums([]);
         setSymbol(""); // Reset ans to an empty string after evaluation
       } catch (error) {
-        console.log(error);
+        console.error("Evaluation error:", error);
       }
     }
-  }, [selectedNums, symbol])
+  }, [selectedNums, symbol]);
 
   return (
     <main className="w-screen h-screen bg-orange-300">
@@ -69,7 +67,6 @@ export default function Home() {
       <div className="w-full text-center  pt-16 md:pt-8 text-white text-5xl md:text-6xl font-extrabold underline">
         24
       </div>
-      {/* <TimerComponent secondsLeft={secondsLeft} score={score} setScore={setScore} setSecondsLeft={setSecondsLeft} /> */}
       <div className="animate-popUp ease-in-out duration-75 grid grid-cols-2 gap-x-12 gap-y-10 fixed top-1/2 left-[47%] md:left-[50%] transform -translate-x-1/2 md:-translate-y-[60%] -translate-y-[80%] items-center justify-center">
         {currentComb.map((value: string, index: number) => (
           <button
@@ -77,16 +74,17 @@ export default function Home() {
             onClick={() => {
               if (selectedNums.includes(index)) {
                 // Remove the value from the array if it is included
-                const newSelectedNums = selectedNums.filter(num => num !== index);
+                const newSelectedNums = selectedNums.filter((num) => num !== index);
                 setSelectedNums(newSelectedNums);
               } else if (selectedNums.length < 2) {
                 setSelectedNums([...selectedNums, index]);
               }
             }}
-            className={` overflow-clip w-28 h-28 md:h-36 rounded-2xl md:w-40 shadow-lg text-4xl md:text-7xl font-extrabold ${selectedNums.includes(index)
-              ? "bg-gray-700 text-white"
-              : "hover:bg-gray-200 bg-white text-black"
-              }`}
+            className={` overflow-clip w-28 h-28 md:h-36 rounded-2xl md:w-40 shadow-lg text-4xl md:text-7xl font-extrabold ${
+              selectedNums.includes(index)
+                ? "bg-gray-700 text-white"
+                : "hover:bg-gray-200 bg-white text-black"
+            }`}
           >
             <MathComponent math={value} />
           </button>
@@ -105,8 +103,7 @@ export default function Home() {
       <div className="flex flex-col gap-y-8 fixed top-1/2 left-[90%] transform -translate-x-1/2 -translate-y-[60%]">
         <button
           onClick={() => {
-            const temp =
-              combs[Math.floor(Math.random() * combs.length)].split(" ");
+            const temp = combs[Math.floor(Math.random() * combs.length)].split(" ");
             setCurrentComb(temp);
             setSave(temp);
             setSelectedNums([]);
@@ -122,9 +119,9 @@ export default function Home() {
           <button
             key={index}
             onClick={() => {
-              setSymbol(value === "x" ? "*" : value === "÷" ? "/" : value)
+              setSymbol(value === "x" ? "*" : value === "÷" ? "/" : value);
             }}
-            className={` w-20 h-20 md:w-28 md:h-28 rounded-3xl text-2xl md:text-5xl font-extrabold  border-black border-4 ${value === symbol || value === "x" && symbol === "*" || value === "÷" && symbol === "/" ? "bg-gray-700 text-white" : "bg-white hover:bg-gray-200 text-black"}`}
+            className={` w-20 h-20 md:w-28 md:h-28 rounded-3xl text-2xl md:text-5xl font-extrabold  border-black border-4 ${value === symbol || (value === "x" && symbol === "*") || (value === "÷" && symbol === "/") ? "bg-gray-700 text-white" : "bg-white hover:bg-gray-200 text-black"}`}
           >
             <MathComponent math={value} />
           </button>

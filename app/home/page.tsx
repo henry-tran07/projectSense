@@ -11,9 +11,9 @@ import { problemSet } from "../utils/problemGenerator";
 import MathComponent from "../components/MathComponent";
 import { loadMore } from "../components/loadMore";
 import { useInView } from "react-intersection-observer";
-import { SettingsModal } from "../components/settingsModal";
-import { VideoModal } from "../components/videoModal";
-import { GameModal } from "../components/gameModal";
+import { SettingsModal } from "../components/SettingsModal";
+import { VideoModal } from "../components/VideoModal";
+import { GameModal } from "../components/GameModal";
 import { FaRandom } from "react-icons/fa";
 import { GiRetroController } from "react-icons/gi";
 import { SiVitest } from "react-icons/si";
@@ -46,11 +46,10 @@ export default function Home() {
     }
   }, [inView]);
 
-  const updateUser = async (userId: string, newData: any) => {
+  const updateUser = async (userId: string, newData: Record<string, boolean>) => {
     const userRef = doc(db, "users", userId);
     try {
       await updateDoc(userRef, newData);
-      console.log("Document successfully updated!");
     } catch (error) {
       console.error("Error updating document: ", error);
     }
@@ -69,21 +68,19 @@ export default function Home() {
     const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
       if (authUser) {
         setUser(authUser);
-        if (user) {
-          const email = user.email;
-          if (email) {
-            const docRef = doc(colRef, email);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-              const data = docSnap.data();
-              await setQuestionLimited(data["questionLimited"]);
-              await setRightLeft(data["rightLeft"]);
-              await setAutoEnter(data["autoEnter"]);
-              setLoading(false);
-            }
-          } else {
-            console.error("Email is null or undefined");
+        const email = authUser.email;
+        if (email) {
+          const docRef = doc(colRef, email);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setQuestionLimited(data.questionLimited);
+            setRightLeft(data.rightLeft);
+            setAutoEnter(data.autoEnter);
+            setLoading(false);
           }
+        } else {
+          console.error("Email is null or undefined");
         }
       } else {
         setUser(null);
@@ -91,7 +88,7 @@ export default function Home() {
       }
     });
     return () => unsubscribe();
-  }, [colRef, user]);
+  }, [colRef]);
 
   return (
     // <MathJaxContext>
@@ -125,8 +122,7 @@ export default function Home() {
           </div>
         </div>
         <div className="text-white font-bold text-sm my-2 p-2 text-center md:text-base">
-          Note: Timer starts once a bubble is pressed. Solve 5 questions as fast
-          as you can.
+          Note: Timer starts once a bubble is pressed. Solve 5 questions as fast as you can.
         </div>
         <div className="flex flex-row justify-center gap-x-2 ">
           <button
@@ -150,10 +146,7 @@ export default function Home() {
         </div>
         <div className=" md:mb-28 mb-4 text-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-3 gap-y-8 mt-4 md:gap-y-16">
           {keys.map((value) => (
-            <div
-              key={value}
-              className=" animate-slideUp h-23 md:h-24 overflow-y-hidden"
-            >
+            <div key={value} className=" animate-slideUp h-23 md:h-24 overflow-y-hidden">
               <div
                 className={`my-auto h-full duration-200 ease-in-out mx-12 md:mx-8 text-center items-center flex rounded-2xl justify-center text-3xl font-semibold `}
               >
@@ -172,15 +165,11 @@ export default function Home() {
         <hr ref={ref} className="my-4"></hr>
         <div className=" overflow-x-hidden fixed bottom-0 shadow-inner mt-auto text-center flex font-semibold flex-row py-2 text-[.6rem] md:text-xl font-sans md:py-4 text-orange-300 w-full  bg-white items-center justify-center transition-all duration-500 ease-in-out">
           <p>
-            Built for <b>UIL Number Sense</b> by{" "}
-            <b>Townview TAG&apos;s UIL Team 2025</b>&apos;{" "}
+            Built for <b>UIL Number Sense</b> by <b>Townview TAG&apos;s UIL Team 2025</b>&apos;{" "}
           </p>
           <p className="md:pb-1 px-1 font-normal">|</p>
           <p>
-            <a
-              className="text-[1rem] md:text-2xl"
-              href="https://forms.gle/yneT5vZaBSaLX1vf8"
-            >
+            <a className="text-[1rem] md:text-2xl" href="https://forms.gle/yneT5vZaBSaLX1vf8">
               <MdOutlineHelpOutline className="hover:scale-105" />
             </a>
           </p>

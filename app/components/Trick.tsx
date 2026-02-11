@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import { problemFunction } from "../utils/problemGenerator";
 import MathComponent from "./MathComponent";
-import {
-  updateAnsweredQuestions,
-  updateGeneratedQuestions,
-} from "@/app/components/questionCount";
+import { updateAnsweredQuestions, updateGeneratedQuestions } from "@/app/components/QuestionCount";
 
 type TrickProps = {
   trick: string;
@@ -12,8 +9,8 @@ type TrickProps = {
   setQuestion: (value: React.SetStateAction<number>) => void;
   questionLimited: boolean;
   rightLeft: boolean;
-  setQuestionTiming: (value: React.SetStateAction<any>) => void;
-  setStoredQuestion: (value: React.SetStateAction<any>) => void;
+  setQuestionTiming: (value: React.SetStateAction<string[]>) => void;
+  setStoredQuestion: (value: React.SetStateAction<string[]>) => void;
 };
 
 const Trick: React.FC<TrickProps> = ({
@@ -61,17 +58,11 @@ const Trick: React.FC<TrickProps> = ({
 
   useEffect(() => {
     if (trick === "13" || trick === "44") {
-      if (
-        Math.abs(Number(userAns) - Number(pair["ans"])) <=
-        Number(pair["ans"]) * 0.05
-      ) {
+      if (Math.abs(Number(userAns) - Number(pair["ans"])) <= Number(pair["ans"]) * 0.05) {
         if (randomizer) trick = String(Math.floor(Math.random() * 52) + 1);
-        setQuestionTiming((prevTimes: any) => [
-          ...prevTimes,
-          formatTime(elapsedTime),
-        ]);
+        setQuestionTiming((prevTimes: string[]) => [...prevTimes, formatTime(elapsedTime)]);
         setStartTime(Date.now());
-        setStoredQuestion((prevTimes: any) => [
+        setStoredQuestion((prevTimes: string[]) => [
           ...prevTimes,
           pair["body"] + " = " + pair["ans"],
         ]);
@@ -82,12 +73,9 @@ const Trick: React.FC<TrickProps> = ({
       }
     } else if (userAns === pair["ans"]) {
       if (randomizer) trick = String(Math.floor(Math.random() * 52) + 1);
-      setQuestionTiming((prevTimes: any) => [
-        ...prevTimes,
-        formatTime(elapsedTime),
-      ]);
+      setQuestionTiming((prevTimes: string[]) => [...prevTimes, formatTime(elapsedTime)]);
       setStartTime(Date.now());
-      setStoredQuestion((prevTimes: any) => [
+      setStoredQuestion((prevTimes: string[]) => [
         ...prevTimes,
         pair["body"] + " = " + pair["ans"],
       ]);
@@ -123,9 +111,7 @@ const Trick: React.FC<TrickProps> = ({
     >
       {question < 5 ? (
         <>
-          <div
-            className={`text-center md:text-left ml-[0px] w-full md:w-auto `}
-          >
+          <div className={`text-center md:text-left ml-[0px] w-full md:w-auto `}>
             <MathComponent math={pair["body"]} />
           </div>
           <div className="text-center md:text-left w-full md:w-auto">=</div>
@@ -138,17 +124,11 @@ const Trick: React.FC<TrickProps> = ({
               if (rightLeft)
                 if (e.target.value.length < userAns.length) {
                   setUserAns(userAns.substring(1));
-                } else
-                  setUserAns(
-                    e.target.value.substring(e.target.value.length - 1) +
-                      userAns
-                  );
+                } else setUserAns(e.target.value.substring(e.target.value.length - 1) + userAns);
               else setUserAns(e.target.value);
             }}
           />
-          <label className="text-[3.0rem] mt-2 md:mt-0 w-full md:w-auto text-center">
-            {type}
-          </label>
+          <label className="text-[3.0rem] mt-2 md:mt-0 w-full md:w-auto text-center">{type}</label>
         </>
       ) : null}
     </div>

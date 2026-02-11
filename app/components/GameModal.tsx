@@ -27,12 +27,7 @@ export const GameModal: React.FC<gameModalProps> = () => {
         <IoGameControllerOutline className="text-3xl md:text-4xl hover:text-orange-400 text-orange-300" />
       </button>
 
-      <Modal
-        size={{ base: "xs", md: "3xl" }}
-        isOpen={isOpen}
-        isCentered={true}
-        onClose={onClose}
-      >
+      <Modal size={{ base: "xs", md: "3xl" }} isOpen={isOpen} isCentered={true} onClose={onClose}>
         <ModalOverlay className="" />
         <ModalContent className="w-4/5 h-auto md:max-w-3xl md:h-auto">
           <ModalHeader

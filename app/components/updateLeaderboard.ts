@@ -33,13 +33,11 @@ export default async function updateLeaderboard(
 
     const oldTime = userData[trick];
     const newTime = time;
-    const update = isFasterTime(oldTime, newTime)
+    const update = isFasterTime(oldTime, newTime);
 
     if (update) {
       batch.update(userRef, { [trick]: time });
-      const scoresSnap = (await getDoc(
-        scoresRef
-      )) as DocumentSnapshot<Leaderboard>;
+      const scoresSnap = (await getDoc(scoresRef)) as DocumentSnapshot<Leaderboard>;
       if (scoresSnap.exists()) {
         const scoresData = scoresSnap.data();
         const scoreList = { ...scoresData?.scores, [email]: time };
@@ -76,8 +74,8 @@ function isValidTime(newTime: string) {
 }
 
 function isFasterTime(oldTime: string, newTime: string): boolean {
-  if(newTime == "00:00.00") return false;
-  if(!isValidTime(newTime)) return false;
+  if (newTime === "00:00.00") return false;
+  if (!isValidTime(newTime)) return false;
   if (!oldTime) return true;
   const parseTime = (time: string) => {
     const [min, sec] = time.split(":");

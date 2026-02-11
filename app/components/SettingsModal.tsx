@@ -20,7 +20,7 @@ interface User {
 interface SettingsModalProps {
   loading: boolean;
   rightLeft: boolean;
-  updateUser: (userId: string, newData: any) => Promise<void>;
+  updateUser: (userId: string, newData: Record<string, boolean>) => Promise<void>;
   user: User | null;
   setRightLeft: (value: boolean) => void;
   questionLimited: boolean;
@@ -48,12 +48,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         <IoMdSettings className="text-4xl hover:text-orange-400 text-orange-300" />
       </button>
 
-      <Modal
-        isCentered={true}
-        size={["xs", "md", "xl"]}
-        isOpen={isOpen}
-        onClose={onClose}
-      >
+      <Modal isCentered={true} size={["xs", "md", "xl"]} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent className="h-auto md:h-auto rounded-2xl">
           <ModalHeader
@@ -78,11 +73,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   marginTop={""}
                   className="mx-auto items-center justify-center"
                 >
-                  <FormLabel
-                    fontSize={["xl", "md", "2rem"]}
-                    htmlFor="email-alerts"
-                    mb={[2, 0, 0]}
-                  >
+                  <FormLabel fontSize={["xl", "md", "2rem"]} htmlFor="email-alerts" mb={[2, 0, 0]}>
                     Answer Right to Left
                   </FormLabel>
                   <Switch
@@ -105,11 +96,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   marginTop={2}
                   className="mx-auto items-center justify-center"
                 >
-                  <FormLabel
-                    fontSize={["xl", "md", "2rem"]}
-                    htmlFor="email-alerts"
-                    mb="0"
-                  >
+                  <FormLabel fontSize={["xl", "md", "2rem"]} htmlFor="email-alerts" mb="0">
                     Infinite Questions
                   </FormLabel>
                   <Switch

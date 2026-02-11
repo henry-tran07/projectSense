@@ -2,13 +2,13 @@
 import React, { useState, useEffect } from "react";
 import { FaInfinity } from "react-icons/fa";
 import { VscDebugRestart } from "react-icons/vsc";
-import Trick from "@/app/components/trick";
+import Trick from "@/app/components/Trick";
 import { auth, db } from "@/firebase/config";
 import { User } from "firebase/auth";
 import { collection, doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
 import { problemSet } from "@/app/utils/problemGenerator";
-import updateLeaderboard from "@/app/components/updateLeadeboard";
+import updateLeaderboard from "@/app/components/updateLeaderboard";
 import MathComponent from "@/app/components/MathComponent";
 
 const Home = ({ params }: { params: { id: string } }) => {
@@ -24,8 +24,8 @@ const Home = ({ params }: { params: { id: string } }) => {
   const colRef = collection(db, "users");
   const [questions, setQuestions] = useState(0);
   const [stopTimer, setStopTimer] = useState(false);
-  const [questionTimes, setQuestionTimes] = useState<any>([]);
-  const [storedQuestions, setStoredQuestions] = useState<any>([]);
+  const [questionTimes, setQuestionTimes] = useState<string[]>([]);
+  const [storedQuestions, setStoredQuestions] = useState<string[]>([]);
 
   useEffect(() => {
     if (params.id === "randomizer") setRandomizer(true);
@@ -75,23 +75,10 @@ const Home = ({ params }: { params: { id: string } }) => {
       setStopTimer(true);
       if (user) {
         const email: string = user.email ? user.email : "";
-        updateLeaderboard(
-          email,
-          db,
-          Number(params.id),
-          formatTime(elapsedTime)
-        );
+        updateLeaderboard(email, db, Number(params.id), formatTime(elapsedTime));
       }
     }
-  }, [
-    questions,
-    questionLimited,
-    user?.email,
-    params.id,
-    elapsedTime,
-    user,
-    randomizer,
-  ]);
+  }, [questions, questionLimited, user?.email, params.id, elapsedTime, user, randomizer]);
 
   const formatTime = (time: number) => {
     const milliseconds = Math.floor((time % 1000) / 10);
@@ -103,7 +90,7 @@ const Home = ({ params }: { params: { id: string } }) => {
       .padStart(2, "0")}.${milliseconds.toString().padStart(2, "0")}`;
   };
 
-  function getFirstNonZeroIndex(str: any) {
+  function getFirstNonZeroIndex(str: string) {
     for (let i = 0; i < str.length; i++) {
       if (str[i] !== "0" && str[i] !== ":") {
         return i;
@@ -114,14 +101,14 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   function averageTimeInSeconds(totalTime: string, numberOfItems: number) {
     // Helper function to convert time string (MM:ss.mm) to total seconds
-    function timeStringToSeconds(timeString: any) {
+    function timeStringToSeconds(timeString: string) {
       const [minutes, seconds] = timeString.split(":");
       const [wholeSeconds, milliseconds] = seconds.split(".");
 
       return (
         parseInt(minutes) * 60 + // Convert minutes to seconds
         parseInt(wholeSeconds) + // Add seconds
-        parseInt(milliseconds || 0) / 100 // Add fractional seconds (milliseconds to seconds)
+        parseInt(milliseconds || "0") / 100 // Add fractional seconds (milliseconds to seconds)
       );
     }
 
@@ -138,17 +125,15 @@ const Home = ({ params }: { params: { id: string } }) => {
     <main className="w-screen min-h-screen flex-col flex bg-orange-300">
       <div className="bg-white text-3xl p-4 font-bold text-orange-300 w-full flex flex-row justify-center">
         <button
-          onClick={async () => {
-            await Promise.all([router.prefetch("/home"), router.push("/home")]);
+          onClick={() => {
+            router.push("/home");
           }}
           className="absolute left-3 text-white hover:bg-orange-500 hover:text-gray-300 text-xl md:text-4xl px-3 rounded-2xl pb-1 bg-orange-300"
         >
           {"⌂"}
         </button>
         <p className="w-[90%] md:w-auto ml-[-7.5px] md:ml-[-10px] text-center text-xl md:text-3xl">
-          <MathComponent
-            math={randomizer ? "Randomizer" : problemSet[Number(params.id)]}
-          />
+          <MathComponent math={randomizer ? "Randomizer" : problemSet[Number(params.id)]} />
         </p>
       </div>
       <div className="mt-3 justify-center flex gap-x-4 items-center">
@@ -185,28 +170,21 @@ const Home = ({ params }: { params: { id: string } }) => {
           </h2>
           <div className="mt-6 flex flex-row items-center justify-center gap-x-8">
             <div>
-              {questionTimes.map((item: any, index: any) => (
-                <div
-                  className="mt-4 text-xl md:text-3xl flex flex-row justify-between"
-                  key={index}
-                >
+              {questionTimes.map((item: string, index: number) => (
+                <div className="mt-4 text-xl md:text-3xl flex flex-row justify-between" key={index}>
                   <p className="mr-8">
-                    <MathComponent
-                      math={index + 1 + ")    " + storedQuestions[index]}
-                    />
+                    <MathComponent math={index + 1 + ")    " + storedQuestions[index]} />
                   </p>
                 </div>
               ))}
             </div>
             <div className="border-l-white border-l-2">
-              {questionTimes.map((item: any, index: any) => (
+              {questionTimes.map((item: string, index: number) => (
                 <div
                   className="ml-8 mt-4 md:mt-3 text-xl md:text-3xl flex flex-row justify-between"
                   key={index}
                 >
-                  <MathComponent
-                    math={item.substring(getFirstNonZeroIndex(item)) + "s"}
-                  />
+                  <MathComponent math={item.substring(getFirstNonZeroIndex(item)) + "s"} />
                 </div>
               ))}
             </div>
@@ -225,8 +203,7 @@ const Home = ({ params }: { params: { id: string } }) => {
             </button>
           </div>
           <p className="mt-8 md:mt-4 text-3xl md:text-4xl font-mono">
-            <u>{averageTimeInSeconds(formatTime(elapsedTime), 5)}</u>s per
-            question
+            <u>{averageTimeInSeconds(formatTime(elapsedTime), 5)}</u>s per question
           </p>
         </div>
       ) : null}

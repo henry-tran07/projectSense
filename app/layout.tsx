@@ -17,23 +17,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
   },
   metadataBase: new URL("https://project-sense.vercel.app/"),
-  keywords: [
-    "TMSCA",
-    "UIL",
-    "Number Sense",
-    "Project Sense",
-    "Math",
-    "Test",
-    "Question",
-    "Speed",
-  ],
+  keywords: ["TMSCA", "UIL", "Number Sense", "Project Sense", "Math", "Test", "Question", "Speed"],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <GoogleAnalytics />
