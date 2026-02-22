@@ -1,7 +1,7 @@
 "use client";
-import { ChakraProvider } from "@chakra-ui/react";
+
 import { useRouter } from "next/navigation";
-import { FaTrophy } from "react-icons/fa";
+import { FaTrophy, FaRandom } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
@@ -13,11 +13,11 @@ import { useInView } from "react-intersection-observer";
 import { SettingsModal } from "../components/SettingsModal";
 import { VideoModal } from "../components/VideoModal";
 import { GameModal } from "../components/GameModal";
-import { FaRandom } from "react-icons/fa";
 import { GiRetroController } from "react-icons/gi";
 import { SiVitest } from "react-icons/si";
-import { MdOutlineMail } from "react-icons/md";
-import { MdOutlineHelpOutline } from "react-icons/md";
+import { MdOutlineMail, MdOutlineHelpOutline } from "react-icons/md";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
   const router = useRouter();
@@ -74,96 +74,113 @@ export default function Home() {
   }, [user, authLoading, colRef]);
 
   return (
-    // <MathJaxContext>
-    <ChakraProvider>
-      <main className="absolute bg-orange-300  h-auto overflow-x-hidden overflow-y-auto w-full flex flex-col items-center">
-        <div className="shadow-inner bg-white text-orange-300 font-bold p-4 text-4xl   w-full">
-          <div className="bg-white text-5xl  text-orange-300 flex font-bold justify-center items-center">
-            <button
-              onClick={() => router.push(`/leaderboard`)}
-              className=" hover:text-4xl hover:p-3 duration-300 ease-in-out absolute left-1 m-3 bg-orange-300 hover:cursor-pointer
-           hover:bg-orange-500 p-2 rounded-3xl text-white text-2xl md:text-4xl flex items-center"
-            >
-              <FaTrophy />
-            </button>
-            <div className="ml-[-100px] md:ml-[0px] absolute text-xl md:text-3xl">
-              Project Sense
-            </div>
-            <div className=" ml-auto">
-              <GameModal />
-              <SettingsModal
-                loading={authLoading || settingsLoading}
-                rightLeft={rightLeft}
-                updateUser={updateUser}
-                user={user}
-                setRightLeft={setRightLeft}
-                questionLimited={questionLimited}
-                logout={logout}
-                setQuestionLimited={setQuestionLimited}
-              />
-            </div>
+    <main className="absolute bg-orange-50 min-h-screen w-full flex flex-col items-center overflow-x-hidden overflow-y-auto">
+      {/* Header */}
+      <header className="sticky top-0 z-10 w-full bg-white/95 backdrop-blur-sm border-b border-orange-100 shadow-sm">
+        <div className="flex items-center justify-between px-4 py-3 max-w-7xl mx-auto">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push("/leaderboard")}
+            className="h-10 w-10 rounded-full bg-orange-400 text-white hover:bg-orange-500 hover:text-white"
+          >
+            <FaTrophy className="h-5 w-5" />
+          </Button>
+
+          <h1 className="text-xl md:text-2xl font-bold text-orange-400 tracking-tight">
+            Project Sense
+          </h1>
+
+          <div className="flex items-center">
+            <GameModal />
+            <SettingsModal
+              loading={authLoading || settingsLoading}
+              rightLeft={rightLeft}
+              updateUser={updateUser}
+              user={user}
+              setRightLeft={setRightLeft}
+              questionLimited={questionLimited}
+              logout={logout}
+              setQuestionLimited={setQuestionLimited}
+            />
           </div>
         </div>
-        <div className="text-white font-bold text-sm my-2 p-2 text-center md:text-base">
-          Note: Timer starts once a bubble is pressed. Solve 5 questions as fast as you can.
-        </div>
-        <div className="flex flex-row justify-center gap-x-2 ">
-          <button
-            onClick={() => router.push(`/home/practice/randomizer`)}
-            className="flex flex-row items-center  justify-center gap-x-2 text-orange-300 rounded-2xl bg-white font-semibold py-1 md:py-2 px-2 md:px-8 mb-2  md:mb-4 text-lg md:text-4xl font-serif shadow-sm md:shadow-md hover:bg-gray-200 hover:scale-105 "
-          >
-            <FaRandom /> Random
-          </button>
-          <button
-            onClick={() => router.push(`/multiplayer`)}
-            className="flex flex-row items-center  justify-center gap-x-2 text-orange-300 rounded-2xl bg-white font-semibold py-1 md:py-2 px-2 md:px-8 mb-2  md:mb-4 text-lg md:text-4xl font-serif shadow-sm md:shadow-md hover:bg-gray-200 hover:scale-105 "
-          >
-            <GiRetroController /> Multiplayer
-          </button>
-          <button
-            onClick={() => router.push(`/testGen`)}
-            className="flex flex-row items-center  justify-center gap-x-2 text-orange-300 rounded-2xl bg-white font-semibold py-1 md:py-2 px-2 md:px-8 mb-2  md:mb-4 text-lg md:text-4xl font-serif shadow-sm md:shadow-md hover:bg-gray-200 hover:scale-105 "
-          >
-            <SiVitest /> AI Test
-          </button>
-        </div>
-        <div className=" md:mb-28 mb-4 text-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-x-3 gap-y-8 mt-4 md:gap-y-16">
-          {keys.map((value) => (
-            <div key={value} className=" animate-slideUp h-23 md:h-24 overflow-y-hidden">
-              <div
-                className={`my-auto h-full duration-200 ease-in-out mx-12 md:mx-8 text-center items-center flex rounded-2xl justify-center text-3xl font-semibold `}
-              >
+      </header>
+
+      {/* Info note */}
+      <p className="text-orange-600/80 font-medium text-sm md:text-base text-center px-4 py-3">
+        Note: Timer starts once a bubble is pressed. Solve 5 questions as fast as you can.
+      </p>
+
+      {/* Navigation buttons */}
+      <div className="flex flex-row justify-center gap-x-2 px-2">
+        <Button
+          variant="outline"
+          onClick={() => router.push("/home/practice/randomizer")}
+          className="gap-2 rounded-xl border-orange-300 text-orange-500 font-semibold text-base md:text-lg px-4 md:px-8 py-2 md:py-5 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-400 transition-all duration-200"
+        >
+          <FaRandom className="h-4 w-4" /> Random
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => router.push("/multiplayer")}
+          className="gap-2 rounded-xl border-orange-300 text-orange-500 font-semibold text-base md:text-lg px-4 md:px-8 py-2 md:py-5 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-400 transition-all duration-200"
+        >
+          <GiRetroController className="h-4 w-4" /> Multiplayer
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => router.push("/testGen")}
+          className="gap-2 rounded-xl border-orange-300 text-orange-500 font-semibold text-base md:text-lg px-4 md:px-8 py-2 md:py-5 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-400 transition-all duration-200"
+        >
+          <SiVitest className="h-4 w-4" /> AI Test
+        </Button>
+      </div>
+
+      {/* Trick card grid */}
+      <div className="w-full max-w-6xl px-4 mt-6 mb-24 md:mb-32 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        {keys.map((value) => (
+          <div key={value} className="animate-slideUp">
+            <Card className="group overflow-hidden border-orange-100 bg-white hover:shadow-lg hover:border-orange-300 transition-all duration-200">
+              <CardContent className="p-0 flex items-stretch">
                 <button
-                  value={value}
                   onClick={() => router.push(`/home/practice/${value}`)}
-                  className="p-2 md:p-4 px-[2.7rem] md:w-[26rem] w-full overflow-y-hidden hover:scale-105 hover:bg-gray-200  flex justify-center items-center h-full duration-200 ease-in-out rounded-l-2xl bg-white text-lg md:text-xl"
+                  className="flex-1 flex items-center justify-center p-4 md:p-5 text-lg md:text-xl font-semibold text-gray-800 hover:bg-orange-50 transition-colors duration-200 cursor-pointer"
                 >
                   <MathComponent math={problemSet[value]} />
                 </button>
                 <VideoModal trick={value} />
-              </div>
-            </div>
-          ))}
+              </CardContent>
+            </Card>
+          </div>
+        ))}
+      </div>
+
+      {/* Infinite scroll sentinel */}
+      <hr ref={ref} className="my-4 border-transparent" />
+
+      {/* Footer */}
+      <footer className="fixed bottom-0 z-10 w-full bg-white/95 backdrop-blur-sm border-t border-orange-100 shadow-sm">
+        <div className="flex items-center justify-center gap-2 px-4 py-2 md:py-3 text-orange-400 text-xs md:text-base font-medium">
+          <p>
+            Built for <b>UIL Number Sense</b> by <b>Townview TAG&apos;s UIL Team 2025</b>
+          </p>
+          <span className="text-orange-200">|</span>
+          <a
+            href="https://forms.gle/yneT5vZaBSaLX1vf8"
+            className="text-orange-400 hover:text-orange-500 transition-colors"
+          >
+            <MdOutlineHelpOutline className="h-4 w-4 md:h-5 md:w-5" />
+          </a>
+          <span className="text-orange-200">|</span>
+          <a
+            href="mailto:projectsense.ns@gmail.com"
+            className="text-orange-400 hover:text-orange-500 transition-colors"
+          >
+            <MdOutlineMail className="h-4 w-4 md:h-5 md:w-5" />
+          </a>
         </div>
-        <hr ref={ref} className="my-4"></hr>
-        <div className=" overflow-x-hidden fixed bottom-0 shadow-inner mt-auto text-center flex font-semibold flex-row py-2 text-[.6rem] md:text-xl font-sans md:py-4 text-orange-300 w-full  bg-white items-center justify-center transition-all duration-500 ease-in-out">
-          <p>
-            Built for <b>UIL Number Sense</b> by <b>Townview TAG&apos;s UIL Team 2025</b>&apos;{" "}
-          </p>
-          <p className="md:pb-1 px-1 font-normal">|</p>
-          <p>
-            <a className="text-[1rem] md:text-2xl" href="https://forms.gle/yneT5vZaBSaLX1vf8">
-              <MdOutlineHelpOutline className="hover:scale-105" />
-            </a>
-          </p>
-          <p className="md:pb-1 px-1 font-normal">|</p>
-          <p>
-            <a href="mailto:projectsense.ns@gmail.com">
-              <MdOutlineMail className="text-[1rem] md:text-2xl hover:scale-105" />
-            </a>
-          </p>
-        </div>
-      </main>
-    </ChakraProvider>
+      </footer>
+    </main>
   );
 }
