@@ -31,9 +31,7 @@ export const VideoModal: React.FC<videoModalProps> = ({ trick }) => {
           <DialogTitle className="text-2xl md:text-4xl font-semibold text-orange-500 underline text-center">
             <MathComponent math={problemSet[Number(trick)]} />
           </DialogTitle>
-          <DialogDescription className="sr-only">
-            Tutorial video for this trick
-          </DialogDescription>
+          <DialogDescription className="sr-only">Tutorial video for this trick</DialogDescription>
         </DialogHeader>
 
         <div className="px-6 pb-6">
@@ -56,10 +54,7 @@ export const VideoModal: React.FC<videoModalProps> = ({ trick }) => {
                 height: "100%",
               }}
             >
-              <source
-                src={`/project sense vids/${videoMap[trick]}`}
-                type="video/mp4"
-              />
+              <source src={`/project sense vids/${videoMap[trick]}`} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>

@@ -76,16 +76,9 @@ export default function Multiplayer() {
 
   // Check answers
   useEffect(() => {
-    if (
-      gameState &&
-      gameState.questions &&
-      userAns === gameState.questions[questionsSolved].ans
-    ) {
+    if (gameState && gameState.questions && userAns === gameState.questions[questionsSolved].ans) {
       setQuestionsSolved(questionsSolved + 1);
-      const playerPositionRef = ref(
-        database,
-        `games/${gameId}/players/${playerId}`
-      );
+      const playerPositionRef = ref(database, `games/${gameId}/players/${playerId}`);
       update(playerPositionRef, { questionsSolved: questionsSolved + 1 });
       setUserAns("");
     }
@@ -259,10 +252,7 @@ export default function Multiplayer() {
   // Leave game helper
   const handleLeaveGame = () => {
     if (gameId) {
-      const playerRef = ref(
-        database,
-        `games/${gameId}/players/${playerId}`
-      );
+      const playerRef = ref(database, `games/${gameId}/players/${playerId}`);
       remove(playerRef);
       setGameState(null);
       setGameId(null);
@@ -311,10 +301,7 @@ export default function Multiplayer() {
       {error && (
         <div className="absolute top-16 md:top-20 left-1/2 -translate-x-1/2 z-50 bg-red-100 border border-red-300 text-red-700 px-4 py-2 rounded-lg shadow-md text-sm font-sans max-w-sm text-center">
           {error}
-          <button
-            onClick={() => setError(null)}
-            className="ml-2 font-bold hover:text-red-900"
-          >
+          <button onClick={() => setError(null)} className="ml-2 font-bold hover:text-red-900">
             x
           </button>
         </div>

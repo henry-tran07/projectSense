@@ -77,10 +77,7 @@ export default function GameLobby({
         </Button>
       </div>
       <div className="flex justify-center mt-4">
-        <Select
-          value={String(currentBoard)}
-          onValueChange={(val) => onBoardChange(Number(val))}
-        >
+        <Select value={String(currentBoard)} onValueChange={(val) => onBoardChange(Number(val))}>
           <SelectTrigger className="w-auto min-w-[12rem] max-w-[20rem] bg-white text-orange-300 font-semibold text-lg border-orange-300 h-auto py-2 px-4">
             <SelectValue>
               <MathComponent math={problemSet[currentBoard]} />

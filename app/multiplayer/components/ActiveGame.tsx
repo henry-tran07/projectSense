@@ -36,13 +36,9 @@ export default function ActiveGame({
               key={index}
               className="flex flex-row items-center justify-between text-right gap-x-2"
             >
-              <label className="mr-2 font-semibold text-lg text-slate-100">
-                {playerId}
-              </label>
+              <label className="mr-2 font-semibold text-lg text-slate-100">{playerId}</label>
               <Progress
-                value={
-                  ((gameState.players[playerId]?.questionsSolved - 1) / 5) * 100
-                }
+                value={((gameState.players[playerId]?.questionsSolved - 1) / 5) * 100}
                 className="w-72 h-4 bg-orange-100"
               />
             </div>
@@ -66,20 +62,14 @@ export default function ActiveGame({
       {/* Problem display and answer input */}
       <div
         className={`font-semibold ${
-          trick === "26" ||
-          trick === "27" ||
-          trick === "35" ||
-          trick === "42" ||
-          trick === "43"
+          trick === "26" || trick === "27" || trick === "35" || trick === "42" || trick === "43"
             ? "text-[2.0rem] md:text-[2.3rem]"
             : "text-[3.0rem] md:text-6xl"
         } w-screen flex flex-col md:flex-row text-white justify-center items-center gap-x-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-wrap break-words whitespace-pre-wrap`}
       >
         <div className="text-center md:text-left ml-[0px]">
           <MathComponent
-            math={
-              gameState.questions ? gameState.questions[questionsSolved].body : ""
-            }
+            math={gameState.questions ? gameState.questions[questionsSolved].body : ""}
           />
         </div>
         <div className="text-center md:text-left">=</div>

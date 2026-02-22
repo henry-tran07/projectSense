@@ -51,9 +51,7 @@ const Home = () => {
 
       scoreEntries.sort((a, b) => compareTimes(a.time, b.time));
 
-      const sortedScores = scoreEntries.map(
-        (entry) => `${entry.time} ${entry.email}`
-      );
+      const sortedScores = scoreEntries.map((entry) => `${entry.time} ${entry.email}`);
 
       return sortedScores;
     };
@@ -61,17 +59,12 @@ const Home = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const docRef = doc(
-          collection(db, "leaderboard"),
-          String(currentBoard)
-        );
+        const docRef = doc(collection(db, "leaderboard"), String(currentBoard));
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
           const map = data.scores;
-          const resultArray = Object.entries(map).map(
-            ([key, value]) => `${value} ${key}`
-          );
+          const resultArray = Object.entries(map).map(([key, value]) => `${value} ${key}`);
           const performSort = sortScoresByTime(resultArray);
           setSortedScores(performSort);
         } else {
@@ -103,10 +96,7 @@ const Home = () => {
 
       {/* Trick Selector */}
       <div className="flex justify-center mt-3 md:mt-4">
-        <Select
-          value={String(currentBoard)}
-          onValueChange={(val) => setCurrentBoard(Number(val))}
-        >
+        <Select value={String(currentBoard)} onValueChange={(val) => setCurrentBoard(Number(val))}>
           <SelectTrigger className="w-fit min-w-[12rem] mx-auto bg-white text-orange-300 border-orange-200 py-2 px-4 md:py-4 md:px-6 text-sm md:text-base h-auto">
             <SelectValue>
               <MathComponent math={problemSet[currentBoard]} />

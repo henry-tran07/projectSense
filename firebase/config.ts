@@ -4,7 +4,7 @@ import { getFirestore } from "firebase/firestore";
 import { getDatabase, ref, set, update, get, remove } from "firebase/database";
 import { problemFunction } from "@/app/utils/problemGenerator";
 
-// --- Local types (will move to shared types in Task 3) ---
+// --- Local types ---
 
 interface FirebaseConfig {
   apiKey: string | undefined;
@@ -95,15 +95,8 @@ function createGameSession(): Promise<string> {
   return set(gameRef, gameData).then(() => gameId);
 }
 
-function joinGameSession(
-  gameId: string,
-  playerId: string,
-  playerData: PlayerData
-): Promise<void> {
-  const playerRef = ref(
-    database,
-    `games/${gameId}/players/${playerId.replace(/[.#$[\]]/g, "_")}`
-  );
+function joinGameSession(gameId: string, playerId: string, playerData: PlayerData): Promise<void> {
+  const playerRef = ref(database, `games/${gameId}/players/${playerId.replace(/[.#$[\]]/g, "_")}`);
   return set(playerRef, playerData);
 }
 
@@ -124,9 +117,7 @@ async function getAvailableGames(): Promise<[string, GameData][]> {
   const snapshot = await get(gamesRef);
   const games = snapshot.val() as Record<string, GameData> | null;
   return games
-    ? (Object.entries(games).filter(
-        ([, game]) => game.state === "waiting"
-      ) as [string, GameData][])
+    ? (Object.entries(games).filter(([, game]) => game.state === "waiting") as [string, GameData][])
     : [];
 }
 
@@ -140,9 +131,7 @@ function startGameSession(gameId: string): Promise<void> {
   return update(gameRef, { state: "in_progress" });
 }
 
-async function getGameSession(
-  gameId: string
-): Promise<GameSessionPlayer[] | null> {
+async function getGameSession(gameId: string): Promise<GameSessionPlayer[] | null> {
   const gameRef = ref(database, `games/${gameId}`);
 
   try {
@@ -152,14 +141,12 @@ async function getGameSession(
       const players: GameSessionPlayer[] = [];
 
       if (gameData && gameData.players) {
-        Object.entries(gameData.players).forEach(
-          ([playerId, playerData]: [string, PlayerData]) => {
-            players.push({
-              playerId,
-              questionsSolved: playerData.questionsSolved,
-            });
-          }
-        );
+        Object.entries(gameData.players).forEach(([playerId, playerData]: [string, PlayerData]) => {
+          players.push({
+            playerId,
+            questionsSolved: playerData.questionsSolved,
+          });
+        });
       }
 
       return players;

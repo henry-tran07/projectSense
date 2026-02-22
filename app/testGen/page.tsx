@@ -3,13 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, ArrowLeft, Send, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { test2 } from "./data";
@@ -39,18 +33,15 @@ function TestGenerator() {
   const [submitting, setSubmitting] = useState(false);
   const [results, setResults] = useState<GradeResult | null>(null);
   const [answers, setAnswers] = useState<string[]>(new Array(40).fill(""));
-  const [answerKey, setAnswerKey] = useState<Record<string, string> | null>(
-    null,
-  );
+  const [answerKey, setAnswerKey] = useState<Record<string, string> | null>(null);
   const [lastQuestion, setLastQuestion] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
-  const handleInputChange =
-    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newAnswers = [...answers];
-      newAnswers[index] = event.target.value;
-      setAnswers(newAnswers);
-    };
+  const handleInputChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newAnswers = [...answers];
+    newAnswers[index] = event.target.value;
+    setAnswers(newAnswers);
+  };
 
   const handleSubmit = async () => {
     setSubmitting(true);
@@ -83,7 +74,7 @@ function TestGenerator() {
           }
           return obj;
         },
-        {},
+        {}
       );
 
       // Use AI to compare answers and calculate score
@@ -111,81 +102,10 @@ function TestGenerator() {
       const gradeResult = await gradeResponse.json();
       setResults(gradeResult);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An error occurred while grading",
-      );
+      setError(err instanceof Error ? err.message : "An error occurred while grading");
       setSubmitting(false);
     }
   };
-
-  // Helper function to compare answers
-  function compareAnswers(userAnswer: string, correctAnswer: string): boolean {
-    // Remove spaces and convert to lowercase for comparison
-    const user = userAnswer.trim().toLowerCase();
-    const correct = correctAnswer.trim().toLowerCase();
-
-    // Handle different formats of the same answer
-    if (user === correct) return true;
-
-    // Handle decimal/fraction equivalency
-    const userNum = parseFloat(user);
-    const correctNum = parseFloat(correct);
-    if (!isNaN(userNum) && !isNaN(correctNum)) {
-      return Math.abs(userNum - correctNum) < 0.001; // Allow for small floating point differences
-    }
-
-    // Handle mixed numbers vs fractions
-    const userFraction = convertToFraction(user);
-    const correctFraction = convertToFraction(correct);
-    if (userFraction && correctFraction) {
-      return userFraction === correctFraction;
-    }
-
-    return false;
-  }
-
-  // Helper function to convert mixed numbers and decimals to fractions
-  function convertToFraction(str: string): string | null {
-    // Handle mixed numbers (e.g., "1 1/2")
-    const mixedMatch = str.match(/^(\d+)\s+(\d+)\/(\d+)$/);
-    if (mixedMatch) {
-      const whole = parseInt(mixedMatch[1]);
-      const num = parseInt(mixedMatch[2]);
-      const den = parseInt(mixedMatch[3]);
-      return `${whole * den + num}/${den}`;
-    }
-
-    // Handle fractions (e.g., "1/2")
-    const fractionMatch = str.match(/^(\d+)\/(\d+)$/);
-    if (fractionMatch) {
-      return str;
-    }
-
-    // Handle decimals (e.g., "0.5")
-    const decimalMatch = str.match(/^\d*\.\d+$/);
-    if (decimalMatch) {
-      const num = parseFloat(str);
-      const den = Math.pow(10, str.split(".")[1].length);
-      const gcd = findGCD(Math.round(num * den), den);
-      return `${Math.round(num * den) / gcd}/${den / gcd}`;
-    }
-
-    return null;
-  }
-
-  // Helper function to find Greatest Common Divisor
-  function findGCD(a: number, b: number): number {
-    return b === 0 ? a : findGCD(b, a % b);
-  }
-
-  // Helper function to calculate score
-  function calculateScore(
-    lastQuestion: number,
-    correctCount: number,
-  ): number {
-    if (lastQuestion === 0) return 0;
-    return lastQuestion * 5 - 9 * (lastQuestion - correctCount);
-  }
 
   async function run() {
     updateGeneratedQuestions(40);
@@ -223,11 +143,7 @@ function TestGenerator() {
       const json = await response.json();
       setText(json);
     } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "An error occurred while generating the test",
-      );
+      setError(err instanceof Error ? err.message : "An error occurred while generating the test");
       setGenerating(false);
     } finally {
       setGenerating(false);
@@ -276,9 +192,7 @@ function TestGenerator() {
           <Card className="bg-orange-400/50 border-orange-200">
             <CardContent className="flex flex-col items-center gap-4 p-8">
               <Loader2 className="h-16 w-16 animate-spin text-white" />
-              <p className="text-white text-xl font-medium">
-                Generating UIL Number Sense Test...
-              </p>
+              <p className="text-white text-xl font-medium">Generating UIL Number Sense Test...</p>
             </CardContent>
           </Card>
         ) : (
@@ -313,9 +227,7 @@ function TestGenerator() {
           <Card className="bg-orange-400/50 border-orange-200">
             <CardContent className="flex flex-col items-center gap-4 p-8">
               <Loader2 className="h-16 w-16 animate-spin text-white" />
-              <p className="text-white text-xl font-medium">
-                Grading your test...
-              </p>
+              <p className="text-white text-xl font-medium">Grading your test...</p>
             </CardContent>
           </Card>
         )}
@@ -346,14 +258,10 @@ function TestGenerator() {
           {/* Score panel */}
           <Card className="lg:w-[30%] bg-orange-400/80 border-orange-200 lg:order-last">
             <CardHeader className="text-center">
-              <CardTitle className="text-white text-2xl underline">
-                Score
-              </CardTitle>
+              <CardTitle className="text-white text-2xl underline">Score</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center gap-3">
-              <p className="text-5xl md:text-7xl font-bold text-white">
-                {results?.score || 0}
-              </p>
+              <p className="text-5xl md:text-7xl font-bold text-white">{results?.score || 0}</p>
               <p className="text-lg md:text-xl text-white text-center">
                 Questions Correct: {results?.number_correct || 0}
               </p>
@@ -373,32 +281,23 @@ function TestGenerator() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {results?.feedback?.map(
-                  (item: FeedbackItem, index: number) => (
-                    <div
-                      key={index}
-                      className="p-3 rounded-lg bg-gray-50 border"
-                    >
-                      <p className="text-sm text-gray-600 mb-1">
-                        {item.question}. {text[item.question]}
-                      </p>
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          variant={
-                            item.isCorrect ? "default" : "destructive"
-                          }
-                        >
-                          {item.isCorrect ? "Correct" : "Incorrect"}
-                        </Badge>
-                        <span
-                          className={`text-sm font-medium ${item.isCorrect ? "text-green-600" : "text-red-600"}`}
-                        >
-                          {item.userAnswer}
-                        </span>
-                      </div>
+                {results?.feedback?.map((item: FeedbackItem, index: number) => (
+                  <div key={index} className="p-3 rounded-lg bg-gray-50 border">
+                    <p className="text-sm text-gray-600 mb-1">
+                      {item.question}. {text[item.question]}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Badge variant={item.isCorrect ? "default" : "destructive"}>
+                        {item.isCorrect ? "Correct" : "Incorrect"}
+                      </Badge>
+                      <span
+                        className={`text-sm font-medium ${item.isCorrect ? "text-green-600" : "text-red-600"}`}
+                      >
+                        {item.userAnswer}
+                      </span>
                     </div>
-                  ),
-                )}
+                  </div>
+                ))}
               </CardContent>
             </Card>
 
@@ -411,21 +310,14 @@ function TestGenerator() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {answerKey &&
-                  Object.entries(answerKey).map(
-                    ([key, item], index: number) => (
-                      <div
-                        key={index}
-                        className="p-3 rounded-lg bg-gray-50 border"
-                      >
-                        <p className="text-sm text-gray-600 mb-1">
-                          {index + 1}. {text[index + 1]}
-                        </p>
-                        <span className="text-sm font-medium text-green-600">
-                          Answer: {item}
-                        </span>
-                      </div>
-                    ),
-                  )}
+                  Object.entries(answerKey).map(([_key, item], index: number) => (
+                    <div key={index} className="p-3 rounded-lg bg-gray-50 border">
+                      <p className="text-sm text-gray-600 mb-1">
+                        {index + 1}. {text[index + 1]}
+                      </p>
+                      <span className="text-sm font-medium text-green-600">Answer: {item}</span>
+                    </div>
+                  ))}
               </CardContent>
             </Card>
           </div>
@@ -448,9 +340,7 @@ function TestGenerator() {
             Home
           </Button>
           <div className="text-center">
-            <h1 className="text-2xl md:text-4xl font-bold text-white">
-              UIL Number Sense Practice
-            </h1>
+            <h1 className="text-2xl md:text-4xl font-bold text-white">UIL Number Sense Practice</h1>
             <p className="text-sm md:text-base text-orange-100">
               Press Tab to go to the next question faster
             </p>
@@ -480,7 +370,7 @@ function TestGenerator() {
 
       <div className="max-w-4xl mx-auto px-4 py-6 space-y-3">
         {text &&
-          Object.entries(text).map(([key, item], index: number) =>
+          Object.entries(text).map(([_key, item], index: number) =>
             item ? (
               <Card
                 key={index}
@@ -490,9 +380,7 @@ function TestGenerator() {
                   <span className="text-orange-400 font-bold text-lg md:text-xl min-w-[3rem] text-center shrink-0">
                     ({index + 1})
                   </span>
-                  <p className="text-orange-500 font-bold text-sm md:text-lg flex-1">
-                    {item}
-                  </p>
+                  <p className="text-orange-500 font-bold text-sm md:text-lg flex-1">{item}</p>
                   <Input
                     type="text"
                     value={answers[index] || ""}
@@ -502,7 +390,7 @@ function TestGenerator() {
                   />
                 </CardContent>
               </Card>
-            ) : null,
+            ) : null
           )}
       </div>
 

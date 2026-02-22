@@ -24,7 +24,7 @@ export function useSettings(userEmail: string | null) {
         const docRef = doc(db, "users", userEmail);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          setSettings({ ...DEFAULT_SETTINGS, ...docSnap.data() as Partial<UserSettings> });
+          setSettings({ ...DEFAULT_SETTINGS, ...(docSnap.data() as Partial<UserSettings>) });
         }
       } catch (error) {
         console.error("Failed to load settings:", error);

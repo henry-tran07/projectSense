@@ -32,9 +32,7 @@ export const GameModal: React.FC<gameModalProps> = () => {
           <DialogTitle className="text-3xl md:text-5xl font-bold text-white text-center">
             Mini Games
           </DialogTitle>
-          <DialogDescription className="sr-only">
-            Choose a mini game to play
-          </DialogDescription>
+          <DialogDescription className="sr-only">Choose a mini game to play</DialogDescription>
           <Separator className="mx-auto w-2/3 bg-white/60 mt-2" />
         </DialogHeader>
 

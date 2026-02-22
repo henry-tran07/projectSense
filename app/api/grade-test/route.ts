@@ -23,9 +23,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(parsed);
   } catch (error) {
     console.error("API grading failed:", error);
-    return NextResponse.json(
-      { error: "Failed to grade test" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to grade test" }, { status: 500 });
   }
 }

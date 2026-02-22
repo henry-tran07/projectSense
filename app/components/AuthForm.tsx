@@ -94,14 +94,15 @@ export function AuthForm({ mode, onSubmit, onGoogleSignIn, error }: AuthFormProp
           </div>
 
           <div className="text-sm">
-            <Link href={switchHref} className="text-orange-500 hover:text-orange-600 underline underline-offset-2">
+            <Link
+              href={switchHref}
+              className="text-orange-500 hover:text-orange-600 underline underline-offset-2"
+            >
               {switchText}
             </Link>
           </div>
 
-          {displayError && (
-            <p className="text-red-500 text-sm text-center">{displayError}</p>
-          )}
+          {displayError && <p className="text-red-500 text-sm text-center">{displayError}</p>}
 
           <Button
             type="submit"

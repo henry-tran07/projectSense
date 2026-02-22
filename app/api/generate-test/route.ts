@@ -23,9 +23,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(parsed);
   } catch (error) {
     console.error("API generation failed:", error);
-    return NextResponse.json(
-      { error: "Failed to generate content" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to generate content" }, { status: 500 });
   }
 }

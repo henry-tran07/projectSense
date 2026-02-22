@@ -112,11 +112,7 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
       const [minutes, seconds] = timeString.split(":");
       const [wholeSeconds, milliseconds] = seconds.split(".");
 
-      return (
-        parseInt(minutes) * 60 +
-        parseInt(wholeSeconds) +
-        parseInt(milliseconds || "0") / 100
-      );
+      return parseInt(minutes) * 60 + parseInt(wholeSeconds) + parseInt(milliseconds || "0") / 100;
     }
 
     const totalSeconds = timeStringToSeconds(totalTime);
@@ -165,9 +161,7 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
 
           {/* Trick name */}
           <div className="flex-1 text-center text-xl md:text-2xl font-bold text-orange-500">
-            <MathComponent
-              math={randomizer ? "Randomizer" : problemSet[Number(params.id)]}
-            />
+            <MathComponent math={randomizer ? "Randomizer" : problemSet[Number(params.id)]} />
           </div>
 
           {/* Question counter & timer */}
@@ -257,9 +251,7 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
                   <span className="underline underline-offset-4 decoration-orange-400">
                     {averageTimeInSeconds(formatTime(elapsedTime), 5)}
                   </span>
-                  <span className="text-muted-foreground font-normal ml-1.5">
-                    s per question
-                  </span>
+                  <span className="text-muted-foreground font-normal ml-1.5">s per question</span>
                 </p>
               </div>
 
