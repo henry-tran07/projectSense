@@ -48,9 +48,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </button>
       </DialogTrigger>
 
-      <DialogContent className="w-[90vw] max-w-md sm:max-w-lg rounded-2xl bg-white p-6 shadow-xl">
+      <DialogContent className="w-[90vw] max-w-md sm:max-w-lg rounded-2xl glass-card p-6 bg-white/80">
         <DialogHeader className="text-center">
-          <DialogTitle className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-500 text-center">
+          <DialogTitle className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-700 text-center">
             Settings
           </DialogTitle>
           <DialogDescription className="sr-only">

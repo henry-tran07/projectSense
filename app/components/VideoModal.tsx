@@ -21,14 +21,14 @@ export const VideoModal: React.FC<videoModalProps> = ({ trick }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="hover:scale-105 hover:bg-orange-500 flex font-extrabold md:w-1/4 w-1/2 justify-center text-center items-center mt-auto h-full duration-200 ease-in-out text-4xl align-baseline text-white rounded-r-2xl bg-orange-400 p-4">
+        <button className="hover:scale-105 hover:bg-orange-600/80 flex font-extrabold md:w-1/4 w-1/2 justify-center text-center items-center mt-auto h-full duration-200 ease-in-out text-4xl align-baseline text-white rounded-r-2xl bg-orange-500/80 p-4">
           ?
         </button>
       </DialogTrigger>
 
-      <DialogContent className="w-[90%] max-w-md md:max-w-3xl rounded-xl p-0 overflow-hidden">
+      <DialogContent className="w-[90%] max-w-md md:max-w-3xl rounded-2xl p-0 overflow-hidden glass-card">
         <DialogHeader className="px-6 pt-6 pb-2 text-center">
-          <DialogTitle className="text-2xl md:text-4xl font-semibold text-orange-500 underline text-center">
+          <DialogTitle className="text-2xl md:text-4xl font-semibold text-orange-700 text-center">
             <MathComponent math={problemSet[Number(trick)]} />
           </DialogTitle>
           <DialogDescription className="sr-only">Tutorial video for this trick</DialogDescription>
