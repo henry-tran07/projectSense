@@ -1,12 +1,11 @@
 "use client";
 import { ChakraProvider } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
-import { User, signOut } from "firebase/auth";
-import { auth } from "@/firebase/config";
 import { FaTrophy } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
+import { useAuth } from "../hooks/useAuth";
 import { problemSet } from "../utils/problemGenerator";
 import MathComponent from "../components/MathComponent";
 import { loadMore } from "../components/loadMore";
@@ -22,12 +21,12 @@ import { MdOutlineHelpOutline } from "react-icons/md";
 
 export default function Home() {
   const router = useRouter();
+  const { user, loading: authLoading, logout } = useAuth("/");
   const colRef = collection(db, "users");
-  const [user, setUser] = useState<null | User>(null);
   const [rightLeft, setRightLeft] = useState(false);
   const [questionLimited, setQuestionLimited] = useState(true);
   const [autoEnter, setAutoEnter] = useState(true);
-  const [loading, setLoading] = useState(true);
+  const [settingsLoading, setSettingsLoading] = useState(true);
   const [page, setPage] = useState(1);
   const { ref, inView } = useInView();
   const [keys, setKeys] = useState<number[]>([]);
@@ -55,40 +54,24 @@ export default function Home() {
     }
   };
 
-  const logout = async () => {
-    try {
-      await signOut(auth);
-      router.push(`/`);
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
-  };
-
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
-      if (authUser) {
-        setUser(authUser);
-        const email = authUser.email;
-        if (email) {
-          const docRef = doc(colRef, email);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            setQuestionLimited(data.questionLimited);
-            setRightLeft(data.rightLeft);
-            setAutoEnter(data.autoEnter);
-            setLoading(false);
-          }
-        } else {
-          console.error("Email is null or undefined");
+    const loadSettings = async () => {
+      if (user?.email) {
+        const docRef = doc(colRef, user.email);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setQuestionLimited(data.questionLimited);
+          setRightLeft(data.rightLeft);
+          setAutoEnter(data.autoEnter);
         }
-      } else {
-        setUser(null);
-        setLoading(false);
       }
-    });
-    return () => unsubscribe();
-  }, [colRef]);
+      setSettingsLoading(false);
+    };
+    if (!authLoading) {
+      loadSettings();
+    }
+  }, [user, authLoading, colRef]);
 
   return (
     // <MathJaxContext>
@@ -109,7 +92,7 @@ export default function Home() {
             <div className=" ml-auto">
               <GameModal />
               <SettingsModal
-                loading={loading}
+                loading={authLoading || settingsLoading}
                 rightLeft={rightLeft}
                 updateUser={updateUser}
                 user={user}

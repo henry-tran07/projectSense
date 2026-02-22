@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import { FaInfinity } from "react-icons/fa";
 import { VscDebugRestart } from "react-icons/vsc";
 import Trick from "@/app/components/Trick";
-import { auth, db } from "@/firebase/config";
-import { User } from "firebase/auth";
+import { db } from "@/firebase/config";
 import { collection, doc, getDoc } from "firebase/firestore";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/hooks/useAuth";
 import { problemSet } from "@/app/utils/problemGenerator";
 import updateLeaderboard from "@/app/components/updateLeaderboard";
 import MathComponent from "@/app/components/MathComponent";
@@ -14,10 +14,10 @@ import MathComponent from "@/app/components/MathComponent";
 const Home = ({ params }: { params: { id: string } }) => {
   const MAX_QUESTION_COUNT = 5;
   const router = useRouter();
+  const { user, loading } = useAuth("/");
   const [randomizer, setRandomizer] = useState(false);
   const [startTime, setStartTime] = useState(Date.now());
   const [elapsedTime, setElapsedTime] = useState(0);
-  const [user, setUser] = useState<User | null>(null);
   const [rightLeft, setRightLeft] = useState(false);
   const [questionLimited, setQuestionLimited] = useState(true);
   const [autoEnter, setAutoEnter] = useState(true);
@@ -29,29 +29,25 @@ const Home = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     if (params.id === "randomizer") setRandomizer(true);
-    const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
-      if (authUser) {
-        setUser(authUser);
-        const email = authUser.email;
-        if (email) {
-          const docRef = doc(colRef, email);
-          const docSnap = await getDoc(docRef);
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            setQuestionLimited(data?.questionLimited ?? true);
-            setRightLeft(data?.rightLeft ?? false);
-            setAutoEnter(data?.autoEnter ?? true);
-          }
-        } else {
-          console.error("Email is null or undefined");
-        }
-      } else {
-        setUser(null);
-      }
-    });
+  }, [params.id]);
 
-    return () => unsubscribe();
-  }, [colRef, params.id]);
+  useEffect(() => {
+    const loadSettings = async () => {
+      if (user?.email) {
+        const docRef = doc(colRef, user.email);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setQuestionLimited(data?.questionLimited ?? true);
+          setRightLeft(data?.rightLeft ?? false);
+          setAutoEnter(data?.autoEnter ?? true);
+        }
+      }
+    };
+    if (!loading) {
+      loadSettings();
+    }
+  }, [user, loading, colRef]);
 
   useEffect(() => {
     let animationFrameId: number;

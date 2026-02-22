@@ -5,15 +5,12 @@ import {
   createGameSession,
   joinGameSession,
   getAvailableGames,
-  auth,
-  db,
   endGameSession,
   startGameSession,
   setQuestions,
 } from "@/firebase/config";
 import { onValue, ref, remove, update } from "firebase/database";
-import { User } from "firebase/auth";
-import { collection } from "firebase/firestore";
+import { useAuth } from "../hooks/useAuth";
 import { HiRefresh } from "react-icons/hi";
 import MathComponent from "../components/MathComponent";
 import { FaCrown } from "react-icons/fa";
@@ -51,8 +48,7 @@ export default function Multiplayer() {
   const [gameId, setGameId] = useState<string | null>(null);
   const playerData = { questionsSolved: 1 };
   const [questionsSolved, setQuestionsSolved] = useState<number>(1);
-  const [user, setUser] = useState<null | User>(null);
-  const colRef = collection(db, "users");
+  const { user, loading } = useAuth("/");
   const [playerId, setEmail] = useState("");
   const [refresh, setRefresh] = useState(0);
   const [trick, setTrick] = useState("1");
@@ -66,15 +62,10 @@ export default function Multiplayer() {
   const router = useRouter();
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
-      if (authUser) {
-        setUser(authUser);
-        const email = authUser.email;
-        if (email) setEmail(email.substring(0, email.indexOf("@")));
-      }
-    });
-    return () => unsubscribe();
-  }, [colRef]);
+    if (user?.email) {
+      setEmail(user.email.substring(0, user.email.indexOf("@")));
+    }
+  }, [user]);
 
   useEffect(() => {
     if (gameState && gameState.questions && userAns === gameState.questions[questionsSolved].ans) {
