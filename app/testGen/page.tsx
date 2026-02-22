@@ -1,7 +1,17 @@
 "use client";
 import { useState } from "react";
-import { SpinnerDotted } from "spinners-react";
-import { FaPaperPlane } from "react-icons/fa";
+import { useRouter } from "next/navigation";
+import { Loader2, ArrowLeft, Send, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { test2 } from "./data";
 import { updateGeneratedQuestions } from "../components/QuestionCount";
 
@@ -22,23 +32,29 @@ interface GradeResult {
   feedback: FeedbackItem[];
 }
 
-function Gemini() {
+function TestGenerator() {
+  const router = useRouter();
   const [text, setText] = useState<Record<string, string> | null>(null);
   const [generating, setGenerating] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [results, setResults] = useState<GradeResult | null>(null);
   const [answers, setAnswers] = useState<string[]>(new Array(40).fill(""));
-  const [answerKey, setAnswerKey] = useState<Record<string, string> | null>(null);
+  const [answerKey, setAnswerKey] = useState<Record<string, string> | null>(
+    null,
+  );
   const [lastQuestion, setLastQuestion] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleInputChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newAnswers = [...answers];
-    newAnswers[index] = event.target.value;
-    setAnswers(newAnswers);
-  };
+  const handleInputChange =
+    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newAnswers = [...answers];
+      newAnswers[index] = event.target.value;
+      setAnswers(newAnswers);
+    };
 
   const handleSubmit = async () => {
     setSubmitting(true);
+    setError(null);
     try {
       const prompt1 = `You are tasked with generating an answer key for a UIL Number Sense test. For each problem in the JSON object provided, compute the correct answer and return the answer key as a JSON object with the same keys but with the computed answers. Make sure to:
       1. Format fractions as "a/b" or "a b/c" for mixed numbers
@@ -67,7 +83,7 @@ function Gemini() {
           }
           return obj;
         },
-        {}
+        {},
       );
 
       // Use AI to compare answers and calculate score
@@ -94,7 +110,10 @@ function Gemini() {
       if (!gradeResponse.ok) throw new Error("Failed to grade test");
       const gradeResult = await gradeResponse.json();
       setResults(gradeResult);
-    } catch (error) {
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "An error occurred while grading",
+      );
       setSubmitting(false);
     }
   };
@@ -160,7 +179,10 @@ function Gemini() {
   }
 
   // Helper function to calculate score
-  function calculateScore(lastQuestion: number, correctCount: number): number {
+  function calculateScore(
+    lastQuestion: number,
+    correctCount: number,
+  ): number {
     if (lastQuestion === 0) return 0;
     return lastQuestion * 5 - 9 * (lastQuestion - correctCount);
   }
@@ -169,6 +191,7 @@ function Gemini() {
     updateGeneratedQuestions(40);
     try {
       setGenerating(true);
+      setError(null);
       const prompt = `Create a UIL Number Sense test with 40 questions. Follow these guidelines:
       1. Questions should be solvable mentally without calculators
       2. Include a mix of:
@@ -199,129 +222,304 @@ function Gemini() {
       if (!response.ok) throw new Error("Failed to generate test");
       const json = await response.json();
       setText(json);
-    } catch (error) {
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while generating the test",
+      );
       setGenerating(false);
     } finally {
       setGenerating(false);
     }
   }
 
-  return text === null ? (
-    <main className="w-full h-screen bg-orange-300 items-center flex justify-center">
-      {generating ? (
-        <div className="flex flex-col items-center gap-4">
-          <SpinnerDotted color="white" size={150} thickness={150} enabled={generating} />
-          <p className="text-white text-xl">Generating UIL Number Sense Test...</p>
-        </div>
-      ) : (
-        <button
-          onClick={() => {
-            setGenerating(true);
-            run();
-          }}
-          className="bg-white rounded-2xl p-3 md:p-6 shadow-lg text-3xl md:text-5xl font-bold text-orange-400 flex flex-row items-center gap-x-4 hover:scale-105 ease-in-out hover:bg-gray-200 duration-200"
+  // Error display component
+  const ErrorDisplay = ({ onRetry }: { onRetry: () => void }) => (
+    <Card className="border-red-300 bg-red-50 max-w-md">
+      <CardContent className="flex flex-col items-center gap-4 p-6">
+        <AlertCircle className="h-12 w-12 text-red-500" />
+        <p className="text-center text-red-700 font-medium">{error}</p>
+        <Button
+          onClick={onRetry}
+          variant="outline"
+          className="border-red-300 text-red-700 hover:bg-red-100"
         >
-          Generate UIL Number Sense Test
-          <FaPaperPlane />
-        </button>
+          Try Again
+        </Button>
+      </CardContent>
+    </Card>
+  );
+
+  // Initial view: generate button or loading spinner
+  if (text === null) {
+    return (
+      <main className="w-full min-h-screen bg-orange-300 flex flex-col items-center justify-center gap-6 p-4">
+        <Button
+          variant="ghost"
+          onClick={() => router.push("/home")}
+          className="absolute top-4 left-4 text-white hover:bg-orange-400"
+        >
+          <ArrowLeft className="h-5 w-5 mr-2" />
+          Back to Home
+        </Button>
+
+        {error ? (
+          <ErrorDisplay
+            onRetry={() => {
+              setError(null);
+              setGenerating(true);
+              run();
+            }}
+          />
+        ) : generating ? (
+          <Card className="bg-orange-400/50 border-orange-200">
+            <CardContent className="flex flex-col items-center gap-4 p-8">
+              <Loader2 className="h-16 w-16 animate-spin text-white" />
+              <p className="text-white text-xl font-medium">
+                Generating UIL Number Sense Test...
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <Button
+            onClick={() => {
+              setGenerating(true);
+              run();
+            }}
+            size="lg"
+            className="bg-white text-orange-400 hover:bg-gray-100 text-2xl md:text-4xl font-bold py-6 px-8 md:py-8 md:px-12 rounded-2xl shadow-lg h-auto transition-transform hover:scale-105"
+          >
+            Generate UIL Number Sense Test
+            <Send className="h-6 w-6 md:h-8 md:w-8 ml-3" />
+          </Button>
+        )}
+      </main>
+    );
+  }
+
+  // Grading view: spinner while grading
+  if (submitting && results === null) {
+    return (
+      <main className="w-full min-h-screen bg-orange-300 flex items-center justify-center p-4">
+        {error ? (
+          <ErrorDisplay
+            onRetry={() => {
+              setError(null);
+              handleSubmit();
+            }}
+          />
+        ) : (
+          <Card className="bg-orange-400/50 border-orange-200">
+            <CardContent className="flex flex-col items-center gap-4 p-8">
+              <Loader2 className="h-16 w-16 animate-spin text-white" />
+              <p className="text-white text-xl font-medium">
+                Grading your test...
+              </p>
+            </CardContent>
+          </Card>
+        )}
+      </main>
+    );
+  }
+
+  // Results view: answer key, feedback, score
+  if (submitting && results !== null) {
+    return (
+      <main className="w-full min-h-screen bg-orange-300 font-mono">
+        <div className="flex items-center justify-between p-4 border-b-2 border-white">
+          <Button
+            variant="ghost"
+            onClick={() => router.push("/home")}
+            className="text-white hover:bg-orange-400"
+          >
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            Home
+          </Button>
+          <h1 className="text-3xl md:text-5xl font-bold text-white text-center flex-1">
+            Answer Key
+          </h1>
+          <div className="w-20" />
+        </div>
+
+        <div className="w-full flex flex-col lg:flex-row gap-4 p-4">
+          {/* Score panel */}
+          <Card className="lg:w-[30%] bg-orange-400/80 border-orange-200 lg:order-last">
+            <CardHeader className="text-center">
+              <CardTitle className="text-white text-2xl underline">
+                Score
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col items-center gap-3">
+              <p className="text-5xl md:text-7xl font-bold text-white">
+                {results?.score || 0}
+              </p>
+              <p className="text-lg md:text-xl text-white text-center">
+                Questions Correct: {results?.number_correct || 0}
+              </p>
+              <p className="text-sm md:text-base text-orange-100 text-center mt-2">
+                Make sure to check yourself! AI could be wrong.
+              </p>
+            </CardContent>
+          </Card>
+
+          {/* Answers comparison */}
+          <div className="lg:w-[70%] flex flex-col md:flex-row gap-4">
+            {/* Your Answers */}
+            <Card className="flex-1 bg-white/90 border-orange-200 max-h-[70vh] overflow-y-auto">
+              <CardHeader className="sticky top-0 bg-white/95 z-10">
+                <CardTitle className="text-orange-500 text-xl md:text-2xl text-center">
+                  Your Answers
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {results?.feedback?.map(
+                  (item: FeedbackItem, index: number) => (
+                    <div
+                      key={index}
+                      className="p-3 rounded-lg bg-gray-50 border"
+                    >
+                      <p className="text-sm text-gray-600 mb-1">
+                        {item.question}. {text[item.question]}
+                      </p>
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          variant={
+                            item.isCorrect ? "default" : "destructive"
+                          }
+                        >
+                          {item.isCorrect ? "Correct" : "Incorrect"}
+                        </Badge>
+                        <span
+                          className={`text-sm font-medium ${item.isCorrect ? "text-green-600" : "text-red-600"}`}
+                        >
+                          {item.userAnswer}
+                        </span>
+                      </div>
+                    </div>
+                  ),
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Correct Answers */}
+            <Card className="flex-1 bg-white/90 border-orange-200 max-h-[70vh] overflow-y-auto">
+              <CardHeader className="sticky top-0 bg-white/95 z-10">
+                <CardTitle className="text-orange-500 text-xl md:text-2xl text-center">
+                  Correct Answers
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {answerKey &&
+                  Object.entries(answerKey).map(
+                    ([key, item], index: number) => (
+                      <div
+                        key={index}
+                        className="p-3 rounded-lg bg-gray-50 border"
+                      >
+                        <p className="text-sm text-gray-600 mb-1">
+                          {index + 1}. {text[index + 1]}
+                        </p>
+                        <span className="text-sm font-medium text-green-600">
+                          Answer: {item}
+                        </span>
+                      </div>
+                    ),
+                  )}
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // Test view: 40 questions with answer inputs
+  return (
+    <main className="w-full min-h-screen bg-orange-300 font-mono">
+      <div className="sticky top-0 z-20 bg-orange-300 border-b border-orange-400 p-4">
+        <div className="flex items-center justify-between max-w-4xl mx-auto">
+          <Button
+            variant="ghost"
+            onClick={() => router.push("/home")}
+            className="text-white hover:bg-orange-400"
+          >
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            Home
+          </Button>
+          <div className="text-center">
+            <h1 className="text-2xl md:text-4xl font-bold text-white">
+              UIL Number Sense Practice
+            </h1>
+            <p className="text-sm md:text-base text-orange-100">
+              Press Tab to go to the next question faster
+            </p>
+          </div>
+          <div className="w-20" />
+        </div>
+      </div>
+
+      {error && (
+        <div className="max-w-4xl mx-auto px-4 mt-4">
+          <Card className="border-red-300 bg-red-50">
+            <CardContent className="flex items-center gap-3 p-4">
+              <AlertCircle className="h-5 w-5 text-red-500 shrink-0" />
+              <p className="text-red-700 text-sm">{error}</p>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setError(null)}
+                className="ml-auto border-red-300 text-red-700 hover:bg-red-100"
+              >
+                Dismiss
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
       )}
-    </main>
-  ) : submitting ? (
-    !(results === null) ? (
-      <main className="font-bold font-mono overflow-y-clip w-full h-screen bg-orange-300 text-white">
-        <h1 className="text-center p-6 text-4xl md:text-6xl border-b-2 border-white">Answer Key</h1>
-        <div className="w-full h-full flex flex-row justify-center">
-          <div className="w-[70%] text-2xl md:text-4xl h-full flex flex-row justify-between items-center">
-            <div className="w-[50%] flex flex-col h-full border-r-2 border-white overflow-y-auto">
-              <h1 className="p-4 text-center">Your Answers</h1>
-              {results?.feedback?.map((item: FeedbackItem, index: number) => (
-                <div key={index} className="p-2 text-center">
-                  <p className="text-lg">
-                    {item.question}. {text[item.question]}
-                  </p>
-                  <p className={`${item.isCorrect ? "text-green-500" : "text-red-500"}`}>
-                    Your answer: {item.userAnswer}
-                  </p>
-                </div>
-              ))}
-              <hr className="mt-36"></hr>
-            </div>
-            <div className="w-[50%] flex flex-col h-full overflow-y-auto">
-              <h1 className="p-4 text-center">Correct Answers</h1>
-              {answerKey &&
-                Object.entries(answerKey).map(([key, item], index: number) => (
-                  <div key={index} className="p-2 text-center">
-                    <p className="text-lg">
-                      {index + 1}. {text[index + 1]}
-                    </p>
-                    <p className="text-green-500">Answer: {item}</p>
-                  </div>
-                ))}
-              <hr className="mt-36"></hr>
-            </div>
-          </div>
-          <div className="border-l-2 border-white w-[30%] text-2xl md:text-4xl font-bold h-full flex flex-col items-center justify-center">
-            <label className="-mt-64 md:mt-0 underline mb-4">Score</label>
-            <label className="text-4xl md:text-6xl">{results?.score || 0}</label>
-            <label className="text-xl md:text-2xl text-center">
-              Questions Correct: {results?.number_correct || 0}
-            </label>
-            <label className="text-xl md:text-2xl text-center">
-              Make sure to check yourself! AI could be wrong.
-            </label>
-          </div>
-        </div>
-      </main>
-    ) : (
-      <main className="w-full h-screen bg-orange-300 items-center flex justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <SpinnerDotted color="white" size={150} thickness={150} enabled={generating} />
-          <p className="text-white text-xl">Grading your test...</p>
-        </div>
-      </main>
-    )
-  ) : (
-    <main className="text-white text-2xl font-mono w-full overflow-y-scroll h-screen bg-orange-300 ">
-      <button className="flex mx-auto p-4 text-4xl md:text-6xl font-semibold" onClick={run}>
-        UIL Number Sense Practice
-      </button>
-      <label
-        className="flex ml-4 md:ml-0 mx-0 md:mx-auto text-lg md:text-xl font-semibold md:justify-center"
-        onClick={run}
-      >
-        Press Tab to Go to Next Question Faster
-      </label>
-      <div className="flex w-[90%] md:w-[80%] flex-col mx-auto items-start font-bold text-lg md:text-3xl">
+
+      <div className="max-w-4xl mx-auto px-4 py-6 space-y-3">
         {text &&
-          Object.entries(text).map(([key, item], index: number) => (
-            <div className="w-full flex flex-row items-center" key={index}>
-              {item ? (
-                <>
-                  <p className="my-4 mr-4 shadow-xl p-2 md:p-4 w-[15%] md:w-[10%] text-center items-center bg-white rounded-2xl text-orange-300">
-                    {"(" + (index + 1) + ")\t"}
-                  </p>
-                  <p className="my-2 md:my-4 shadow-xl p-1 md:p-4 mr-2 md:mr-4 w-[80%] bg-white rounded-2xl text-orange-300">
+          Object.entries(text).map(([key, item], index: number) =>
+            item ? (
+              <Card
+                key={index}
+                className="bg-white/95 border-orange-200 hover:shadow-md transition-shadow"
+              >
+                <CardContent className="flex items-center gap-3 p-3 md:p-4">
+                  <span className="text-orange-400 font-bold text-lg md:text-xl min-w-[3rem] text-center shrink-0">
+                    ({index + 1})
+                  </span>
+                  <p className="text-orange-500 font-bold text-sm md:text-lg flex-1">
                     {item}
                   </p>
-                  <input
-                    type="string"
+                  <Input
+                    type="text"
                     value={answers[index] || ""}
                     onChange={handleInputChange(index)}
-                    className="w-[15%] md:w-[10%] focus:outline-none rounded-2xl text-black p-2 md:p-4 h-10 md:max-h-full"
-                  ></input>
-                </>
-              ) : null}
-            </div>
-          ))}
+                    className="w-24 md:w-32 text-center font-medium border-orange-200 focus-visible:ring-orange-400"
+                    placeholder="Answer"
+                  />
+                </CardContent>
+              </Card>
+            ) : null,
+          )}
       </div>
-      <button
-        onClick={handleSubmit}
-        className="mx-auto flex font-bold font-mono underline text-4xl md:text-6xl p-8 hover:decoration-4"
-      >
-        Submit
-      </button>
+
+      <div className="sticky bottom-0 bg-orange-300 border-t border-orange-400 p-4">
+        <div className="max-w-4xl mx-auto flex justify-center">
+          <Button
+            onClick={handleSubmit}
+            size="lg"
+            className="bg-white text-orange-500 hover:bg-gray-100 text-xl md:text-2xl font-bold py-4 px-10 rounded-xl shadow-lg h-auto transition-transform hover:scale-105"
+          >
+            Submit Test
+            <Send className="h-5 w-5 ml-2" />
+          </Button>
+        </div>
+      </div>
     </main>
   );
 }
 
-export default Gemini;
+export default TestGenerator;
