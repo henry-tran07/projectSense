@@ -17,6 +17,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ArrowLeft } from "lucide-react";
 
 interface ScoreEntry {
   time: string;
@@ -81,23 +82,22 @@ const Home = () => {
   }, [currentBoard]);
 
   return (
-    <main className="w-full min-h-screen flex flex-col bg-orange-300">
+    <main className="w-full min-h-screen flex flex-col page-gradient">
       {/* Header */}
-      <div className="bg-white text-3xl p-4 font-bold text-orange-300 w-full flex flex-row justify-center relative">
-        <Button
-          variant="ghost"
-          onClick={() => router.push("/home")}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-white hover:bg-orange-500 hover:text-gray-300 text-4xl px-3 rounded-2xl bg-orange-300"
-        >
-          {"⌂"}
-        </Button>
-        <p className="text-center w-full">Leaderboards</p>
-      </div>
+      <header className="glass-header sticky top-0 z-10 w-full">
+        <div className="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto">
+          <Button variant="ghost" size="icon" onClick={() => router.push("/home")} className="text-orange-700 hover:bg-white/40">
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+          <h1 className="text-2xl md:text-3xl font-bold text-white drop-shadow-md">Leaderboards</h1>
+          <div className="w-10" />
+        </div>
+      </header>
 
       {/* Trick Selector */}
       <div className="flex justify-center mt-3 md:mt-4">
         <Select value={String(currentBoard)} onValueChange={(val) => setCurrentBoard(Number(val))}>
-          <SelectTrigger className="w-fit min-w-[12rem] mx-auto bg-white text-orange-300 border-orange-200 py-2 px-4 md:py-4 md:px-6 text-sm md:text-base h-auto">
+          <SelectTrigger className="w-fit min-w-[12rem] mx-auto glass-card text-orange-700 py-2 px-4 md:py-4 md:px-6 text-sm md:text-base h-auto">
             <SelectValue>
               <MathComponent math={problemSet[currentBoard]} />
             </SelectValue>
@@ -113,10 +113,10 @@ const Home = () => {
       </div>
 
       {/* Trophy */}
-      <FaTrophy className="mx-auto text-[8rem] md:text-[12rem] text-white mt-2" />
+      <FaTrophy className="mx-auto text-[8rem] md:text-[12rem] text-white/90 drop-shadow-lg mt-2" />
 
       {/* Separator */}
-      <Separator className="w-5/6 mx-auto mt-2 mb-3 bg-white/50" />
+      <Separator className="w-5/6 mx-auto mt-2 mb-3 bg-white/40" />
 
       {/* Score List */}
       <div className="w-full flex flex-col items-center pb-6">
@@ -125,17 +125,17 @@ const Home = () => {
           <div className="w-[90%] md:w-[80%] flex flex-col gap-3">
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="flex flex-row items-center gap-x-2 md:gap-x-4">
-                <Skeleton className="h-12 w-14 rounded-2xl bg-white/40" />
-                <Skeleton className="h-12 flex-grow rounded-2xl bg-white/40" />
-                <Skeleton className="h-12 w-24 rounded-2xl bg-white/40" />
+                <Skeleton className="h-12 w-14 rounded-2xl bg-white/30" />
+                <Skeleton className="h-12 flex-grow rounded-2xl bg-white/30" />
+                <Skeleton className="h-12 w-24 rounded-2xl bg-white/30" />
               </div>
             ))}
           </div>
         ) : sortedScores.length === 0 ? (
           /* Empty state */
-          <Card className="w-[90%] md:w-[80%] bg-white/80 border-none">
+          <Card className="w-[90%] md:w-[80%] glass-card">
             <CardContent className="p-6 text-center">
-              <p className="text-orange-400 text-lg font-medium">
+              <p className="text-orange-700 text-lg font-medium">
                 No scores yet for this trick. Be the first!
               </p>
             </CardContent>
@@ -147,17 +147,17 @@ const Home = () => {
             return (
               <Card
                 key={index}
-                className="my-1.5 w-[90%] md:w-[80%] border-none shadow-sm bg-transparent"
+                className="my-1.5 w-[90%] md:w-[80%] glass-card"
               >
                 <CardContent className="p-0">
                   <div className="gap-x-2 md:gap-x-4 text-lg md:text-2xl flex flex-row items-center justify-between">
-                    <p className="bg-white px-4 text-orange-300 py-2 md:py-3 rounded-2xl font-bold text-center md:w-[4.1rem]">
+                    <p className="bg-orange-500/20 px-4 text-orange-700 py-2 md:py-3 rounded-2xl font-bold text-center md:w-[4.1rem]">
                       {index + 1}
                     </p>
-                    <p className="bg-white text-orange-300 py-2 md:py-3 rounded-2xl font-bold text-center flex-grow">
+                    <p className="text-gray-800 py-2 md:py-3 font-bold text-center flex-grow">
                       {email.substring(0, email.indexOf("@"))}
                     </p>
-                    <p className="bg-white px-2 md:px-4 text-orange-300 py-2 md:py-3 rounded-2xl font-bold text-center w-fit">
+                    <p className="bg-orange-500/20 px-2 md:px-4 text-orange-700 py-2 md:py-3 rounded-2xl font-bold text-center w-fit font-mono">
                       {time}
                     </p>
                   </div>
