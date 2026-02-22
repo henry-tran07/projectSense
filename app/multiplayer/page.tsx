@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useMemo, useState } from "react";
 import {
   database,
@@ -11,13 +12,15 @@ import {
 } from "@/firebase/config";
 import { onValue, ref, remove, update } from "firebase/database";
 import { useAuth } from "../hooks/useAuth";
-import { HiRefresh } from "react-icons/hi";
-import MathComponent from "../components/MathComponent";
-import { FaCrown } from "react-icons/fa";
-import { ChevronDownIcon } from "@chakra-ui/icons";
-import { Menu, MenuButton, Button, MenuList, MenuItem, ChakraProvider } from "@chakra-ui/react";
 import { problemSet } from "../utils/problemGenerator";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+
+import MultiplayerMenu from "./components/MultiplayerMenu";
+import LobbySelect from "./components/LobbySelect";
+import GameLobby from "./components/GameLobby";
+import ActiveGame from "./components/ActiveGame";
+import GameOver from "./components/GameOver";
 
 export interface Player {
   questionsSolved: number;
@@ -61,65 +64,88 @@ export default function Multiplayer() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const router = useRouter();
 
+  // Set player ID from user email
   useEffect(() => {
     if (user?.email) {
       setEmail(user.email.substring(0, user.email.indexOf("@")));
     }
   }, [user]);
 
+  // Check answers
   useEffect(() => {
-    if (gameState && gameState.questions && userAns === gameState.questions[questionsSolved].ans) {
+    if (
+      gameState &&
+      gameState.questions &&
+      userAns === gameState.questions[questionsSolved].ans
+    ) {
       setQuestionsSolved(questionsSolved + 1);
-      const playerPositionRef = ref(database, `games/${gameId}/players/${playerId}`);
+      const playerPositionRef = ref(
+        database,
+        `games/${gameId}/players/${playerId}`
+      );
       update(playerPositionRef, { questionsSolved: questionsSolved + 1 });
       setUserAns("");
     }
   }, [userAns]);
 
-  const disableScroll = () => {
-    document.body.style.overflow = "hidden";
-  };
-
-  const enableScroll = () => {
-    document.body.style.overflow = "auto";
-  };
-
+  // Fetch available games
   useEffect(() => {
     const fetchAvailableGames = async () => {
-      const games = await getAvailableGames();
-      setAvailableGames(games);
+      try {
+        const games = await getAvailableGames();
+        setAvailableGames(games);
+      } catch (error) {
+        console.error("Failed to fetch available games:", error);
+        setAvailableGames([]);
+      }
     };
 
     fetchAvailableGames();
   }, [refresh]);
 
+  // Firebase game handlers
   const handleCreateGame = async () => {
-    const newGameId = await createGameSession();
-    await joinGameSession(newGameId, playerId, playerData);
-    setGameId(newGameId);
-    listenToGameUpdates(newGameId);
+    try {
+      const newGameId = await createGameSession();
+      await joinGameSession(newGameId, playerId, playerData);
+      setGameId(newGameId);
+      listenToGameUpdates(newGameId);
+    } catch (error) {
+      console.error("Failed to create game:", error);
+    }
   };
 
   const handleJoinGame = async (gameId: string) => {
-    await joinGameSession(gameId, playerId, { questionsSolved: 1 });
-    setQuestionsSolved(1);
-    setGameId(gameId);
-    listenToGameUpdates(gameId);
+    try {
+      await joinGameSession(gameId, playerId, { questionsSolved: 1 });
+      setQuestionsSolved(1);
+      setGameId(gameId);
+      listenToGameUpdates(gameId);
+    } catch (error) {
+      console.error("Failed to join game:", error);
+    }
   };
 
   const handleEndGame = async () => {
     if (gameId) {
-      await endGameSession(gameId);
-      setGameState(null);
-      setGameId(null);
+      try {
+        await endGameSession(gameId);
+        setGameState(null);
+        setGameId(null);
+      } catch (error) {
+        console.error("Failed to end game:", error);
+      }
     }
   };
 
   const handleStartGame = async () => {
     if (gameId) {
-      await startGameSession(gameId);
-      await setQuestions(gameId, String(currentBoard));
-      // Optionally, you may want to fetch the updated game state here after starting the game
+      try {
+        await startGameSession(gameId);
+        await setQuestions(gameId, String(currentBoard));
+      } catch (error) {
+        console.error("Failed to start game:", error);
+      }
     }
   };
 
@@ -132,29 +158,34 @@ export default function Multiplayer() {
       }
     });
   };
+
+  // Handle game state changes
   useEffect(() => {
     if (gameState && gameState.state === "in_progress") {
       setStopTimer(false);
-      setStartTime(Date.now()); // Reset the startTime to the current timestamp
+      setStartTime(Date.now());
       setElapsedTime(0);
     } else if (gameState && gameState.state === "ended") {
       setStopTimer(true);
-      setStartTime(Date.now()); // Reset the startTime to the current timestamp
+      setStartTime(Date.now());
       setElapsedTime(0);
       setUserAns("");
       const gameRef = ref(database, `games/${gameId}`);
       update(gameRef, { state: "ended" });
-      gameState
-        ? Object.keys(gameState.players).map((playerIdd) => {
-            gameState.players[playerIdd]?.questionsSolved === 6 ? setWinner(playerIdd) : null;
-          })
-        : null;
+      if (gameState) {
+        Object.keys(gameState.players).forEach((playerIdd) => {
+          if (gameState.players[playerIdd]?.questionsSolved === 6) {
+            setWinner(playerIdd);
+          }
+        });
+      }
       remove(gameRef);
     } else if (gameState && gameState.state === "end_clicked") {
       setIndex(0);
     }
   }, [gameState?.state]);
 
+  // Timer logic
   useEffect(() => {
     let animationFrameId: number;
 
@@ -172,19 +203,22 @@ export default function Multiplayer() {
     };
   }, [startTime, stopTimer]);
 
+  // Handle game completion
   useEffect(() => {
     if (questionsSolved === 6) {
       const gameRef = ref(database, `games/${gameId}`);
       update(gameRef, { state: "ended" });
-      gameState
-        ? Object.keys(gameState.players).map((playerId) => {
-            gameState.players[playerId]?.questionsSolved === 6 ? setWinner(playerId) : null;
-          })
-        : null;
+      if (gameState) {
+        Object.keys(gameState.players).forEach((playerId) => {
+          if (gameState.players[playerId]?.questionsSolved === 6) {
+            setWinner(playerId);
+          }
+        });
+      }
       setTimeout(() => {
         remove(gameRef);
         setIndex(0);
-      }, 7500); // 10000 milliseconds = 10 seconds
+      }, 7500);
     }
   }, [questionsSolved]);
 
@@ -198,291 +232,108 @@ export default function Multiplayer() {
       .padStart(2, "0")}.${milliseconds.toString().padStart(2, "0")}`;
   };
 
+  // Leave game helper
+  const handleLeaveGame = () => {
+    if (gameId) {
+      const playerRef = ref(
+        database,
+        `games/${gameId}/players/${playerId}`
+      );
+      remove(playerRef);
+      setGameState(null);
+      setGameId(null);
+      setQuestionsSolved(1);
+    }
+    setIndex(0);
+  };
+
+  // Leave game from active game (uses sanitized player ID)
+  const handleLeaveActiveGame = () => {
+    if (gameId) {
+      const playerRef = ref(
+        database,
+        `games/${gameId}/players/${playerId.replace(/[.#$[\]]/g, "_")}`
+      );
+      remove(playerRef);
+      setGameState(null);
+      setGameId(null);
+      setQuestionsSolved(1);
+    }
+    setIndex(0);
+  };
+
   return (
-    <ChakraProvider>
-      <div className="min-h-screen bg-orange-300 flex flex-col items-center font-mono">
-        <button
-          onClick={() => router.push("/home")}
-          className="absolute top-2 md:top-4 left-2 md:left-4 font-extrabold text-orange-300 text-3xl md:text-5xl underline bg-white px-2 md:px-4 py-1 md:py-2 border border-gray-300 rounded"
-        >
-          Project Sense
-        </button>
-        {index === 0 ? (
-          <div className="gap-y-8 md:gap-y-4 -mt-8 md:mt-0 font-mono text-white text-[3.25rem] md:text-8xl font-extrabold items-start justify-center flex flex-col fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11/12 md:w-auto">
-            <button
-              className="relative group "
-              onClick={() => {
-                setIndex(1);
-                setRefresh(refresh + 1);
+    <div className="min-h-screen bg-orange-300 flex flex-col items-center font-mono">
+      <Button
+        variant="ghost"
+        onClick={() => router.push("/home")}
+        className="absolute top-2 md:top-4 left-2 md:left-4 font-extrabold text-orange-300 text-3xl md:text-5xl underline bg-white px-2 md:px-4 py-1 md:py-2 border border-gray-300 rounded h-auto hover:bg-gray-100"
+      >
+        Project Sense
+      </Button>
+
+      {index === 0 ? (
+        <MultiplayerMenu
+          onFindGame={() => {
+            setIndex(1);
+            setRefresh(refresh + 1);
+          }}
+          onCreateGame={() => {
+            setIndex(2);
+            handleCreateGame();
+            setQuestionsSolved(1);
+          }}
+        />
+      ) : index === 1 ? (
+        <LobbySelect
+          availableGames={availableGames}
+          onRefresh={() => setRefresh(refresh + 1)}
+          onBack={handleLeaveGame}
+          onJoinGame={(id) => {
+            handleJoinGame(id);
+            setIndex(2);
+          }}
+        />
+      ) : (
+        <div className="w-screen">
+          {gameState && gameState.state === "in_progress" ? (
+            <ActiveGame
+              gameState={gameState}
+              questionsSolved={questionsSolved}
+              userAns={userAns}
+              elapsedTime={elapsedTime}
+              trick={trick}
+              onBack={handleLeaveActiveGame}
+              onAnswerChange={setUserAns}
+              formatTime={formatTime}
+            />
+          ) : gameState && gameState.state === "ended" ? (
+            <GameOver winner={winner} onBack={handleLeaveGame} />
+          ) : (
+            <GameLobby
+              gameId={gameId}
+              gameState={gameState}
+              currentBoard={currentBoard}
+              keys={keys}
+              onBack={handleLeaveGame}
+              onStartGame={() => {
+                handleStartGame();
+                setStopTimer(false);
+                setStartTime(Date.now());
+                setElapsedTime(0);
               }}
-            >
-              FIND GAME
-              <span className="absolute  -bottom-1 left-0 w-0 h-2 bg-white transition-all group-hover:w-full duration-700"></span>
-            </button>
-            <button
-              className="relative group"
-              onClick={() => {
-                setIndex(2);
-                handleCreateGame();
-                setQuestionsSolved(1);
-              }}
-            >
-              CREATE GAME
-              <span className="absolute -bottom-1 left-0 w-0 h-2 bg-white transition-all group-hover:w-full duration-700"></span>
-            </button>
-          </div>
-        ) : index === 1 ? (
-          <div>
-            <button
-              onClick={() => {
-                setIndex(0);
+              onEndGame={() => {
                 if (gameId) {
-                  const playerRef = ref(database, `games/${gameId}/players/${playerId}`);
-                  remove(playerRef); // Remove the player from the game session
-                  setGameState(null);
-                  setGameId(null);
-                  setQuestionsSolved(1);
-                  setIndex(0);
+                  const gameRef = ref(database, `games/${gameId}`);
+                  update(gameRef, { state: "end_clicked" });
+                  remove(gameRef);
                 }
               }}
-              className="hover:bg-gray-300 mt-16 md:mt-24 bg-white w-fit text-2xl md:text-4xl font-extrabold text-orange-300 text-left ml-3 md:ml-8 rounded-3xl p-2 px-4"
-            >
-              {"<"}
-            </button>
-            <div className="   w-screen mt-1 md:-mt-24 text-center text-white font-extrabold text-3xl md:text-7xl underline">
-              LOBBY SELECT
-              <div className=" absolute w-3/4 md:w-3/5  rounded-2xl   shadow-xl border-8 border-orange-500 bottom-4 h-[calc(80vh-2rem)] left-1/2 transform -translate-x-1/2 bg-white text-black text-4xl p-4 overflow-auto">
-                <button
-                  className="items-center gap-x-2 flex flex-row justify-center mb-4 ml-auto  text-3xl font-semibold text-black "
-                  onClick={() => setRefresh(refresh + 1)}
-                >
-                  REFRESH <HiRefresh />
-                </button>
-                <hr className="text-black mt-4 w-full mb-4 "></hr>
-                {availableGames.length > 0 ? (
-                  <ul className="flex flex-wrap gap-x-8 ">
-                    {availableGames.map(([id, game]) => (
-                      <li key={id} className="">
-                        <button
-                          key={id + ""}
-                          className="underline underline-offset-2 decoration-[2px] hover:decoration-[3px]  "
-                          onClick={() => {
-                            handleJoinGame(id);
-                            setIndex(2);
-                          }}
-                        >
-                          {id}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-center font-semibold text-black text-3xl mt-4 mb-4">
-                    No available games. Create a new one or try Refreshing!
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="w-screen">
-            {gameState && gameState.state === "in_progress" ? (
-              <div>
-                <div className="absolute flex flex-col right-0 text-right p-4 justify-between">
-                  {gameState ? (
-                    Object.keys(gameState.players).map((playerId, index) => (
-                      <>
-                        <div
-                          key={index}
-                          className="flex flex-row items-center justify-between text-right"
-                        >
-                          <label className="mr-2 font-semibold text-lg text-slate-100">
-                            {playerId}
-                          </label>
-                          <progress
-                            className="progress progress-info w-72 h-4"
-                            value={gameState.players[playerId]?.questionsSolved - 1}
-                            max="5"
-                          ></progress>
-                        </div>
-                      </>
-                    ))
-                  ) : (
-                    <></>
-                  )}
-                </div>
-                <button
-                  onClick={() => {
-                    setIndex(0);
-                    if (gameId) {
-                      const playerRef = ref(
-                        database,
-                        `games/${gameId}/players/${playerId.replace(/[.#$[\]]/g, "_")}`
-                      );
-                      remove(playerRef); // Remove the player from the game session
-                      setGameState(null);
-                      setGameId(null);
-                      setQuestionsSolved(1);
-                      setIndex(0);
-                    }
-                  }}
-                  className="hover:bg-gray-300 mt-16 md:mt-24 bg-white w-fit text-2xl md:text-4xl font-extrabold text-orange-300 text-left ml-3 md:ml-8 rounded-3xl p-2 px-4"
-                >
-                  {"<"}
-                </button>
-                <div className="   w-screen text-center text-white font-extrabold text-5xl md:text-7xl">
-                  {formatTime(elapsedTime)}
-                </div>
-                <div
-                  className={`font-semibold ${
-                    trick === "26" ||
-                    trick === "27" ||
-                    trick === "35" ||
-                    trick === "42" ||
-                    trick === "43"
-                      ? "text-[2.0rem] md:text-[2.3rem]"
-                      : "text-[3.0rem] md:text-6xl"
-                  } w-screen flex flex-col md:flex-row text-white justify-center items-center gap-x-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2  overflow-wrap break-words whitespace-pre-wrap`}
-                >
-                  <>
-                    <div className={`text-center md:text-left ml-[0px] `}>
-                      <MathComponent
-                        math={gameState.questions ? gameState.questions[questionsSolved].body : ""}
-                      />
-                    </div>
-                    <div className="text-center md:text-left">=</div>
-                    <input
-                      autoFocus={true}
-                      className="pb-2 w-2/3 md:w-1/5 focus:outline-none border-b-2 text-center bg-orange-300"
-                      type="text"
-                      value={userAns}
-                      onChange={(e) => {
-                        setUserAns(e.target.value);
-                      }}
-                    />
-                  </>
-                </div>
-              </div>
-            ) : gameState && gameState.state === "ended" ? (
-              <div>
-                <button
-                  onClick={() => {
-                    setIndex(0);
-                    if (gameId) {
-                      const playerRef = ref(database, `games/${gameId}/players/${playerId}`);
-                      remove(playerRef); // Remove the player from the game session
-                      setGameState(null);
-                      setGameId(null);
-                      setQuestionsSolved(1);
-                      setIndex(0);
-                    }
-                  }}
-                  className="hover:bg-gray-300 mt-16 md:mt-24 bg-white w-fit text-2xl md:text-4xl font-extrabold text-orange-300 text-left ml-3 md:ml-8 rounded-3xl p-2 px-4"
-                >
-                  {"<"}
-                </button>
-                <div className="gap-y-4 font-mono text-white text-5xl md:text-8xl font-extrabold gap-x-4 items-center  justify-center flex flex-row fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-screen">
-                  <FaCrown />
-                  Winner: {winner}
-                </div>
-              </div>
-            ) : (
-              <>
-                <button
-                  onClick={() => {
-                    setIndex(0);
-                    if (gameId) {
-                      const playerRef = ref(database, `games/${gameId}/players/${playerId}`);
-                      remove(playerRef); // Remove the player from the game session
-                      setGameState(null);
-                      setGameId(null);
-                      setQuestionsSolved(1);
-                      setIndex(0);
-                    }
-                  }}
-                  className="hover:bg-gray-300 mt-16 md:mt-24 bg-white w-fit text-2xl md:text-4xl font-extrabold text-orange-300 text-left ml-3 md:ml-8 rounded-3xl p-2 px-4"
-                >
-                  {"<"}
-                </button>
-                <div className=" mt-0 md:-mt-20 w-screen text-center text-white font-extrabold text-4xl md:text-7xl">
-                  LOBBY {gameId}
-                  <div className="mx-auto h-[60vh] overflow-y-auto overflow-x-hidden w-3/4 md:w-1/2 mt-2 md:mt-0 rounded-2xl shadow-xl border-8 border-orange-500  bg-white text-black text-2xl md:text-4xl p-4">
-                    <p className="text-left underline">Players:</p>
-                    <div className="text-left mr-auto mt-3">
-                      {gameState
-                        ? Object.keys(gameState.players).map((playerId) => (
-                            <div key={playerId} className="text-left ml-4">
-                              <p>{playerId}</p>
-                            </div>
-                          ))
-                        : "Empty"}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex gap-x-4 flex-row justify-center items-center w-screen">
-                  <button
-                    className="hover:bg-gray-300 mt-4  block font-extrabold px-6 py-3 bg-white text-orange-300  transition-all duration-300 text-2xl rounded"
-                    onClick={() => {
-                      handleStartGame();
-                      setStopTimer(false);
-                      setStartTime(Date.now()); // Reset the startTime to the current timestamp
-                      setElapsedTime(0);
-                    }} // Reset the elapsedTime to 0 }}
-                  >
-                    Start Game
-                  </button>
-                  <button
-                    className="hover:bg-gray-300 mt-4  block font-extrabold px-6 py-3 bg-white text-orange-300  transition-all duration-300 text-2xl rounded"
-                    onClick={() => {
-                      const gameRef = ref(database, `games/${gameId}`);
-                      update(gameRef, { state: "end_clicked" });
-                      remove(gameRef);
-                    }}
-                  >
-                    End Game
-                  </button>
-                </div>
-                <Menu onOpen={disableScroll} onClose={enableScroll}>
-                  <MenuButton
-                    color="rgb(253, 186, 116)"
-                    backgroundColor="white"
-                    className="mt-4 left-1/2 transform -translate-x-1/2 text-5xl "
-                    as={Button}
-                    rightIcon={<ChevronDownIcon />}
-                  >
-                    <MathComponent math={problemSet[currentBoard]} />
-                  </MenuButton>
-
-                  <MenuList
-                    maxH="10rem"
-                    overflowY="auto"
-                    style={{
-                      maxHeight: "10rem",
-                      width: "100%",
-                      maxWidth: "20rem",
-                    }}
-                  >
-                    {keys.map((value) =>
-                      currentBoard !== value ? (
-                        <MenuItem
-                          onClick={() => {
-                            setCurrentBoard(value);
-                          }}
-                          key={value}
-                        >
-                          <MathComponent math={problemSet[value]} />
-                        </MenuItem>
-                      ) : (
-                        <></>
-                      )
-                    )}
-                  </MenuList>
-                </Menu>
-              </>
-            )}
-          </div>
-        )}
-      </div>
-    </ChakraProvider>
+              onBoardChange={setCurrentBoard}
+            />
+          )}
+        </div>
+      )}
+    </div>
   );
 }
