@@ -3,10 +3,6 @@ import { useState } from "react";
 import { SpinnerDotted } from "spinners-react";
 import { FaPaperPlane } from "react-icons/fa";
 import { test2 } from "./data";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
-
 import { updateGeneratedQuestions } from "../components/QuestionCount";
 
 interface TestQuestion {
@@ -44,10 +40,6 @@ function Gemini() {
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        generationConfig: { responseMimeType: "application/json" },
-      });
       const prompt1 = `You are tasked with generating an answer key for a UIL Number Sense test. For each problem in the JSON object provided, compute the correct answer and return the answer key as a JSON object with the same keys but with the computed answers. Make sure to:
       1. Format fractions as "a/b" or "a b/c" for mixed numbers
       2. Round decimal answers to 2 decimal places
@@ -56,9 +48,14 @@ function Gemini() {
       5. For word problems, provide the exact numerical answer
 
       Here is the list of math problems: ${JSON.stringify(text)}`;
-      const result = await model.generateContent([prompt1]);
-      const accumulatedText = result.response.text();
-      const json = JSON.parse(accumulatedText);
+
+      const answerKeyResponse = await fetch("/api/generate-test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: prompt1 }),
+      });
+      if (!answerKeyResponse.ok) throw new Error("Failed to generate answer key");
+      const json = await answerKeyResponse.json();
       setAnswerKey(json);
 
       // Convert user answers to a more comparable format
@@ -89,9 +86,13 @@ function Gemini() {
       User's Answers: ${JSON.stringify(userJson)}
       Last Question Answered: ${lastQuestion}`;
 
-      const grade = await model.generateContent([prompt2]);
-      const gradeText = grade.response.text();
-      const gradeResult = JSON.parse(gradeText);
+      const gradeResponse = await fetch("/api/grade-test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: prompt2 }),
+      });
+      if (!gradeResponse.ok) throw new Error("Failed to grade test");
+      const gradeResult = await gradeResponse.json();
       setResults(gradeResult);
     } catch (error) {
       setSubmitting(false);
@@ -168,10 +169,6 @@ function Gemini() {
     updateGeneratedQuestions(40);
     try {
       setGenerating(true);
-      const model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        generationConfig: { responseMimeType: "application/json" },
-      });
       const prompt = `Create a UIL Number Sense test with 40 questions. Follow these guidelines:
       1. Questions should be solvable mentally without calculators
       2. Include a mix of:
@@ -193,9 +190,14 @@ function Gemini() {
       ${JSON.stringify(test2)}
       8. DO NOT COPY THE EXAMPLE NUMBERS, MAKE UP YOUR OWN QUESTIONS
       Return the test as a JSON object where keys are question numbers and values are the questions.`;
-      const result = await model.generateContent([prompt]);
-      const accumulatedText = result.response.text();
-      const json = JSON.parse(accumulatedText);
+
+      const response = await fetch("/api/generate-test", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
+      if (!response.ok) throw new Error("Failed to generate test");
+      const json = await response.json();
       setText(json);
     } catch (error) {
       setGenerating(false);
