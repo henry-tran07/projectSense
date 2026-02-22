@@ -36,10 +36,10 @@ export default function ActiveGame({
               key={index}
               className="flex flex-row items-center justify-between text-right gap-x-2"
             >
-              <label className="mr-2 font-semibold text-lg text-slate-100">{playerId}</label>
+              <label className="mr-2 font-bold text-lg text-white drop-shadow-sm">{playerId}</label>
               <Progress
                 value={((gameState.players[playerId]?.questionsSolved - 1) / 5) * 100}
-                className="w-72 h-4 bg-orange-100"
+                className="w-72 h-4 bg-white/30"
               />
             </div>
           ))}
@@ -49,13 +49,13 @@ export default function ActiveGame({
       <Button
         variant="ghost"
         onClick={onBack}
-        className="mt-16 md:mt-24 bg-white hover:bg-gray-300 w-fit text-2xl md:text-4xl font-extrabold text-orange-300 text-left ml-3 md:ml-8 rounded-3xl p-2 px-4 h-auto"
+        className="mt-16 md:mt-24 glass-button w-fit text-2xl md:text-4xl font-extrabold text-orange-700 text-left ml-3 md:ml-8 rounded-2xl p-2 px-4 h-auto"
       >
         {"<"}
       </Button>
 
       {/* Timer */}
-      <div className="w-screen text-center text-white font-extrabold text-5xl md:text-7xl">
+      <div className="w-screen text-center text-white drop-shadow-lg font-extrabold text-5xl md:text-7xl">
         {formatTime(elapsedTime)}
       </div>
 
@@ -75,7 +75,7 @@ export default function ActiveGame({
         <div className="text-center md:text-left">=</div>
         <input
           autoFocus={true}
-          className="pb-2 w-2/3 md:w-1/5 focus:outline-none border-b-2 text-center bg-orange-300"
+          className="pb-2 w-2/3 md:w-1/5 focus:outline-none border-b-2 border-white/60 text-center bg-white/20 backdrop-blur-sm text-white"
           type="text"
           value={userAns}
           onChange={(e) => onAnswerChange(e.target.value)}

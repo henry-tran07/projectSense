@@ -14,6 +14,7 @@ import { onValue, ref, remove, update } from "firebase/database";
 import { useAuth } from "../hooks/useAuth";
 import { problemSet } from "../utils/problemGenerator";
 import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -278,24 +279,25 @@ export default function Multiplayer() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-orange-300 flex items-center justify-center">
+      <div className="min-h-screen page-gradient flex items-center justify-center">
         <div className="space-y-4 w-full max-w-md px-4">
-          <Skeleton className="h-12 w-full bg-white/40" />
-          <Skeleton className="h-8 w-3/4 bg-white/40" />
-          <Skeleton className="h-8 w-1/2 bg-white/40" />
+          <Skeleton className="h-12 w-full bg-white/30" />
+          <Skeleton className="h-8 w-3/4 bg-white/30" />
+          <Skeleton className="h-8 w-1/2 bg-white/30" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-orange-300 flex flex-col items-center font-mono">
+    <div className="min-h-screen page-gradient flex flex-col items-center font-mono">
       <Button
         variant="ghost"
+        size="icon"
         onClick={() => router.push("/home")}
-        className="absolute top-2 md:top-4 left-2 md:left-4 font-extrabold text-orange-300 text-3xl md:text-5xl underline bg-white px-2 md:px-4 py-1 md:py-2 border border-gray-300 rounded h-auto hover:bg-gray-100"
+        className="absolute top-4 left-4 glass-button rounded-full h-10 w-10 text-orange-700"
       >
-        Project Sense
+        <ArrowLeft className="h-5 w-5" />
       </Button>
 
       {error && (
