@@ -82,6 +82,24 @@
   }
 }
 
+@layer components {
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl rounded-2xl;
+  }
+  .glass-header {
+    @apply bg-white/60 backdrop-blur-xl border-b border-white/30 shadow-sm;
+  }
+  .glass-button {
+    @apply bg-white/80 backdrop-blur-sm border border-white/30 shadow-md hover:bg-white/90 hover:shadow-lg transition-all duration-200;
+  }
+  .glass-pill {
+    @apply bg-white/50 backdrop-blur-sm border border-white/20 rounded-full px-3 py-1;
+  }
+  .page-gradient {
+    @apply bg-gradient-to-br from-orange-400 via-orange-300 to-amber-200 min-h-screen;
+  }
+}
+
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
