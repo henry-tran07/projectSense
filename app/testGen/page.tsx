@@ -170,11 +170,11 @@ function TestGenerator() {
   // Initial view: generate button or loading spinner
   if (text === null) {
     return (
-      <main className="w-full min-h-screen bg-orange-300 flex flex-col items-center justify-center gap-6 p-4">
+      <main className="w-full page-gradient flex flex-col items-center justify-center gap-6 p-4">
         <Button
           variant="ghost"
           onClick={() => router.push("/home")}
-          className="absolute top-4 left-4 text-white hover:bg-orange-400"
+          className="absolute top-4 left-4 glass-button text-orange-700 rounded-xl"
         >
           <ArrowLeft className="h-5 w-5 mr-2" />
           Back to Home
@@ -189,10 +189,10 @@ function TestGenerator() {
             }}
           />
         ) : generating ? (
-          <Card className="bg-orange-400/50 border-orange-200">
+          <Card className="glass-card">
             <CardContent className="flex flex-col items-center gap-4 p-8">
-              <Loader2 className="h-16 w-16 animate-spin text-white" />
-              <p className="text-white text-xl font-medium">Generating UIL Number Sense Test...</p>
+              <Loader2 className="h-16 w-16 animate-spin text-orange-600" />
+              <p className="text-orange-700 text-xl font-medium">Generating UIL Number Sense Test...</p>
             </CardContent>
           </Card>
         ) : (
@@ -202,7 +202,7 @@ function TestGenerator() {
               run();
             }}
             size="lg"
-            className="bg-white text-orange-400 hover:bg-gray-100 text-2xl md:text-4xl font-bold py-6 px-8 md:py-8 md:px-12 rounded-2xl shadow-lg h-auto transition-transform hover:scale-105"
+            className="glass-card text-orange-700 hover:shadow-2xl text-2xl md:text-4xl font-bold py-6 px-8 md:py-8 md:px-12 h-auto transition-all duration-300 hover:-translate-y-1"
           >
             Generate UIL Number Sense Test
             <Send className="h-6 w-6 md:h-8 md:w-8 ml-3" />
@@ -215,7 +215,7 @@ function TestGenerator() {
   // Grading view: spinner while grading
   if (submitting && results === null) {
     return (
-      <main className="w-full min-h-screen bg-orange-300 flex items-center justify-center p-4">
+      <main className="w-full page-gradient flex items-center justify-center p-4">
         {error ? (
           <ErrorDisplay
             onRetry={() => {
@@ -224,10 +224,10 @@ function TestGenerator() {
             }}
           />
         ) : (
-          <Card className="bg-orange-400/50 border-orange-200">
+          <Card className="glass-card">
             <CardContent className="flex flex-col items-center gap-4 p-8">
-              <Loader2 className="h-16 w-16 animate-spin text-white" />
-              <p className="text-white text-xl font-medium">Grading your test...</p>
+              <Loader2 className="h-16 w-16 animate-spin text-orange-600" />
+              <p className="text-orange-700 text-xl font-medium">Grading your test...</p>
             </CardContent>
           </Card>
         )}
@@ -238,17 +238,17 @@ function TestGenerator() {
   // Results view: answer key, feedback, score
   if (submitting && results !== null) {
     return (
-      <main className="w-full min-h-screen bg-orange-300 font-mono">
-        <div className="flex items-center justify-between p-4 border-b-2 border-white">
+      <main className="w-full page-gradient font-mono">
+        <div className="glass-header flex items-center justify-between p-4">
           <Button
             variant="ghost"
             onClick={() => router.push("/home")}
-            className="text-white hover:bg-orange-400"
+            className="glass-button text-orange-700 rounded-xl"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
             Home
           </Button>
-          <h1 className="text-3xl md:text-5xl font-bold text-white text-center flex-1">
+          <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-md text-center flex-1">
             Answer Key
           </h1>
           <div className="w-20" />
@@ -256,16 +256,16 @@ function TestGenerator() {
 
         <div className="w-full flex flex-col lg:flex-row gap-4 p-4">
           {/* Score panel */}
-          <Card className="lg:w-[30%] bg-orange-400/80 border-orange-200 lg:order-last">
+          <Card className="lg:w-[30%] glass-card bg-orange-500/30 lg:order-last">
             <CardHeader className="text-center">
-              <CardTitle className="text-white text-2xl underline">Score</CardTitle>
+              <CardTitle className="text-orange-700 text-2xl">Score</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center gap-3">
-              <p className="text-5xl md:text-7xl font-bold text-white">{results?.score || 0}</p>
-              <p className="text-lg md:text-xl text-white text-center">
+              <p className="text-5xl md:text-7xl font-bold text-orange-700">{results?.score || 0}</p>
+              <p className="text-lg md:text-xl text-gray-800 text-center">
                 Questions Correct: {results?.number_correct || 0}
               </p>
-              <p className="text-sm md:text-base text-orange-100 text-center mt-2">
+              <p className="text-sm md:text-base text-gray-500 text-center mt-2">
                 Make sure to check yourself! AI could be wrong.
               </p>
             </CardContent>
@@ -274,9 +274,9 @@ function TestGenerator() {
           {/* Answers comparison */}
           <div className="lg:w-[70%] flex flex-col md:flex-row gap-4">
             {/* Your Answers */}
-            <Card className="flex-1 bg-white/90 border-orange-200 max-h-[70vh] overflow-y-auto">
-              <CardHeader className="sticky top-0 bg-white/95 z-10">
-                <CardTitle className="text-orange-500 text-xl md:text-2xl text-center">
+            <Card className="flex-1 glass-card max-h-[70vh] overflow-y-auto">
+              <CardHeader className="sticky top-0 bg-white/70 backdrop-blur-xl z-10">
+                <CardTitle className="text-orange-700 text-xl md:text-2xl text-center">
                   Your Answers
                 </CardTitle>
               </CardHeader>
@@ -302,9 +302,9 @@ function TestGenerator() {
             </Card>
 
             {/* Correct Answers */}
-            <Card className="flex-1 bg-white/90 border-orange-200 max-h-[70vh] overflow-y-auto">
-              <CardHeader className="sticky top-0 bg-white/95 z-10">
-                <CardTitle className="text-orange-500 text-xl md:text-2xl text-center">
+            <Card className="flex-1 glass-card max-h-[70vh] overflow-y-auto">
+              <CardHeader className="sticky top-0 bg-white/70 backdrop-blur-xl z-10">
+                <CardTitle className="text-orange-700 text-xl md:text-2xl text-center">
                   Correct Answers
                 </CardTitle>
               </CardHeader>
@@ -328,20 +328,20 @@ function TestGenerator() {
 
   // Test view: 40 questions with answer inputs
   return (
-    <main className="w-full min-h-screen bg-orange-300 font-mono">
-      <div className="sticky top-0 z-20 bg-orange-300 border-b border-orange-400 p-4">
+    <main className="w-full page-gradient font-mono">
+      <div className="sticky top-0 z-20 glass-header p-4">
         <div className="flex items-center justify-between max-w-4xl mx-auto">
           <Button
             variant="ghost"
             onClick={() => router.push("/home")}
-            className="text-white hover:bg-orange-400"
+            className="glass-button text-orange-700 rounded-xl"
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
             Home
           </Button>
           <div className="text-center">
-            <h1 className="text-2xl md:text-4xl font-bold text-white">UIL Number Sense Practice</h1>
-            <p className="text-sm md:text-base text-orange-100">
+            <h1 className="text-2xl md:text-4xl font-bold text-white drop-shadow-md">UIL Number Sense Practice</h1>
+            <p className="text-sm md:text-base text-white/70">
               Press Tab to go to the next question faster
             </p>
           </div>
@@ -374,7 +374,7 @@ function TestGenerator() {
             item ? (
               <Card
                 key={index}
-                className="bg-white/95 border-orange-200 hover:shadow-md transition-shadow"
+                className="glass-card hover:shadow-2xl transition-all duration-200"
               >
                 <CardContent className="flex items-center gap-3 p-3 md:p-4">
                   <span className="text-orange-400 font-bold text-lg md:text-xl min-w-[3rem] text-center shrink-0">
@@ -394,12 +394,12 @@ function TestGenerator() {
           )}
       </div>
 
-      <div className="sticky bottom-0 bg-orange-300 border-t border-orange-400 p-4">
+      <div className="sticky bottom-0 glass-header border-t border-b-0 p-4">
         <div className="max-w-4xl mx-auto flex justify-center">
           <Button
             onClick={handleSubmit}
             size="lg"
-            className="bg-white text-orange-500 hover:bg-gray-100 text-xl md:text-2xl font-bold py-4 px-10 rounded-xl shadow-lg h-auto transition-transform hover:scale-105"
+            className="glass-card text-orange-700 hover:shadow-2xl text-xl md:text-2xl font-bold py-4 px-10 h-auto transition-all duration-200 hover:-translate-y-0.5"
           >
             Submit Test
             <Send className="h-5 w-5 ml-2" />
