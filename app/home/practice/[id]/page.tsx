@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FaInfinity } from "react-icons/fa";
-import { VscDebugRestart } from "react-icons/vsc";
+import { ArrowLeft, RotateCcw, Timer, Trophy } from "lucide-react";
 import Trick from "@/app/components/Trick";
 import { db } from "@/firebase/config";
 import { collection, doc, getDoc } from "firebase/firestore";
@@ -10,8 +10,12 @@ import { useAuth } from "@/app/hooks/useAuth";
 import { problemSet } from "@/app/utils/problemGenerator";
 import updateLeaderboard from "@/app/components/updateLeaderboard";
 import MathComponent from "@/app/components/MathComponent";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
-const Home = ({ params }: { params: { id: string } }) => {
+const PracticePage = ({ params }: { params: { id: string } }) => {
   const MAX_QUESTION_COUNT = 5;
   const router = useRouter();
   const { user, loading } = useAuth("/");
@@ -92,119 +96,172 @@ const Home = ({ params }: { params: { id: string } }) => {
         return i;
       }
     }
-    return -1; // Return -1 if no non-zero number is found
+    return -1;
   }
 
   function averageTimeInSeconds(totalTime: string, numberOfItems: number) {
-    // Helper function to convert time string (MM:ss.mm) to total seconds
     function timeStringToSeconds(timeString: string) {
       const [minutes, seconds] = timeString.split(":");
       const [wholeSeconds, milliseconds] = seconds.split(".");
 
       return (
-        parseInt(minutes) * 60 + // Convert minutes to seconds
-        parseInt(wholeSeconds) + // Add seconds
-        parseInt(milliseconds || "0") / 100 // Add fractional seconds (milliseconds to seconds)
+        parseInt(minutes) * 60 +
+        parseInt(wholeSeconds) +
+        parseInt(milliseconds || "0") / 100
       );
     }
 
-    // Convert total time to seconds
     const totalSeconds = timeStringToSeconds(totalTime);
-
-    // Calculate the average time in seconds
     const averageSeconds = totalSeconds / numberOfItems;
 
     return Math.round(averageSeconds * 100) / 100;
   }
 
+  const handleRestart = () => {
+    setQuestionTimes([]);
+    setStoredQuestions([]);
+    setQuestions(0);
+    setStartTime(Date.now());
+    setElapsedTime(0);
+    setStopTimer(false);
+  };
+
+  const isComplete = questions >= 5 && questionLimited && !randomizer;
+
   return (
-    <main className="w-screen min-h-screen flex-col flex bg-orange-300">
-      <div className="bg-white text-3xl p-4 font-bold text-orange-300 w-full flex flex-row justify-center">
-        <button
-          onClick={() => {
-            router.push("/home");
-          }}
-          className="absolute left-3 text-white hover:bg-orange-500 hover:text-gray-300 text-xl md:text-4xl px-3 rounded-2xl pb-1 bg-orange-300"
-        >
-          {"⌂"}
-        </button>
-        <p className="w-[90%] md:w-auto ml-[-7.5px] md:ml-[-10px] text-center text-xl md:text-3xl">
-          <MathComponent math={randomizer ? "Randomizer" : problemSet[Number(params.id)]} />
-        </p>
-      </div>
-      <div className="mt-3 justify-center flex gap-x-4 items-center">
-        {randomizer ? (
-          <></>
-        ) : !questionLimited ? (
-          <div className="text-orange-300 bg-white text-4xl font-semibold rounded-2xl py-1 px-3">
-            <FaInfinity />
+    <main className="w-screen min-h-screen flex flex-col bg-orange-50">
+      {/* Sticky header */}
+      <header className="sticky top-0 z-30 bg-white border-b shadow-sm">
+        <div className="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto w-full">
+          {/* Home button */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => router.push("/home")}
+            className="text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </Button>
+
+          {/* Trick name */}
+          <div className="flex-1 text-center text-xl md:text-2xl font-bold text-orange-500">
+            <MathComponent
+              math={randomizer ? "Randomizer" : problemSet[Number(params.id)]}
+            />
           </div>
-        ) : (
-          <>
-            <div className="text-orange-300 bg-white text-2xl font-semibold rounded-2xl py-1 px-3 ml-[-8px] md:ml-[0px]">
-              {questions}/{MAX_QUESTION_COUNT}
-            </div>
-            <div className="text-center bg-white w-[8.3rem] text-orange-300 rounded-2xl text-2xl py-1 px-3 font-semibold ml-[-5.5px] md:ml-[0px]">
-              {formatTime(elapsedTime)}
-            </div>
-          </>
-        )}
-      </div>
-      <Trick
-        rightLeft={rightLeft}
-        trick={params.id}
-        question={questions}
-        setQuestion={setQuestions}
-        questionLimited={questionLimited}
-        setQuestionTiming={setQuestionTimes}
-        setStoredQuestion={setStoredQuestions}
-      />
-      {questions >= 5 ? (
-        <div className="font-semibold text-6xl w-screen flex text-white flex-col justify-center items-center gap-x-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          <h2 className="text-orange-300 md:text-4xl text-2xl bg-white rounded-2xl shadow-lg p-3 ">
-            {formatTime(elapsedTime)}
-          </h2>
-          <div className="mt-6 flex flex-row items-center justify-center gap-x-8">
-            <div>
-              {questionTimes.map((item: string, index: number) => (
-                <div className="mt-4 text-xl md:text-3xl flex flex-row justify-between" key={index}>
-                  <p className="mr-8">
-                    <MathComponent math={index + 1 + ")    " + storedQuestions[index]} />
-                  </p>
-                </div>
-              ))}
-            </div>
-            <div className="border-l-white border-l-2">
-              {questionTimes.map((item: string, index: number) => (
-                <div
-                  className="ml-8 mt-4 md:mt-3 text-xl md:text-3xl flex flex-row justify-between"
-                  key={index}
+
+          {/* Question counter & timer */}
+          <div className="flex items-center gap-2">
+            {randomizer ? null : !questionLimited ? (
+              <Badge
+                variant="secondary"
+                className="bg-orange-100 text-orange-600 text-lg px-3 py-1"
+              >
+                <FaInfinity />
+              </Badge>
+            ) : (
+              <>
+                <Badge
+                  variant="secondary"
+                  className="bg-orange-100 text-orange-600 text-sm font-semibold px-2.5 py-1"
                 >
-                  <MathComponent math={item.substring(getFirstNonZeroIndex(item)) + "s"} />
+                  {questions}/{MAX_QUESTION_COUNT}
+                </Badge>
+                <div className="flex items-center gap-1 bg-orange-100 text-orange-600 rounded-md px-2.5 py-1 text-sm font-mono font-semibold">
+                  <Timer className="h-3.5 w-3.5" />
+                  {formatTime(elapsedTime)}
                 </div>
-              ))}
-            </div>
-            <button
-              onClick={() => {
-                setQuestionTimes([]);
-                setStoredQuestions([]);
-                setQuestions(0);
-                setStartTime(Date.now()); // Reset the startTime to the current timestamp
-                setElapsedTime(0); // Reset the elapsedTime to 0
-                setStopTimer(false); // Ensure timer resumes after reset
-              }}
-              className="ml-6 hover:bg-gray-200 bg-white mt-8 text-orange-300 p-0 md:p-3 rounded-xl md:rounded-3xl"
-            >
-              <VscDebugRestart />
-            </button>
+              </>
+            )}
           </div>
-          <p className="mt-8 md:mt-4 text-3xl md:text-4xl font-mono">
-            <u>{averageTimeInSeconds(formatTime(elapsedTime), 5)}</u>s per question
-          </p>
         </div>
-      ) : null}
+      </header>
+
+      {/* Practice area */}
+      {!isComplete && (
+        <div className="flex-1 flex items-center justify-center">
+          <Trick
+            rightLeft={rightLeft}
+            trick={params.id}
+            question={questions}
+            setQuestion={setQuestions}
+            questionLimited={questionLimited}
+            setQuestionTiming={setQuestionTimes}
+            setStoredQuestion={setStoredQuestions}
+          />
+        </div>
+      )}
+
+      {/* Results panel */}
+      {isComplete && (
+        <div className="flex-1 flex items-center justify-center px-4 py-8">
+          <Card className="w-full max-w-lg shadow-lg">
+            <CardHeader className="text-center pb-2">
+              <div className="flex justify-center mb-2">
+                <Trophy className="h-8 w-8 text-orange-500" />
+              </div>
+              <CardTitle className="text-2xl md:text-3xl text-orange-500">
+                {formatTime(elapsedTime)}
+              </CardTitle>
+              <p className="text-sm text-muted-foreground mt-1">Total Time</p>
+            </CardHeader>
+
+            <Separator />
+
+            <CardContent className="pt-4">
+              {/* Per-question breakdown */}
+              <div className="space-y-2">
+                {questionTimes.map((item: string, index: number) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between py-1.5 px-2 rounded-md hover:bg-orange-50 transition-colors"
+                  >
+                    <div className="flex items-center gap-2 text-sm md:text-base">
+                      <span className="text-muted-foreground font-mono w-5 text-right">
+                        {index + 1}.
+                      </span>
+                      <MathComponent math={storedQuestions[index]} />
+                    </div>
+                    <span className="text-sm md:text-base font-mono text-orange-600 font-medium">
+                      {item.substring(getFirstNonZeroIndex(item))}s
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <Separator className="my-4" />
+
+              {/* Average time */}
+              <div className="text-center">
+                <p className="text-lg md:text-xl font-semibold text-foreground">
+                  <span className="underline underline-offset-4 decoration-orange-400">
+                    {averageTimeInSeconds(formatTime(elapsedTime), 5)}
+                  </span>
+                  <span className="text-muted-foreground font-normal ml-1.5">
+                    s per question
+                  </span>
+                </p>
+              </div>
+
+              <Separator className="my-4" />
+
+              {/* Restart button */}
+              <div className="flex justify-center">
+                <Button
+                  onClick={handleRestart}
+                  variant="outline"
+                  className="gap-2 text-orange-500 border-orange-300 hover:bg-orange-50 hover:text-orange-600"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                  Try Again
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </main>
   );
 };
 
-export default Home;
+export default PracticePage;
