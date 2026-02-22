@@ -132,7 +132,6 @@ async function getAvailableGames(): Promise<[string, GameData][]> {
 
 function endGameSession(gameId: string): Promise<void> {
   const gameRef = ref(database, `games/${gameId}`);
-  remove(gameRef);
   return update(gameRef, { state: "ended" });
 }
 

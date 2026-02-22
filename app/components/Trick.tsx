@@ -27,6 +27,7 @@ const Trick: React.FC<TrickProps> = ({
   const [elapsedTime, setElapsedTime] = useState(0);
   const [pair, setPair] = useState({ body: "", ans: "temp" });
   const [type, setType] = useState("");
+  const [trickId, setTrickId] = useState(trick);
   const [randomizer, setRandomizer] = useState(false);
   const [stopTimer, setStopTimer] = useState(false);
 
@@ -48,43 +49,55 @@ const Trick: React.FC<TrickProps> = ({
   }, [startTime, stopTimer]);
 
   useEffect(() => {
+    let currentTrickId = trick;
     if (trick === "randomizer") {
       setRandomizer(true);
-      trick = String(Math.floor(Math.random() * 52) + 1);
+      currentTrickId = String(Math.floor(Math.random() * 52) + 1);
+      setTrickId(currentTrickId);
+    } else {
+      setTrickId(trick);
     }
-    setPair(problemFunction[trick].function());
-    setType(problemFunction[trick].type);
+    setPair(problemFunction[currentTrickId].function());
+    setType(problemFunction[currentTrickId].type);
   }, [trick]);
 
   useEffect(() => {
-    if (trick === "13" || trick === "44") {
+    if (trickId === "13" || trickId === "44") {
       if (Math.abs(Number(userAns) - Number(pair["ans"])) <= Number(pair["ans"]) * 0.05) {
-        if (randomizer) trick = String(Math.floor(Math.random() * 52) + 1);
+        let nextTrickId = trickId;
+        if (randomizer) {
+          nextTrickId = String(Math.floor(Math.random() * 52) + 1);
+          setTrickId(nextTrickId);
+        }
         setQuestionTiming((prevTimes: string[]) => [...prevTimes, formatTime(elapsedTime)]);
         setStartTime(Date.now());
         setStoredQuestion((prevTimes: string[]) => [
           ...prevTimes,
           pair["body"] + " = " + pair["ans"],
         ]);
-        setPair(problemFunction[trick].function());
+        setPair(problemFunction[nextTrickId].function());
         setUserAns(""); // Reset user answer
         updateAnsweredQuestions();
         if (questionLimited && !randomizer) setQuestion(question + 1);
       }
     } else if (userAns === pair["ans"]) {
-      if (randomizer) trick = String(Math.floor(Math.random() * 52) + 1);
+      let nextTrickId = trickId;
+      if (randomizer) {
+        nextTrickId = String(Math.floor(Math.random() * 52) + 1);
+        setTrickId(nextTrickId);
+      }
       setQuestionTiming((prevTimes: string[]) => [...prevTimes, formatTime(elapsedTime)]);
       setStartTime(Date.now());
       setStoredQuestion((prevTimes: string[]) => [
         ...prevTimes,
         pair["body"] + " = " + pair["ans"],
       ]);
-      setPair(problemFunction[trick].function());
+      setPair(problemFunction[nextTrickId].function());
       setUserAns(""); // Reset user answer
       updateAnsweredQuestions();
       if (questionLimited && !randomizer) setQuestion(question + 1);
     }
-  }, [userAns, pair, trick, setQuestion, question, questionLimited]);
+  }, [userAns, pair, trickId, setQuestion, question, questionLimited]);
 
   const formatTime = (time: number) => {
     const milliseconds = Math.floor((time % 1000) / 10);
@@ -99,12 +112,12 @@ const Trick: React.FC<TrickProps> = ({
   return (
     <div
       className={` font-semibold ${
-        trick === "19" ||
-        trick === "26" ||
-        trick === "27" ||
-        trick === "35" ||
-        trick === "42" ||
-        trick === "43"
+        trickId === "19" ||
+        trickId === "26" ||
+        trickId === "27" ||
+        trickId === "35" ||
+        trickId === "42" ||
+        trickId === "43"
           ? "text-[1.7rem] md:text-[2.3rem]"
           : "text-[2.6rem] md:text-6xl"
       } w-screen flex flex-col md:flex-row text-white justify-center items-center gap-x-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 break-words`}

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaInfinity } from "react-icons/fa";
 import { ArrowLeft, RotateCcw, Timer, Trophy } from "lucide-react";
 import Trick from "@/app/components/Trick";
@@ -26,11 +26,11 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
   const [rightLeft, setRightLeft] = useState(false);
   const [questionLimited, setQuestionLimited] = useState(true);
   const [autoEnter, setAutoEnter] = useState(true);
-  const colRef = collection(db, "users");
   const [questions, setQuestions] = useState(0);
   const [stopTimer, setStopTimer] = useState(false);
   const [questionTimes, setQuestionTimes] = useState<string[]>([]);
   const [storedQuestions, setStoredQuestions] = useState<string[]>([]);
+  const elapsedTimeRef = useRef(0);
 
   useEffect(() => {
     if (params.id === "randomizer") setRandomizer(true);
@@ -40,6 +40,7 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
     const loadSettings = async () => {
       try {
         if (user?.email) {
+          const colRef = collection(db, "users");
           const docRef = doc(colRef, user.email);
           const docSnap = await getDoc(docRef);
           if (docSnap.exists()) {
@@ -56,14 +57,16 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
     if (!loading) {
       loadSettings();
     }
-  }, [user, loading, colRef]);
+  }, [user, loading]);
 
   useEffect(() => {
     let animationFrameId: number;
 
     const updateElapsedTime = () => {
       if (!stopTimer) {
-        setElapsedTime(Date.now() - startTime);
+        const now = Date.now() - startTime;
+        setElapsedTime(now);
+        elapsedTimeRef.current = now;
         animationFrameId = requestAnimationFrame(updateElapsedTime);
       }
     };
@@ -80,10 +83,10 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
       setStopTimer(true);
       if (user) {
         const email: string = user.email ? user.email : "";
-        updateLeaderboard(email, db, Number(params.id), formatTime(elapsedTime));
+        updateLeaderboard(email, db, Number(params.id), formatTime(elapsedTimeRef.current));
       }
     }
-  }, [questions, questionLimited, user?.email, params.id, elapsedTime, user, randomizer]);
+  }, [questions, questionLimited, user?.email, params.id, user, randomizer]);
 
   const formatTime = (time: number) => {
     const milliseconds = Math.floor((time % 1000) / 10);

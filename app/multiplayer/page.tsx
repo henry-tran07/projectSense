@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   database,
   createGameSession,
@@ -65,6 +65,7 @@ export default function Multiplayer() {
   const [elapsedTime, setElapsedTime] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const unsubscribeRef = useRef<(() => void) | null>(null);
 
   // Set player ID from user email
   useEffect(() => {
@@ -158,14 +159,29 @@ export default function Multiplayer() {
   };
 
   const listenToGameUpdates = (gameId: string) => {
+    // Clean up any previous listener before creating a new one
+    if (unsubscribeRef.current) {
+      unsubscribeRef.current();
+    }
     const gameRef = ref(database, `games/${gameId}`);
-    onValue(gameRef, (snapshot) => {
+    const unsubscribe = onValue(gameRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
         setGameState(data as GameState);
       }
     });
+    unsubscribeRef.current = unsubscribe;
   };
+
+  // Clean up Firebase listener on unmount
+  useEffect(() => {
+    return () => {
+      if (unsubscribeRef.current) {
+        unsubscribeRef.current();
+        unsubscribeRef.current = null;
+      }
+    };
+  }, []);
 
   // Handle game state changes
   useEffect(() => {
