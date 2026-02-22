@@ -11,7 +11,7 @@ const updateAnsweredQuestions = async () => {
       total: increment(1), // Assumes the field you're incrementing is 'count'
     });
   } catch (error) {
-    // update failed
+    console.error("Failed to update answered questions count:", error);
   }
 };
 
@@ -23,7 +23,7 @@ const updateGeneratedQuestions = async (num: number) => {
       total: increment(num),
     });
   } catch (error) {
-    // update failed
+    console.error("Failed to update generated questions count:", error);
   }
 };
 

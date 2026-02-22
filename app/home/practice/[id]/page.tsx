@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const PracticePage = ({ params }: { params: { id: string } }) => {
   const MAX_QUESTION_COUNT = 5;
@@ -37,15 +38,19 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
 
   useEffect(() => {
     const loadSettings = async () => {
-      if (user?.email) {
-        const docRef = doc(colRef, user.email);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setQuestionLimited(data?.questionLimited ?? true);
-          setRightLeft(data?.rightLeft ?? false);
-          setAutoEnter(data?.autoEnter ?? true);
+      try {
+        if (user?.email) {
+          const docRef = doc(colRef, user.email);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setQuestionLimited(data?.questionLimited ?? true);
+            setRightLeft(data?.rightLeft ?? false);
+            setAutoEnter(data?.autoEnter ?? true);
+          }
         }
+      } catch (error) {
+        console.error("Error loading user settings:", error);
       }
     };
     if (!loading) {
@@ -127,6 +132,18 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
   };
 
   const isComplete = questions >= 5 && questionLimited && !randomizer;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-orange-50 flex items-center justify-center">
+        <div className="space-y-4 w-full max-w-md px-4">
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-8 w-3/4" />
+          <Skeleton className="h-8 w-1/2" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="w-screen min-h-screen flex flex-col bg-orange-50">

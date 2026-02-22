@@ -15,6 +15,7 @@ import { useAuth } from "../hooks/useAuth";
 import { problemSet } from "../utils/problemGenerator";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import MultiplayerMenu from "./components/MultiplayerMenu";
 import LobbySelect from "./components/LobbySelect";
@@ -62,6 +63,7 @@ export default function Multiplayer() {
   const [stopTimer, setStopTimer] = useState(true);
   const [startTime, setStartTime] = useState(Date.now());
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   // Set player ID from user email
@@ -105,6 +107,7 @@ export default function Multiplayer() {
 
   // Firebase game handlers
   const handleCreateGame = async () => {
+    setError(null);
     try {
       const newGameId = await createGameSession();
       await joinGameSession(newGameId, playerId, playerData);
@@ -112,10 +115,12 @@ export default function Multiplayer() {
       listenToGameUpdates(newGameId);
     } catch (error) {
       console.error("Failed to create game:", error);
+      setError("Failed to create game. Please try again.");
     }
   };
 
   const handleJoinGame = async (gameId: string) => {
+    setError(null);
     try {
       await joinGameSession(gameId, playerId, { questionsSolved: 1 });
       setQuestionsSolved(1);
@@ -123,6 +128,7 @@ export default function Multiplayer() {
       listenToGameUpdates(gameId);
     } catch (error) {
       console.error("Failed to join game:", error);
+      setError("Failed to join game. It may no longer be available.");
     }
   };
 
@@ -134,6 +140,7 @@ export default function Multiplayer() {
         setGameId(null);
       } catch (error) {
         console.error("Failed to end game:", error);
+        setError("Failed to end game. Please try again.");
       }
     }
   };
@@ -145,6 +152,7 @@ export default function Multiplayer() {
         await setQuestions(gameId, String(currentBoard));
       } catch (error) {
         console.error("Failed to start game:", error);
+        setError("Failed to start game. Please try again.");
       }
     }
   };
@@ -262,6 +270,18 @@ export default function Multiplayer() {
     setIndex(0);
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-orange-300 flex items-center justify-center">
+        <div className="space-y-4 w-full max-w-md px-4">
+          <Skeleton className="h-12 w-full bg-white/40" />
+          <Skeleton className="h-8 w-3/4 bg-white/40" />
+          <Skeleton className="h-8 w-1/2 bg-white/40" />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-orange-300 flex flex-col items-center font-mono">
       <Button
@@ -271,6 +291,18 @@ export default function Multiplayer() {
       >
         Project Sense
       </Button>
+
+      {error && (
+        <div className="absolute top-16 md:top-20 left-1/2 -translate-x-1/2 z-50 bg-red-100 border border-red-300 text-red-700 px-4 py-2 rounded-lg shadow-md text-sm font-sans max-w-sm text-center">
+          {error}
+          <button
+            onClick={() => setError(null)}
+            className="ml-2 font-bold hover:text-red-900"
+          >
+            x
+          </button>
+        </div>
+      )}
 
       {index === 0 ? (
         <MultiplayerMenu

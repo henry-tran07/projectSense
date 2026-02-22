@@ -18,6 +18,7 @@ import { SiVitest } from "react-icons/si";
 import { MdOutlineMail, MdOutlineHelpOutline } from "react-icons/md";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
   const router = useRouter();
@@ -33,8 +34,12 @@ export default function Home() {
 
   useEffect(() => {
     const loadData = async () => {
-      const newData = await loadMore(page);
-      setKeys(newData);
+      try {
+        const newData = await loadMore(page);
+        setKeys(newData);
+      } catch (error) {
+        console.error("Error loading trick data:", error);
+      }
     };
     loadData();
   }, [page]);
@@ -56,22 +61,44 @@ export default function Home() {
 
   useEffect(() => {
     const loadSettings = async () => {
-      if (user?.email) {
-        const docRef = doc(colRef, user.email);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setQuestionLimited(data.questionLimited);
-          setRightLeft(data.rightLeft);
-          setAutoEnter(data.autoEnter);
+      try {
+        if (user?.email) {
+          const docRef = doc(colRef, user.email);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setQuestionLimited(data.questionLimited);
+            setRightLeft(data.rightLeft);
+            setAutoEnter(data.autoEnter);
+          }
         }
+      } catch (error) {
+        console.error("Error loading user settings:", error);
+      } finally {
+        setSettingsLoading(false);
       }
-      setSettingsLoading(false);
     };
     if (!authLoading) {
       loadSettings();
     }
   }, [user, authLoading, colRef]);
+
+  if (authLoading || settingsLoading) {
+    return (
+      <div className="min-h-screen bg-orange-50 flex items-center justify-center">
+        <div className="space-y-4 w-full max-w-md px-4">
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-8 w-3/4" />
+          <Skeleton className="h-8 w-1/2" />
+          <div className="grid grid-cols-1 gap-4 mt-8">
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-20 w-full" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <main className="absolute bg-orange-50 min-h-screen w-full flex flex-col items-center overflow-x-hidden overflow-y-auto">
