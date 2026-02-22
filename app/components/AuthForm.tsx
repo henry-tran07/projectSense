@@ -64,9 +64,9 @@ export function AuthForm({ mode, onSubmit, onGoogleSignIn, error }: AuthFormProp
   const displayError = validationError || error;
 
   return (
-    <Card className="w-full max-w-md border-0 shadow-lg">
+    <Card className="glass-card w-full max-w-md">
       <CardHeader className="text-center pb-2">
-        <CardTitle className="text-3xl font-bold font-sans">{title}</CardTitle>
+        <CardTitle className="text-3xl font-bold font-sans text-orange-700">{title}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-5 pt-2">
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -107,7 +107,7 @@ export function AuthForm({ mode, onSubmit, onGoogleSignIn, error }: AuthFormProp
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-400 hover:bg-orange-500 text-white text-base font-semibold h-11"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white text-base font-semibold h-11 shadow-lg"
           >
             {loading ? (
               <>

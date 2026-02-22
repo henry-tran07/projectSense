@@ -77,14 +77,14 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="min-h-screen w-full bg-gradient-to-br from-orange-50 to-orange-100">
+    <main className="page-gradient w-full">
       {/* User Guide link */}
       <div className="absolute top-4 right-4 z-10">
         <button
           onClick={() => {
             window.open("https://project-sense.vercel.app/manual.pdf");
           }}
-          className="flex items-center gap-2 text-orange-500 hover:text-orange-600 font-bold text-lg font-sans underline underline-offset-4 hover:decoration-2 transition-colors"
+          className="glass-pill flex items-center gap-2 text-orange-700 hover:text-orange-800 font-bold text-sm font-sans transition-colors"
         >
           User Guide
           <MdMenuBook className="text-2xl" />
@@ -94,10 +94,10 @@ export default function RegisterPage() {
       <div className="flex flex-col md:flex-row min-h-screen">
         {/* Left side: Hero */}
         <div className="flex flex-col items-center justify-center w-full md:w-1/2 px-6 py-12 md:py-0">
-          <h1 className="font-sans text-5xl md:text-6xl font-bold text-orange-400">
+          <h1 className="font-sans text-5xl md:text-6xl font-bold text-white drop-shadow-lg">
             Project Sense
           </h1>
-          <p className="mt-3 text-base md:text-lg text-gray-600 text-center max-w-md">
+          <p className="mt-3 text-base md:text-lg text-white/80 text-center max-w-md">
             Your go-to platform for mastering mental math and number sense
           </p>
         </div>
