@@ -130,7 +130,7 @@ const Trick: React.FC<TrickProps> = ({
           <div className="text-center md:text-left w-full md:w-auto">=</div>
           <input
             autoFocus={true}
-            className="pb-2 w-2/3 md:w-1/5 focus:outline-none border-b-2 text-center bg-orange-300"
+            className="pb-2 w-2/3 md:w-1/5 focus:outline-none border-b-2 border-white/60 text-center bg-white/20 backdrop-blur-sm text-white"
             type="text"
             value={userAns}
             onChange={(e) => {

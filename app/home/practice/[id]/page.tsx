@@ -134,7 +134,7 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-orange-50 flex items-center justify-center">
+      <div className="min-h-screen page-gradient flex items-center justify-center">
         <div className="space-y-4 w-full max-w-md px-4">
           <Skeleton className="h-12 w-full" />
           <Skeleton className="h-8 w-3/4" />
@@ -145,22 +145,22 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
   }
 
   return (
-    <main className="w-screen min-h-screen flex flex-col bg-orange-50">
+    <main className="w-screen min-h-screen flex flex-col page-gradient">
       {/* Sticky header */}
-      <header className="sticky top-0 z-30 bg-white border-b shadow-sm">
+      <header className="sticky top-0 z-30 glass-header">
         <div className="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto w-full">
           {/* Home button */}
           <Button
             variant="ghost"
             size="icon"
             onClick={() => router.push("/home")}
-            className="text-orange-500 hover:text-orange-600 hover:bg-orange-50"
+            className="text-white hover:text-white/80 hover:bg-white/20"
           >
             <ArrowLeft className="h-5 w-5" />
           </Button>
 
           {/* Trick name */}
-          <div className="flex-1 text-center text-xl md:text-2xl font-bold text-orange-500">
+          <div className="flex-1 text-center text-xl md:text-2xl font-bold text-white drop-shadow-md">
             <MathComponent math={randomizer ? "Randomizer" : problemSet[Number(params.id)]} />
           </div>
 
@@ -169,7 +169,7 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
             {randomizer ? null : !questionLimited ? (
               <Badge
                 variant="secondary"
-                className="bg-orange-100 text-orange-600 text-lg px-3 py-1"
+                className="glass-pill text-orange-700 text-lg"
               >
                 <FaInfinity />
               </Badge>
@@ -177,11 +177,11 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
               <>
                 <Badge
                   variant="secondary"
-                  className="bg-orange-100 text-orange-600 text-sm font-semibold px-2.5 py-1"
+                  className="glass-pill text-orange-700 text-sm font-semibold"
                 >
                   {questions}/{MAX_QUESTION_COUNT}
                 </Badge>
-                <div className="flex items-center gap-1 bg-orange-100 text-orange-600 rounded-md px-2.5 py-1 text-sm font-mono font-semibold">
+                <div className="flex items-center gap-1 glass-pill text-orange-700 text-sm font-mono font-semibold">
                   <Timer className="h-3.5 w-3.5" />
                   {formatTime(elapsedTime)}
                 </div>
@@ -209,12 +209,12 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
       {/* Results panel */}
       {isComplete && (
         <div className="flex-1 flex items-center justify-center px-4 py-8">
-          <Card className="w-full max-w-lg shadow-lg">
+          <Card className="w-full max-w-lg glass-card shadow-2xl">
             <CardHeader className="text-center pb-2">
               <div className="flex justify-center mb-2">
-                <Trophy className="h-8 w-8 text-orange-500" />
+                <Trophy className="h-8 w-8 text-orange-600" />
               </div>
-              <CardTitle className="text-2xl md:text-3xl text-orange-500">
+              <CardTitle className="text-2xl md:text-3xl text-orange-700">
                 {formatTime(elapsedTime)}
               </CardTitle>
               <p className="text-sm text-muted-foreground mt-1">Total Time</p>
@@ -261,8 +261,7 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
               <div className="flex justify-center">
                 <Button
                   onClick={handleRestart}
-                  variant="outline"
-                  className="gap-2 text-orange-500 border-orange-300 hover:bg-orange-50 hover:text-orange-600"
+                  className="gap-2 glass-button text-orange-700 rounded-xl"
                 >
                   <RotateCcw className="h-4 w-4" />
                   Try Again
