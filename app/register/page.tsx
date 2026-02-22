@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { auth, db } from "@/firebase/config";
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { MdMenuBook } from "react-icons/md";
 import { AuthForm } from "../components/AuthForm";
+import { PageShell } from "../components/PageShell";
 
 export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
@@ -77,37 +79,31 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="page-gradient w-full">
-      {/* Floating decorative orbs */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="absolute -top-20 -left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute top-1/3 -right-16 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl animate-float-slow" />
-        <div className="absolute -bottom-32 left-1/4 w-80 h-80 bg-orange-200/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-      </div>
-
+    <PageShell>
       {/* User Guide link */}
       <div className="absolute top-4 right-4 z-10">
         <button
           onClick={() => {
             window.open("https://project-sense.vercel.app/manual.pdf");
           }}
-          className="glass-pill flex items-center gap-2 text-orange-700 hover:text-orange-800 font-bold text-sm transition-colors"
+          className="glass-card-elevated rounded-full hover:scale-105 transition-transform flex items-center gap-2 text-orange-700 hover:text-orange-800 font-bold text-sm px-4 py-2"
         >
           User Guide
           <MdMenuBook className="text-xl" />
         </button>
       </div>
 
-      <div className="flex flex-col md:flex-row min-h-screen relative z-[1]">
+      <div className="flex flex-col md:flex-row min-h-screen">
         {/* Left side: Hero */}
         <div className="flex flex-col items-center justify-center w-full md:w-1/2 px-6 py-12 md:py-0">
           <div className="animate-fade-in-up">
-            <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight" style={{ textShadow: '0 4px 24px rgba(154, 52, 18, 0.3)' }}>
+            <h1 className="font-display text-6xl md:text-8xl font-bold text-white tracking-tight" style={{ textShadow: '0 4px 24px rgba(154, 52, 18, 0.3)' }}>
               Project Sense
             </h1>
-            <p className="mt-4 text-base md:text-lg text-white/70 text-center max-w-md leading-relaxed">
+            <p className="animate-fade-in-up mt-4 text-base md:text-lg text-white/70 text-center max-w-md leading-relaxed" style={{ animationDelay: '0.15s', animationFillMode: 'both' }}>
               Your go-to platform for mastering mental math and number sense
             </p>
+            <Image src="/psrobot.png" alt="" width={80} height={80} className="animate-fade-in-up mx-auto mt-6 opacity-80 animate-float" style={{ animationDelay: '0.3s', animationFillMode: 'both' }} />
           </div>
         </div>
 
@@ -123,6 +119,6 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
-    </main>
+    </PageShell>
   );
 }

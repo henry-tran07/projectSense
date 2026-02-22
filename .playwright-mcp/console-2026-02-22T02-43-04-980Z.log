@@ -1,0 +1,2 @@
+[   92022ms] [ERROR] Cross-Origin-Opener-Policy policy would block the window.closed call. @ webpack-internal:///(app-pages-browser)/./node_modules/firebase/node_modules/@firebase/auth/dist/esm2017/index-68602d24.js:9276
+[   92022ms] [ERROR] Cross-Origin-Opener-Policy policy would block the window.closed call. @ webpack-internal:///(app-pages-browser)/./node_modules/firebase/node_modules/@firebase/auth/dist/esm2017/index-68602d24.js:9276

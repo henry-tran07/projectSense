@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import MathComponent from "../../components/MathComponent";
@@ -28,34 +29,23 @@ export default function ActiveGame({
 }: ActiveGameProps) {
   return (
     <div>
-      {/* Player progress bars */}
-      <div className="absolute flex flex-col right-0 text-right p-4 justify-between">
-        {gameState &&
-          Object.keys(gameState.players).map((playerId, index) => (
-            <div
-              key={index}
-              className="flex flex-row items-center justify-between text-right gap-x-2"
-            >
-              <label className="mr-2 font-bold text-lg text-white drop-shadow-sm">{playerId}</label>
-              <Progress
-                value={((gameState.players[playerId]?.questionsSolved - 1) / 5) * 100}
-                className="w-72 h-4 bg-white/30"
-              />
-            </div>
-          ))}
-      </div>
-
       {/* Back button */}
-      <Button
-        variant="ghost"
-        onClick={onBack}
-        className="mt-16 md:mt-24 glass-button w-fit text-2xl md:text-4xl font-extrabold text-orange-700 text-left ml-3 md:ml-8 rounded-2xl p-2 px-4 h-auto"
-      >
-        {"<"}
+      <Button variant="ghost" onClick={onBack} className="glass-button rounded-full h-10 w-10 text-orange-700 absolute top-4 left-4">
+        <ArrowLeft className="h-5 w-5" />
       </Button>
 
+      {/* Player progress bars */}
+      <div className="w-full max-w-2xl mx-auto px-4 mt-4 space-y-2">
+        {gameState && Object.keys(gameState.players).map((playerId, index) => (
+          <div key={index} className="flex items-center gap-3">
+            <label className="font-bold text-sm text-white drop-shadow-sm w-24 truncate">{playerId}</label>
+            <Progress value={((gameState.players[playerId]?.questionsSolved - 1) / 5) * 100} className="flex-1 h-3 bg-white/30" />
+          </div>
+        ))}
+      </div>
+
       {/* Timer */}
-      <div className="w-screen text-center text-white drop-shadow-lg font-extrabold text-5xl md:text-7xl">
+      <div className="w-full text-center text-white drop-shadow-lg font-extrabold text-5xl md:text-7xl mt-4">
         {formatTime(elapsedTime)}
       </div>
 
@@ -65,9 +55,9 @@ export default function ActiveGame({
           trick === "26" || trick === "27" || trick === "35" || trick === "42" || trick === "43"
             ? "text-[2.0rem] md:text-[2.3rem]"
             : "text-[3.0rem] md:text-6xl"
-        } w-screen flex flex-col md:flex-row text-white justify-center items-center gap-x-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 overflow-wrap break-words whitespace-pre-wrap`}
+        } flex-1 flex flex-col md:flex-row items-center justify-center gap-4 px-4 text-white overflow-wrap break-words whitespace-pre-wrap`}
       >
-        <div className="text-center md:text-left ml-[0px]">
+        <div className="text-center md:text-left">
           <MathComponent
             math={gameState.questions ? gameState.questions[questionsSolved].body : ""}
           />
@@ -75,7 +65,7 @@ export default function ActiveGame({
         <div className="text-center md:text-left">=</div>
         <input
           autoFocus={true}
-          className="pb-2 w-2/3 md:w-1/5 focus:outline-none border-b-2 border-white/60 text-center bg-white/20 backdrop-blur-sm text-white"
+          className="glass-input text-center font-mono text-3xl md:text-5xl text-white w-2/3 md:w-1/4"
           type="text"
           value={userAns}
           onChange={(e) => onAnswerChange(e.target.value)}

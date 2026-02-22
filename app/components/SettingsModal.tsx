@@ -43,12 +43,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="ml-5 md:text-5xl text-4xl hover:scale-110 ease-in-out duration-200">
-          <IoMdSettings className="text-4xl text-orange-500 hover:text-orange-400" />
+        <button className="glass-button rounded-full h-10 w-10 flex items-center justify-center text-orange-600 hover:text-orange-700">
+          <IoMdSettings className="h-5 w-5" />
         </button>
       </DialogTrigger>
 
-      <DialogContent className="w-[90vw] max-w-md sm:max-w-lg rounded-2xl glass-card p-6 bg-white/80">
+      <DialogContent className="w-[90vw] max-w-md sm:max-w-lg rounded-2xl glass-card glass-card-elevated p-6 bg-white/80">
         <DialogHeader className="text-center">
           <DialogTitle className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-700 text-center">
             Settings
@@ -64,6 +64,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           <div className="text-center text-lg py-4">Loading...</div>
         ) : (
           <div className="space-y-5 px-2 sm:px-6">
+            <p className="text-xs uppercase tracking-wider text-orange-600/60 font-semibold px-2 sm:px-6">Gameplay</p>
             {/* Answer Right to Left toggle */}
             <div className="flex items-center justify-between">
               <Label
@@ -104,6 +105,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 
         <Separator className="my-1" />
 
+        <p className="text-xs uppercase tracking-wider text-orange-600/60 font-semibold">Account</p>
+
         {/* Email display */}
         <p className="text-center text-sm md:text-base text-muted-foreground">
           Currently signed in as: {user?.email ?? ""}
@@ -112,10 +115,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         {/* Sign out button */}
         <div className="flex justify-center">
           <Button
-            variant="destructive"
+            variant="outline"
             size="lg"
             onClick={logout}
-            className="gap-2 text-base font-bold"
+            className="gap-2 text-base font-bold text-orange-700 border-orange-300 hover:bg-orange-50"
           >
             Sign out
             <TbLogout2 className="h-5 w-5" />

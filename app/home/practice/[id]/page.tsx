@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { FaInfinity } from "react-icons/fa";
-import { ArrowLeft, RotateCcw, Timer, Trophy } from "lucide-react";
+import { RotateCcw, Timer, Trophy } from "lucide-react";
 import Trick from "@/app/components/Trick";
 import { db } from "@/firebase/config";
 import { collection, doc, getDoc } from "firebase/firestore";
@@ -10,6 +10,8 @@ import { useAuth } from "@/app/hooks/useAuth";
 import { problemSet } from "@/app/utils/problemGenerator";
 import updateLeaderboard from "@/app/components/updateLeaderboard";
 import MathComponent from "@/app/components/MathComponent";
+import { PageHeader } from "@/app/components/PageHeader";
+import { PageShell } from "@/app/components/PageShell";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -134,62 +136,41 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen page-gradient flex items-center justify-center">
+      <PageShell className="flex items-center justify-center">
         <div className="space-y-4 w-full max-w-md px-4">
           <Skeleton className="h-12 w-full" />
           <Skeleton className="h-8 w-3/4" />
           <Skeleton className="h-8 w-1/2" />
         </div>
-      </div>
+      </PageShell>
     );
   }
 
   return (
-    <main className="w-screen min-h-screen flex flex-col page-gradient">
-      {/* Sticky header */}
-      <header className="sticky top-0 z-30 glass-header">
-        <div className="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto w-full">
-          {/* Home button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => router.push("/home")}
-            className="text-white hover:text-white/80 hover:bg-white/20"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-
-          {/* Trick name */}
-          <div className="flex-1 text-center text-xl md:text-2xl font-bold text-white drop-shadow-md">
-            <MathComponent math={randomizer ? "Randomizer" : problemSet[Number(params.id)]} />
-          </div>
-
-          {/* Question counter & timer */}
+    <PageShell className="w-screen flex flex-col">
+      <PageHeader
+        title={<MathComponent math={randomizer ? "Randomizer" : problemSet[Number(params.id)]} />}
+        backHref="/home"
+        rightSlot={
           <div className="flex items-center gap-2">
             {randomizer ? null : !questionLimited ? (
-              <Badge
-                variant="secondary"
-                className="glass-pill text-orange-700 text-lg"
-              >
-                <FaInfinity />
-              </Badge>
+              <Badge variant="secondary" className="glass-pill text-orange-700 text-lg"><FaInfinity /></Badge>
             ) : (
               <>
-                <Badge
-                  variant="secondary"
-                  className="glass-pill text-orange-700 text-sm font-semibold"
-                >
-                  {questions}/{MAX_QUESTION_COUNT}
-                </Badge>
-                <div className="flex items-center gap-1 glass-pill text-orange-700 text-sm font-mono font-semibold">
+                <div className="flex items-center gap-1 glass-pill px-2 py-1">
+                  {Array.from({ length: MAX_QUESTION_COUNT }, (_, i) => (
+                    <div key={i} className={`w-2 h-2 rounded-full ${i < questions ? 'bg-orange-500' : 'bg-white/30'}`} />
+                  ))}
+                </div>
+                <div className={`flex items-center gap-1 glass-pill text-orange-700 text-sm font-mono font-semibold ${!stopTimer ? 'animate-pulse-glow' : ''}`}>
                   <Timer className="h-3.5 w-3.5" />
                   {formatTime(elapsedTime)}
                 </div>
               </>
             )}
           </div>
-        </div>
-      </header>
+        }
+      />
 
       {/* Practice area */}
       {!isComplete && (
@@ -209,12 +190,14 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
       {/* Results panel */}
       {isComplete && (
         <div className="flex-1 flex items-center justify-center px-4 py-8">
-          <Card className="w-full max-w-lg glass-card shadow-2xl">
+          <Card className="w-full max-w-lg glass-card-elevated animate-scale-in">
             <CardHeader className="text-center pb-2">
               <div className="flex justify-center mb-2">
-                <Trophy className="h-8 w-8 text-orange-600" />
+                <div className="bg-orange-100 rounded-full p-3">
+                  <Trophy className="h-12 w-12 text-orange-600" />
+                </div>
               </div>
-              <CardTitle className="text-2xl md:text-3xl text-orange-700">
+              <CardTitle className="font-display text-4xl md:text-5xl text-orange-700">
                 {formatTime(elapsedTime)}
               </CardTitle>
               <p className="text-sm text-muted-foreground mt-1">Total Time</p>
@@ -228,7 +211,8 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
                 {questionTimes.map((item: string, index: number) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between py-1.5 px-2 rounded-md hover:bg-orange-50 transition-colors"
+                    className="flex items-center justify-between py-1.5 px-2 rounded-md hover:bg-orange-50 transition-colors animate-count-up"
+                    style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'both' }}
                   >
                     <div className="flex items-center gap-2 text-sm md:text-base">
                       <span className="text-muted-foreground font-mono w-5 text-right">
@@ -261,7 +245,7 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
               <div className="flex justify-center">
                 <Button
                   onClick={handleRestart}
-                  className="gap-2 glass-button text-orange-700 rounded-xl"
+                  className="gap-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-6 py-2"
                 >
                   <RotateCcw className="h-4 w-4" />
                   Try Again
@@ -271,7 +255,7 @@ const PracticePage = ({ params }: { params: { id: string } }) => {
           </Card>
         </div>
       )}
-    </main>
+    </PageShell>
   );
 };
 

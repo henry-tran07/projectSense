@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DM_Sans, Space_Mono } from "next/font/google";
+import { DM_Sans, Outfit, Space_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import GoogleAnalytics from "./components/GoogleAnalytics";
@@ -7,6 +7,12 @@ import GoogleAnalytics from "./components/GoogleAnalytics";
 const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-body",
+  display: "swap",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-display",
   display: "swap",
 });
 
@@ -36,7 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <GoogleAnalytics />
-      <body className={`${dmSans.variable} ${spaceMono.variable} font-sans`}>
+      <body className={`${outfit.variable} ${dmSans.variable} ${spaceMono.variable} font-sans`}>
         {children}
         <Analytics />
       </body>

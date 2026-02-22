@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { Play } from "lucide-react";
 import MathComponent from "./MathComponent";
 import { problemSet } from "../utils/problemGenerator";
 import { videoMap } from "../utils/problemGenerator";
@@ -21,8 +22,8 @@ export const VideoModal: React.FC<videoModalProps> = ({ trick }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="hover:scale-105 hover:bg-orange-600/80 flex font-extrabold md:w-1/4 w-1/2 justify-center text-center items-center mt-auto h-full duration-200 ease-in-out text-4xl align-baseline text-white rounded-r-2xl bg-orange-500/80 p-4">
-          ?
+        <button className="flex items-center justify-center w-12 md:w-16 h-full bg-orange-500/60 hover:bg-orange-500/80 text-white rounded-r-2xl transition-all duration-200">
+          <Play className="h-5 w-5" />
         </button>
       </DialogTrigger>
 

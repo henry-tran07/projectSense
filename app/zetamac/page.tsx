@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useCallback } from "react";
 import { evaluate } from "mathjs";
+import { PageShell } from "../components/PageShell";
+import { PageHeader } from "../components/PageHeader";
 
 class MathGame {
   private question: string;
@@ -146,48 +148,56 @@ const MathGameComponent: React.FC = () => {
     setGameOver(false);
   }, []);
 
-  return (
-    <div className="relative min-h-screen flex flex-col page-gradient p-4">
-      {!gameOver && (
-        <>
-          <h1 className="absolute text-white top-4 left-1/2 transform -translate-x-1/2 text-3xl md:text-5xl font-bold drop-shadow-lg">
-            Zetamac
-          </h1>
-          <div className="absolute top-4 left-4 text-xl md:text-2xl font-semibold text-white drop-shadow-sm">
-            Score: {score}
-          </div>
-        </>
-      )}
-      {gameOver ? (
-        <div className="flex flex-col items-center justify-center flex-grow mt-16">
-          <div className="glass-card p-8 flex flex-col items-center gap-4 -mt-16">
-            <h2 className="text-4xl font-bold text-orange-700">Game Over</h2>
-            <p className="text-2xl text-gray-800">Your Score: {score}</p>
-            <Highscore highscore={highscore} />
-            <button onClick={handlePlayAgain} className="glass-button font-semibold mt-4 px-8 py-4 text-orange-700 rounded-xl text-lg">
+  if (gameOver) {
+    return (
+      <PageShell className="flex flex-col">
+        <PageHeader title="Zetamac" backHref="/home" />
+        <div className="flex-1 flex items-center justify-center px-4">
+          <div className="glass-card-elevated p-8 flex flex-col items-center gap-4 animate-scale-in max-w-md w-full">
+            <h2 className="font-display text-3xl font-bold text-orange-700">Game Over</h2>
+            <p className="font-display text-6xl md:text-8xl font-bold text-orange-700">{score}</p>
+            <p className="text-lg text-gray-600">points</p>
+            {score > highscore && (
+              <span className="text-amber-500 font-bold animate-count-up">New High Score!</span>
+            )}
+            <Highscore highscore={Math.max(score, highscore)} />
+            <button onClick={handlePlayAgain} className="bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl px-8 py-3 text-lg transition-all duration-200 active:scale-95">
               Play Again
             </button>
           </div>
         </div>
-      ) : (
-        <div className="flex flex-col items-center justify-center flex-grow -mt-16">
-          <div className="text-2xl font-semibold text-white drop-shadow-md -mt-16 mb-4">
-            Time Left: {timeLeft}
+      </PageShell>
+    );
+  }
+
+  return (
+    <PageShell className="flex flex-col">
+      <PageHeader
+        title="Zetamac"
+        backHref="/home"
+        rightSlot={
+          <div className="flex items-center gap-2">
+            <span className="glass-pill text-orange-700 text-sm font-semibold">Score: {score}</span>
+            <span className={`glass-pill text-sm font-mono font-semibold ${timeLeft < 30 ? 'text-red-500' : 'text-orange-700'}`}>
+              {timeLeft}s
+            </span>
           </div>
-          <div className="flex items-center">
-            <div className="text-5xl font-semibold text-white mr-4">{currentQuestion}</div>
-            <div className="text-[2.25rem] md:text-5xl font-semibold text-white mr-4">=</div>
-            <input
-              type="text"
-              value={userAnswer}
-              onChange={handleAnswerChange}
-              placeholder=""
-              className="text-5xl font-semibold text-white border-b-2 border-white/60 bg-white/10 backdrop-blur-sm outline-none w-32 md:w-64"
-            />
-          </div>
+        }
+      />
+      <div className="flex-1 flex flex-col items-center justify-center gap-6 px-4">
+        <div className="glass-surface p-8 rounded-2xl flex items-center gap-4">
+          <span className="font-display text-5xl md:text-7xl text-white font-semibold">{currentQuestion}</span>
+          <span className="text-4xl md:text-5xl text-white/80 font-semibold">=</span>
+          <input
+            type="text"
+            value={userAnswer}
+            onChange={handleAnswerChange}
+            className="glass-input font-mono text-4xl text-white text-center w-40 md:w-56"
+            autoFocus
+          />
         </div>
-      )}
-    </div>
+      </div>
+    </PageShell>
   );
 };
 

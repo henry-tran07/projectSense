@@ -111,7 +111,7 @@ const Trick: React.FC<TrickProps> = ({
 
   return (
     <div
-      className={` font-semibold ${
+      className={`font-semibold ${
         trickId === "19" ||
         trickId === "26" ||
         trickId === "27" ||
@@ -120,7 +120,7 @@ const Trick: React.FC<TrickProps> = ({
         trickId === "43"
           ? "text-[1.7rem] md:text-[2.3rem]"
           : "text-[2.6rem] md:text-6xl"
-      } w-screen flex flex-col md:flex-row text-white justify-center items-center gap-x-4 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 break-words`}
+      } w-full flex flex-col md:flex-row items-center justify-center gap-4 px-4 text-white`}
     >
       {question < 5 ? (
         <>
@@ -130,7 +130,7 @@ const Trick: React.FC<TrickProps> = ({
           <div className="text-center md:text-left w-full md:w-auto">=</div>
           <input
             autoFocus={true}
-            className="pb-2 w-2/3 md:w-1/5 focus:outline-none border-b-2 border-white/60 text-center bg-white/20 backdrop-blur-sm text-white"
+            className="glass-input text-center font-mono text-3xl md:text-5xl text-white w-2/3 md:w-1/4"
             type="text"
             value={userAns}
             onChange={(e) => {

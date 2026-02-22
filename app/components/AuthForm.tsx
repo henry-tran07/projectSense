@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { FcGoogle } from "react-icons/fc";
-import { Loader2 } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 
 interface AuthFormProps {
   mode: "login" | "register";
@@ -66,9 +66,9 @@ export function AuthForm({ mode, onSubmit, onGoogleSignIn, error }: AuthFormProp
   return (
     <Card className="glass-card w-full max-w-md p-1">
       <CardHeader className="text-center pb-2">
-        <CardTitle className="text-3xl font-bold text-orange-700 tracking-tight">{title}</CardTitle>
+        <CardTitle className="font-display text-3xl font-bold text-orange-700 tracking-tight">{title}</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-5 pt-2">
+      <CardContent className="space-y-6 pt-2">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
@@ -79,7 +79,7 @@ export function AuthForm({ mode, onSubmit, onGoogleSignIn, error }: AuthFormProp
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
-              className="h-11 bg-white/50 border-white/40 focus:bg-white/70 focus:border-orange-300 transition-all duration-200 rounded-xl"
+              className="glass-input h-11 rounded-xl"
             />
           </div>
           <div className="space-y-2">
@@ -91,7 +91,7 @@ export function AuthForm({ mode, onSubmit, onGoogleSignIn, error }: AuthFormProp
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
-              className="h-11 bg-white/50 border-white/40 focus:bg-white/70 focus:border-orange-300 transition-all duration-200 rounded-xl"
+              className="glass-input h-11 rounded-xl"
             />
           </div>
 
@@ -104,7 +104,12 @@ export function AuthForm({ mode, onSubmit, onGoogleSignIn, error }: AuthFormProp
             </Link>
           </div>
 
-          {displayError && <p className="text-red-500 text-sm text-center">{displayError}</p>}
+          {displayError && (
+            <div className="glass-surface flex items-center gap-2 px-3 py-2">
+              <AlertCircle className="h-4 w-4 text-red-500 shrink-0" />
+              <p className="text-red-500 text-sm">{displayError}</p>
+            </div>
+          )}
 
           <Button
             type="submit"

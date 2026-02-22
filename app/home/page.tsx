@@ -13,6 +13,7 @@ import { useInView } from "react-intersection-observer";
 import { SettingsModal } from "../components/SettingsModal";
 import { VideoModal } from "../components/VideoModal";
 import { GameModal } from "../components/GameModal";
+import { PageShell } from "../components/PageShell";
 import { GiRetroController } from "react-icons/gi";
 import { SiVitest } from "react-icons/si";
 import { MdOutlineMail, MdOutlineHelpOutline } from "react-icons/md";
@@ -31,6 +32,7 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const { ref, inView } = useInView();
   const [keys, setKeys] = useState<number[]>([]);
+  const [showNote, setShowNote] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
@@ -85,7 +87,7 @@ export default function Home() {
 
   if (authLoading || settingsLoading) {
     return (
-      <div className="min-h-screen page-gradient flex items-center justify-center">
+      <PageShell className="flex items-center justify-center">
         <div className="space-y-4 w-full max-w-md px-4">
           <Skeleton className="h-12 w-full" />
           <Skeleton className="h-8 w-3/4" />
@@ -96,18 +98,12 @@ export default function Home() {
             <Skeleton className="h-20 w-full" />
           </div>
         </div>
-      </div>
+      </PageShell>
     );
   }
 
   return (
-    <main className="absolute page-gradient w-full flex flex-col items-center overflow-x-hidden overflow-y-auto">
-      {/* Floating decorative orbs */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
-        <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/8 rounded-full blur-3xl animate-float" />
-        <div className="absolute top-1/2 -left-24 w-72 h-72 bg-amber-200/10 rounded-full blur-3xl animate-float-slow" />
-      </div>
-
+    <PageShell className="flex flex-col items-center overflow-x-hidden overflow-y-auto">
       {/* Header */}
       <header className="sticky top-0 z-10 w-full glass-header">
         <div className="flex items-center justify-between px-4 py-3 max-w-7xl mx-auto">
@@ -115,16 +111,16 @@ export default function Home() {
             variant="ghost"
             size="icon"
             onClick={() => router.push("/leaderboard")}
-            className="h-10 w-10 rounded-full bg-white/80 text-orange-600 hover:bg-white hover:text-orange-700 shadow-md"
+            className="glass-button rounded-full h-10 w-10 flex items-center justify-center text-orange-600 hover:text-orange-700"
           >
             <FaTrophy className="h-5 w-5" />
           </Button>
 
-          <h1 className="text-xl md:text-2xl font-bold text-white drop-shadow-md tracking-tight">
+          <h1 className="font-display text-xl md:text-2xl font-bold text-white drop-shadow-md tracking-tight">
             Project Sense
           </h1>
 
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             <GameModal />
             <SettingsModal
               loading={authLoading || settingsLoading}
@@ -141,36 +137,51 @@ export default function Home() {
       </header>
 
       {/* Info note */}
-      <p className="glass-pill text-orange-700 font-medium text-sm md:text-base text-center mx-auto mt-3 w-fit">
-        Note: Timer starts once a bubble is pressed. Solve 5 questions as fast as you can.
-      </p>
+      {showNote && (
+        <div className="glass-surface flex items-center gap-2 text-orange-700 font-medium text-sm mx-4 mt-3 px-4 py-2">
+          <p className="flex-1">Note: Timer starts once a bubble is pressed. Solve 5 questions as fast as you can.</p>
+          <button onClick={() => setShowNote(false)} className="text-orange-500 hover:text-orange-700 text-lg">&times;</button>
+        </div>
+      )}
 
       {/* Navigation buttons */}
       <div className="flex flex-row justify-center gap-x-3 px-3 mt-2">
-        <Button
+        <button
           onClick={() => router.push("/home/practice/randomizer")}
-          className="gap-2 glass-button rounded-xl text-orange-700 font-semibold text-base md:text-lg px-4 md:px-8 py-2 md:py-5"
+          className="glass-card hover:-translate-y-1 transition-all duration-300 p-4 flex flex-col items-center gap-2 cursor-pointer flex-1 max-w-[140px]"
         >
-          <FaRandom className="h-4 w-4" /> Random
-        </Button>
-        <Button
+          <div className="bg-orange-100 rounded-full p-2">
+            <FaRandom className="h-5 w-5 text-orange-600" />
+          </div>
+          <span className="font-semibold text-orange-700 text-sm">Random</span>
+          <span className="text-xs text-orange-600/60">Mixed tricks</span>
+        </button>
+        <button
           onClick={() => router.push("/multiplayer")}
-          className="gap-2 glass-button rounded-xl text-orange-700 font-semibold text-base md:text-lg px-4 md:px-8 py-2 md:py-5"
+          className="glass-card hover:-translate-y-1 transition-all duration-300 p-4 flex flex-col items-center gap-2 cursor-pointer flex-1 max-w-[140px]"
         >
-          <GiRetroController className="h-4 w-4" /> Multiplayer
-        </Button>
-        <Button
+          <div className="bg-orange-100 rounded-full p-2">
+            <GiRetroController className="h-5 w-5 text-orange-600" />
+          </div>
+          <span className="font-semibold text-orange-700 text-sm">Multiplayer</span>
+          <span className="text-xs text-orange-600/60">Challenge friends</span>
+        </button>
+        <button
           onClick={() => router.push("/testGen")}
-          className="gap-2 glass-button rounded-xl text-orange-700 font-semibold text-base md:text-lg px-4 md:px-8 py-2 md:py-5"
+          className="glass-card hover:-translate-y-1 transition-all duration-300 p-4 flex flex-col items-center gap-2 cursor-pointer flex-1 max-w-[140px]"
         >
-          <SiVitest className="h-4 w-4" /> AI Test
-        </Button>
+          <div className="bg-orange-100 rounded-full p-2">
+            <SiVitest className="h-5 w-5 text-orange-600" />
+          </div>
+          <span className="font-semibold text-orange-700 text-sm">AI Test</span>
+          <span className="text-xs text-orange-600/60">Full 40Q test</span>
+        </button>
       </div>
 
       {/* Trick card grid */}
-      <div className="w-full max-w-6xl px-4 mt-6 mb-24 md:mb-32 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-        {keys.map((value) => (
-          <div key={value} className="animate-slideUp">
+      <div className="w-full max-w-6xl px-4 mt-6 mb-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        {keys.map((value, index) => (
+          <div key={value} className="animate-fade-in-up" style={{ animationDelay: `${index * 50}ms`, animationFillMode: 'both' }}>
             <Card className="group overflow-hidden glass-card hover:-translate-y-1 transition-all duration-300" style={{ transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)' }}>
               <CardContent className="p-0 flex items-stretch">
                 <button
@@ -190,27 +201,27 @@ export default function Home() {
       <hr ref={ref} className="my-4 border-transparent" />
 
       {/* Footer */}
-      <footer className="fixed bottom-0 z-10 w-full glass-header border-t border-b-0">
-        <div className="flex items-center justify-center gap-2 px-4 py-2 md:py-3 text-orange-700 text-xs md:text-base font-medium">
+      <footer className="w-full glass-header border-t border-b-0">
+        <div className="flex items-center justify-center gap-2 px-4 py-2 md:py-3 text-orange-600/60 text-xs font-medium">
           <p>
             Built for <b>UIL Number Sense</b> by <b>Townview TAG&apos;s UIL Team 2025</b>
           </p>
           <span className="text-orange-500/50">|</span>
           <a
             href="https://forms.gle/yneT5vZaBSaLX1vf8"
-            className="text-orange-700 hover:text-orange-500 transition-colors"
+            className="text-orange-600/60 hover:text-orange-500 transition-colors"
           >
             <MdOutlineHelpOutline className="h-4 w-4 md:h-5 md:w-5" />
           </a>
           <span className="text-orange-500/50">|</span>
           <a
             href="mailto:projectsense.ns@gmail.com"
-            className="text-orange-700 hover:text-orange-500 transition-colors"
+            className="text-orange-600/60 hover:text-orange-500 transition-colors"
           >
             <MdOutlineMail className="h-4 w-4 md:h-5 md:w-5" />
           </a>
         </div>
       </footer>
-    </main>
+    </PageShell>
   );
 }

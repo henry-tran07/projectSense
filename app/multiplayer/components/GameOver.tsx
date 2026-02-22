@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeft } from "lucide-react";
 import { FaCrown } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 
@@ -10,19 +11,16 @@ interface GameOverProps {
 
 export default function GameOver({ winner, onBack }: GameOverProps) {
   return (
-    <div>
-      <Button
-        variant="ghost"
-        onClick={onBack}
-        className="mt-16 md:mt-24 glass-button w-fit text-2xl md:text-4xl font-extrabold text-orange-700 text-left ml-3 md:ml-8 rounded-2xl p-2 px-4 h-auto"
-      >
-        {"<"}
+    <div className="flex-1 flex flex-col items-center justify-center px-4 min-h-screen">
+      <Button variant="ghost" onClick={onBack} className="glass-button rounded-full h-10 w-10 text-orange-700 absolute top-4 left-4">
+        <ArrowLeft className="h-5 w-5" />
       </Button>
-      <div className="gap-y-4 font-mono text-5xl md:text-8xl font-extrabold gap-x-4 items-center justify-center flex flex-row fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-screen">
-        <div className="glass-card px-8 py-6 flex flex-row items-center gap-x-4 text-orange-700">
-          <FaCrown />
-          Winner: {winner}
-        </div>
+      <div className="glass-card-elevated p-8 flex flex-col items-center gap-4 animate-scale-in">
+        <FaCrown className="text-6xl text-amber-400 animate-count-up" />
+        <p className="font-display text-4xl md:text-6xl font-extrabold text-orange-700">Winner: {winner}</p>
+        <Button onClick={onBack} className="bg-orange-500 hover:bg-orange-600 text-white rounded-xl px-8 py-3 text-lg font-bold mt-4">
+          Back to Menu
+        </Button>
       </div>
     </div>
   );

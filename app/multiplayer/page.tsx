@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PageShell } from "@/app/components/PageShell";
 
 import MultiplayerMenu from "./components/MultiplayerMenu";
 import LobbySelect from "./components/LobbySelect";
@@ -279,18 +280,18 @@ export default function Multiplayer() {
 
   if (loading) {
     return (
-      <div className="min-h-screen page-gradient flex items-center justify-center">
+      <PageShell className="flex items-center justify-center">
         <div className="space-y-4 w-full max-w-md px-4">
           <Skeleton className="h-12 w-full bg-white/30" />
           <Skeleton className="h-8 w-3/4 bg-white/30" />
           <Skeleton className="h-8 w-1/2 bg-white/30" />
         </div>
-      </div>
+      </PageShell>
     );
   }
 
   return (
-    <div className="min-h-screen page-gradient flex flex-col items-center font-mono">
+    <PageShell className="flex flex-col items-center font-mono">
       <Button
         variant="ghost"
         size="icon"
@@ -301,7 +302,7 @@ export default function Multiplayer() {
       </Button>
 
       {error && (
-        <div className="absolute top-16 md:top-20 left-1/2 -translate-x-1/2 z-50 bg-red-100 border border-red-300 text-red-700 px-4 py-2 rounded-lg shadow-md text-sm font-sans max-w-sm text-center">
+        <div className="absolute top-16 md:top-20 left-1/2 -translate-x-1/2 z-50 glass-surface border border-red-300/50 text-red-700 px-4 py-2 rounded-xl text-sm font-sans max-w-sm text-center">
           {error}
           <button onClick={() => setError(null)} className="ml-2 font-bold hover:text-red-900">
             x
@@ -332,7 +333,7 @@ export default function Multiplayer() {
           }}
         />
       ) : (
-        <div className="w-screen">
+        <div className="w-full">
           {gameState && gameState.state === "in_progress" ? (
             <ActiveGame
               gameState={gameState}
@@ -371,6 +372,6 @@ export default function Multiplayer() {
           )}
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }

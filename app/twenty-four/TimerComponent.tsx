@@ -28,13 +28,13 @@ const TimerComponent: React.FC<TimerProps> = ({ secondsLeft, setSecondsLeft, sco
   };
 
   return (
-    <div className="flex-row flex">
-      <div className="text-3xl mt-6 font-extrabold text-white drop-shadow-md w-full text-center">
-        Time: {formatTime(secondsLeft)}
-      </div>
-      <div className="text-3xl mt-6 font-extrabold text-white drop-shadow-md w-full text-center">
-        Score: {score}
-      </div>
+    <div className="flex items-center gap-2">
+      <span className="glass-pill text-orange-700 text-sm font-mono font-semibold">
+        {formatTime(secondsLeft)}
+      </span>
+      <span className="glass-pill text-orange-700 text-sm font-mono font-semibold">
+        {score}pts
+      </span>
     </div>
   );
 };

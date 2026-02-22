@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -35,65 +36,46 @@ export default function GameLobby({
   onBoardChange,
 }: GameLobbyProps) {
   return (
-    <>
-      <Button
-        variant="ghost"
-        onClick={onBack}
-        className="mt-16 md:mt-24 glass-button w-fit text-2xl md:text-4xl font-extrabold text-orange-700 text-left ml-3 md:ml-8 rounded-2xl p-2 px-4 h-auto"
-      >
-        {"<"}
+    <div className="flex flex-col items-center w-full px-4 mt-4">
+      <Button variant="ghost" onClick={onBack} className="glass-button rounded-full h-10 w-10 text-orange-700 self-start mb-4">
+        <ArrowLeft className="h-5 w-5" />
       </Button>
-      <div className="mt-0 md:-mt-20 w-screen text-center text-white drop-shadow-lg font-extrabold text-4xl md:text-7xl">
-        LOBBY {gameId}
-        <Card className="mx-auto h-[60vh] overflow-y-auto overflow-x-hidden w-3/4 md:w-1/2 mt-2 md:mt-0 glass-card border-2 border-white/30 text-gray-800 text-2xl md:text-4xl">
-          <CardContent className="p-4">
-            <p className="text-left underline">Players:</p>
-            <div className="text-left mr-auto mt-3">
-              {gameState
-                ? Object.keys(gameState.players).map((playerId) => (
-                    <div key={playerId} className="text-left ml-4">
-                      <p>{playerId}</p>
-                    </div>
-                  ))
-                : "Empty"}
-            </div>
-          </CardContent>
-        </Card>
+      <h2 className="font-display text-2xl md:text-4xl text-white font-extrabold drop-shadow-lg mb-4">LOBBY {gameId}</h2>
+      <Card className="w-full max-w-lg glass-card border-2 border-white/30 mb-4">
+        <CardContent className="p-4">
+          <p className="text-left underline text-gray-800 text-xl font-bold mb-3">Players:</p>
+          <div className="flex flex-col gap-2">
+            {gameState ? Object.keys(gameState.players).map((playerId) => (
+              <div key={playerId} className="glass-surface p-3 rounded-xl flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-orange-500/30 flex items-center justify-center text-orange-700 font-bold text-sm">
+                  {playerId.charAt(0).toUpperCase()}
+                </div>
+                <span className="text-gray-800 font-semibold">{playerId}</span>
+              </div>
+            )) : <p className="text-gray-500">Empty</p>}
+          </div>
+        </CardContent>
+      </Card>
+      <div className="flex gap-4 mb-4">
+        <Button onClick={onStartGame} className="bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl px-6 py-3 h-auto text-lg">Start Game</Button>
+        <Button variant="ghost" onClick={onEndGame} className="glass-button text-orange-700 font-bold rounded-xl px-6 py-3 h-auto text-lg">End Game</Button>
       </div>
-      <div className="flex gap-x-4 flex-row justify-center items-center w-screen">
-        <Button
-          variant="ghost"
-          className="mt-4 glass-button block font-extrabold px-6 py-3 text-orange-700 text-2xl rounded-xl h-auto"
-          onClick={onStartGame}
-        >
-          Start Game
-        </Button>
-        <Button
-          variant="ghost"
-          className="mt-4 glass-button block font-extrabold px-6 py-3 text-orange-700 text-2xl rounded-xl h-auto"
-          onClick={onEndGame}
-        >
-          End Game
-        </Button>
-      </div>
-      <div className="flex justify-center mt-4">
-        <Select value={String(currentBoard)} onValueChange={(val) => onBoardChange(Number(val))}>
-          <SelectTrigger className="w-auto min-w-[12rem] max-w-[20rem] glass-card text-orange-700 font-semibold text-lg h-auto py-2 px-4">
-            <SelectValue>
-              <MathComponent math={problemSet[currentBoard]} />
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent className="max-h-[10rem] overflow-y-auto">
-            {keys.map((value) =>
-              currentBoard !== value ? (
-                <SelectItem key={value} value={String(value)}>
-                  <MathComponent math={problemSet[value]} />
-                </SelectItem>
-              ) : null
-            )}
-          </SelectContent>
-        </Select>
-      </div>
-    </>
+      <Select value={String(currentBoard)} onValueChange={(val) => onBoardChange(Number(val))}>
+        <SelectTrigger className="w-auto min-w-[12rem] max-w-[20rem] glass-card text-orange-700 font-semibold text-lg h-auto py-2 px-4">
+          <SelectValue>
+            <MathComponent math={problemSet[currentBoard]} />
+          </SelectValue>
+        </SelectTrigger>
+        <SelectContent className="max-h-[10rem] overflow-y-auto">
+          {keys.map((value) =>
+            currentBoard !== value ? (
+              <SelectItem key={value} value={String(value)}>
+                <MathComponent math={problemSet[value]} />
+              </SelectItem>
+            ) : null
+          )}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }

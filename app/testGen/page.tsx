@@ -1,7 +1,9 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, ArrowLeft, Send, AlertCircle } from "lucide-react";
+import { Loader2, ArrowLeft, Send, AlertCircle, Check, X } from "lucide-react";
+import { PageShell } from "@/app/components/PageShell";
+import { PageHeader } from "@/app/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -170,14 +172,13 @@ function TestGenerator() {
   // Initial view: generate button or loading spinner
   if (text === null) {
     return (
-      <main className="w-full page-gradient flex flex-col items-center justify-center gap-6 p-4">
+      <PageShell className="flex flex-col items-center justify-center gap-6 p-4">
         <Button
           variant="ghost"
           onClick={() => router.push("/home")}
-          className="absolute top-4 left-4 glass-button text-orange-700 rounded-xl"
+          className="absolute top-4 left-4 glass-button rounded-full h-10 w-10 text-orange-700"
         >
-          <ArrowLeft className="h-5 w-5 mr-2" />
-          Back to Home
+          <ArrowLeft className="h-5 w-5" />
         </Button>
 
         {error ? (
@@ -202,20 +203,20 @@ function TestGenerator() {
               run();
             }}
             size="lg"
-            className="glass-card text-orange-700 hover:shadow-2xl text-2xl md:text-4xl font-bold py-6 px-8 md:py-8 md:px-12 h-auto transition-all duration-300 hover:-translate-y-1"
+            className="glass-card text-orange-700 hover:shadow-2xl font-display text-2xl md:text-4xl font-bold py-6 px-8 md:py-8 md:px-12 h-auto transition-all duration-300 hover:-translate-y-1"
           >
             Generate UIL Number Sense Test
             <Send className="h-6 w-6 md:h-8 md:w-8 ml-3" />
           </Button>
         )}
-      </main>
+      </PageShell>
     );
   }
 
   // Grading view: spinner while grading
   if (submitting && results === null) {
     return (
-      <main className="w-full page-gradient flex items-center justify-center p-4">
+      <PageShell className="flex items-center justify-center p-4">
         {error ? (
           <ErrorDisplay
             onRetry={() => {
@@ -231,37 +232,24 @@ function TestGenerator() {
             </CardContent>
           </Card>
         )}
-      </main>
+      </PageShell>
     );
   }
 
   // Results view: answer key, feedback, score
   if (submitting && results !== null) {
     return (
-      <main className="w-full page-gradient font-mono">
-        <div className="glass-header flex items-center justify-between p-4">
-          <Button
-            variant="ghost"
-            onClick={() => router.push("/home")}
-            className="glass-button text-orange-700 rounded-xl"
-          >
-            <ArrowLeft className="h-5 w-5 mr-2" />
-            Home
-          </Button>
-          <h1 className="text-3xl md:text-5xl font-bold text-white drop-shadow-md text-center flex-1">
-            Answer Key
-          </h1>
-          <div className="w-20" />
-        </div>
+      <PageShell className="font-mono">
+        <PageHeader title="Answer Key" backHref="/home" />
 
         <div className="w-full flex flex-col lg:flex-row gap-4 p-4">
           {/* Score panel */}
-          <Card className="lg:w-[30%] glass-card bg-orange-500/30 lg:order-last">
+          <Card className="lg:w-[30%] glass-card-elevated lg:order-last">
             <CardHeader className="text-center">
               <CardTitle className="text-orange-700 text-2xl">Score</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center gap-3">
-              <p className="text-5xl md:text-7xl font-bold text-orange-700">{results?.score || 0}</p>
+              <p className="font-display text-6xl md:text-8xl font-bold text-orange-700">{results?.score || 0}</p>
               <p className="text-lg md:text-xl text-gray-800 text-center">
                 Questions Correct: {results?.number_correct || 0}
               </p>
@@ -282,7 +270,7 @@ function TestGenerator() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {results?.feedback?.map((item: FeedbackItem, index: number) => (
-                  <div key={index} className="p-3 rounded-lg bg-gray-50 border">
+                  <div key={index} className="p-3 rounded-xl glass-surface">
                     <p className="text-sm text-gray-600 mb-1">
                       {item.question}. {text[item.question]}
                     </p>
@@ -290,8 +278,13 @@ function TestGenerator() {
                       <Badge variant={item.isCorrect ? "default" : "destructive"}>
                         {item.isCorrect ? "Correct" : "Incorrect"}
                       </Badge>
+                      {item.isCorrect ? (
+                        <Check className="h-4 w-4 inline text-emerald-600" />
+                      ) : (
+                        <X className="h-4 w-4 inline text-red-500" />
+                      )}
                       <span
-                        className={`text-sm font-medium ${item.isCorrect ? "text-green-600" : "text-red-600"}`}
+                        className={`text-sm font-medium ${item.isCorrect ? "text-emerald-600" : "text-red-500"}`}
                       >
                         {item.userAnswer}
                       </span>
@@ -311,42 +304,29 @@ function TestGenerator() {
               <CardContent className="space-y-3">
                 {answerKey &&
                   Object.entries(answerKey).map(([_key, item], index: number) => (
-                    <div key={index} className="p-3 rounded-lg bg-gray-50 border">
+                    <div key={index} className="p-3 rounded-xl glass-surface">
                       <p className="text-sm text-gray-600 mb-1">
                         {index + 1}. {text[index + 1]}
                       </p>
-                      <span className="text-sm font-medium text-green-600">Answer: {item}</span>
+                      <span className="text-sm font-medium text-emerald-600">Answer: {item}</span>
                     </div>
                   ))}
               </CardContent>
             </Card>
           </div>
         </div>
-      </main>
+      </PageShell>
     );
   }
 
   // Test view: 40 questions with answer inputs
   return (
-    <main className="w-full page-gradient font-mono">
-      <div className="sticky top-0 z-20 glass-header p-4">
-        <div className="flex items-center justify-between max-w-4xl mx-auto">
-          <Button
-            variant="ghost"
-            onClick={() => router.push("/home")}
-            className="glass-button text-orange-700 rounded-xl"
-          >
-            <ArrowLeft className="h-5 w-5 mr-2" />
-            Home
-          </Button>
-          <div className="text-center">
-            <h1 className="text-2xl md:text-4xl font-bold text-white drop-shadow-md">UIL Number Sense Practice</h1>
-            <p className="text-sm md:text-base text-white/70">
-              Press Tab to go to the next question faster
-            </p>
-          </div>
-          <div className="w-20" />
-        </div>
+    <PageShell className="font-mono">
+      <PageHeader title="UIL Number Sense Practice" backHref="/home" />
+      <div className="flex justify-center py-2">
+        <span className="glass-pill text-sm text-white/70 px-4 py-1">
+          Press Tab to go to the next question faster
+        </span>
       </div>
 
       {error && (
@@ -385,7 +365,7 @@ function TestGenerator() {
                     type="text"
                     value={answers[index] || ""}
                     onChange={handleInputChange(index)}
-                    className="w-24 md:w-32 text-center font-medium border-orange-200 focus-visible:ring-orange-400"
+                    className="glass-input w-24 md:w-32 text-center font-medium"
                     placeholder="Answer"
                   />
                 </CardContent>
@@ -395,7 +375,10 @@ function TestGenerator() {
       </div>
 
       <div className="sticky bottom-0 glass-header border-t border-b-0 p-4">
-        <div className="max-w-4xl mx-auto flex justify-center">
+        <div className="max-w-4xl mx-auto flex items-center justify-center">
+          <span className="text-sm text-white/70 mr-4">
+            {answers.filter(a => a.trim() !== "").length} of 40 answered
+          </span>
           <Button
             onClick={handleSubmit}
             size="lg"
@@ -406,7 +389,7 @@ function TestGenerator() {
           </Button>
         </div>
       </div>
-    </main>
+    </PageShell>
   );
 }
 

@@ -5,7 +5,8 @@ import { MdOutlineRestartAlt } from "react-icons/md";
 import { combs } from "./dict";
 import { evaluate } from "mathjs";
 import TimerComponent from "./TimerComponent";
-import { useRouter } from "next/navigation";
+import { PageShell } from "../components/PageShell";
+import { PageHeader } from "../components/PageHeader";
 
 export default function Home() {
   const [selectedNums, setSelectedNums] = useState<number[]>([]);
@@ -14,7 +15,6 @@ export default function Home() {
   const [save, setSave] = useState<string[]>([]);
   const [secondsLeft, setSecondsLeft] = useState(60);
   const [score, setScore] = useState(0);
-  const router = useRouter();
 
   useEffect(() => {
     // Initialize currentComb with a random combination from combs
@@ -55,82 +55,77 @@ export default function Home() {
   }, [selectedNums, symbol]);
 
   return (
-    <main className="w-screen h-screen page-gradient">
-      <button
-        onClick={async () => {
-          await Promise.all([router.prefetch("/home"), router.push("/home")]);
-        }}
-        className="absolute left-3 top-4 glass-button rounded-full h-10 w-10 md:h-12 md:w-12 flex items-center justify-center text-orange-700"
-      >
-        <span className="text-xl md:text-2xl">&larr;</span>
-      </button>
-      <div className="w-full text-center pt-16 md:pt-8 text-white text-5xl md:text-6xl font-extrabold drop-shadow-lg">
-        24
-      </div>
-      <div className="animate-popUp ease-in-out duration-75 grid grid-cols-2 gap-x-12 gap-y-10 fixed top-1/2 left-[47%] md:left-[50%] transform -translate-x-1/2 md:-translate-y-[60%] -translate-y-[80%] items-center justify-center">
-        {currentComb.map((value: string, index: number) => (
+    <PageShell className="h-screen flex flex-col">
+      <PageHeader title="24" backHref="/home" rightSlot={<TimerComponent secondsLeft={secondsLeft} setSecondsLeft={setSecondsLeft} score={score} setScore={setScore} />} />
+      <div className="flex-1 flex flex-col items-center justify-center gap-6 md:gap-8 px-4">
+        {/* Number tiles 2x2 grid */}
+        <div className="grid grid-cols-2 gap-4 md:gap-6">
+          {currentComb.map((value: string, index: number) => (
+            <button
+              key={index}
+              onClick={() => {
+                if (selectedNums.includes(index)) {
+                  // Remove the value from the array if it is included
+                  const newSelectedNums = selectedNums.filter((num) => num !== index);
+                  setSelectedNums(newSelectedNums);
+                } else if (selectedNums.length < 2) {
+                  setSelectedNums([...selectedNums, index]);
+                }
+              }}
+              className={`w-24 h-24 md:w-32 md:h-32 rounded-2xl text-3xl md:text-5xl font-extrabold active:scale-95 transition-all duration-150 ${
+                selectedNums.includes(index)
+                  ? "bg-orange-500/80 text-white backdrop-blur-xl shadow-2xl ring-4 ring-white/50 animate-pulse-glow"
+                  : "glass-card text-gray-800 hover:shadow-2xl hover:-translate-y-0.5"
+              }`}
+            >
+              <MathComponent math={value} />
+            </button>
+          ))}
+        </div>
+        {/* Operator buttons row */}
+        <div className="flex gap-3 md:gap-6">
+          {["+", "-", "x", "÷"].map((value: string, index: number) => (
+            <button
+              key={index}
+              onClick={() => {
+                setSymbol(value === "x" ? "*" : value === "÷" ? "/" : value);
+              }}
+              className={`w-16 h-16 md:w-20 md:h-20 rounded-2xl text-xl md:text-3xl font-extrabold active:scale-95 transition-all duration-150 ${
+                value === symbol || (value === "x" && symbol === "*") || (value === "÷" && symbol === "/")
+                  ? "bg-orange-500/80 text-white ring-4 ring-white/50"
+                  : "glass-card text-gray-800 hover:shadow-2xl"
+              }`}
+            >
+              <MathComponent math={value} />
+            </button>
+          ))}
+        </div>
+        {/* Action buttons row */}
+        <div className="flex gap-4">
           <button
-            key={index}
             onClick={() => {
-              if (selectedNums.includes(index)) {
-                // Remove the value from the array if it is included
-                const newSelectedNums = selectedNums.filter((num) => num !== index);
-                setSelectedNums(newSelectedNums);
-              } else if (selectedNums.length < 2) {
-                setSelectedNums([...selectedNums, index]);
-              }
+              setCurrentComb(save);
+              setSelectedNums([]);
+              setSymbol(""); // Reset ans to an empty string after evaluation
             }}
-            className={`overflow-clip w-28 h-28 md:h-36 rounded-2xl md:w-40 text-4xl md:text-7xl font-extrabold ${
-              selectedNums.includes(index)
-                ? "bg-orange-500/80 text-white backdrop-blur-xl shadow-2xl"
-                : "glass-card text-gray-800 hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-200"
-            }`}
+            className="glass-button rounded-xl px-6 py-3 text-orange-700 font-bold flex items-center gap-2 active:scale-95 transition-all duration-150"
           >
-            <MathComponent math={value} />
+            <MdOutlineRestartAlt className="text-xl" /> Reset
           </button>
-        ))}
-      </div>
-      <button
-        onClick={() => {
-          setCurrentComb(save);
-          setSelectedNums([]);
-          setSymbol(""); // Reset ans to an empty string after evaluation
-        }}
-        className="items-center text-center glass-button w-12 h-12 md:w-24 md:h-24 rounded-3xl md:text-5xl font-extrabold text-gray-800 border-2 border-white/40 fixed top-1/2 left-[10%] md:left-[20%] transform -translate-x-1/2 -translate-y-[60%]"
-      >
-        <MdOutlineRestartAlt className="mx-auto text-xl md:text-7xl" />
-      </button>
-      <div className="flex flex-col gap-y-8 fixed top-1/2 left-[90%] transform -translate-x-1/2 -translate-y-[60%]">
-        <button
-          onClick={() => {
-            const temp = combs[Math.floor(Math.random() * combs.length)].split(" ");
-            setCurrentComb(temp);
-            setSave(temp);
-            setSelectedNums([]);
-            setSymbol(""); // Reset ans to an empty string after evaluation
-          }}
-          className="items-center text-center glass-button w-12 h-12 md:w-24 md:h-24 rounded-3xl text-md md:text-3xl font-extrabold text-gray-800 border-2 border-white/40"
-        >
-          Skip
-        </button>
-      </div>
-      <div className="flex-row flex absolute justify-center bottom-48 md:bottom-12 w-full text-center mx-auto gap-x-6 md:gap-x-12">
-        {["+", "-", "x", "÷"].map((value: string, index: number) => (
           <button
-            key={index}
             onClick={() => {
-              setSymbol(value === "x" ? "*" : value === "÷" ? "/" : value);
+              const temp = combs[Math.floor(Math.random() * combs.length)].split(" ");
+              setCurrentComb(temp);
+              setSave(temp);
+              setSelectedNums([]);
+              setSymbol(""); // Reset ans to an empty string after evaluation
             }}
-            className={`w-20 h-20 md:w-28 md:h-28 rounded-3xl text-2xl md:text-5xl font-extrabold border-2 border-white/40 ${
-              value === symbol || (value === "x" && symbol === "*") || (value === "÷" && symbol === "/")
-                ? "bg-orange-500/80 text-white"
-                : "glass-card text-gray-800 hover:shadow-2xl"
-            }`}
+            className="glass-button rounded-xl px-6 py-3 text-orange-700 font-bold active:scale-95 transition-all duration-150"
           >
-            <MathComponent math={value} />
+            Skip
           </button>
-        ))}
+        </div>
       </div>
-    </main>
+    </PageShell>
   );
 }

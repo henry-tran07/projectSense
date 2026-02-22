@@ -1,11 +1,12 @@
 "use client";
 import { db } from "@/firebase/config";
 import { collection, doc, getDoc } from "firebase/firestore";
-import { useRouter } from "next/navigation";
 import { useState, useEffect, useMemo } from "react";
 import { problemSet } from "@/app/utils/problemGenerator";
-import { FaTrophy } from "react-icons/fa";
+import { FaTrophy, FaCrown } from "react-icons/fa";
 import MathComponent from "../components/MathComponent";
+import { PageHeader } from "@/app/components/PageHeader";
+import { PageShell } from "@/app/components/PageShell";
 import {
   Select,
   SelectContent,
@@ -14,10 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft } from "lucide-react";
 
 interface ScoreEntry {
   time: string;
@@ -27,7 +25,6 @@ interface ScoreEntry {
 const Home = () => {
   const [currentBoard, setCurrentBoard] = useState(1);
   const keys = useMemo(() => Object.keys(problemSet).map(Number), []);
-  const router = useRouter();
   const [sortedScores, setSortedScores] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -82,20 +79,12 @@ const Home = () => {
   }, [currentBoard]);
 
   return (
-    <main className="w-full min-h-screen flex flex-col page-gradient">
+    <PageShell className="flex flex-col">
       {/* Header */}
-      <header className="glass-header sticky top-0 z-10 w-full">
-        <div className="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto">
-          <Button variant="ghost" size="icon" onClick={() => router.push("/home")} className="text-orange-700 hover:bg-white/40">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <h1 className="text-2xl md:text-3xl font-bold text-white drop-shadow-md">Leaderboards</h1>
-          <div className="w-10" />
-        </div>
-      </header>
+      <PageHeader title="Leaderboards" backHref="/home" />
 
       {/* Trick Selector */}
-      <div className="flex justify-center mt-3 md:mt-4">
+      <div className="max-w-2xl mx-auto px-4 mt-3 flex justify-center">
         <Select value={String(currentBoard)} onValueChange={(val) => setCurrentBoard(Number(val))}>
           <SelectTrigger className="w-fit min-w-[12rem] mx-auto glass-card text-orange-700 py-2 px-4 md:py-4 md:px-6 text-sm md:text-base h-auto">
             <SelectValue>
@@ -112,17 +101,11 @@ const Home = () => {
         </Select>
       </div>
 
-      {/* Trophy */}
-      <FaTrophy className="mx-auto text-[8rem] md:text-[12rem] text-white/90 drop-shadow-lg mt-2" />
-
-      {/* Separator */}
-      <Separator className="w-5/6 mx-auto mt-2 mb-3 bg-white/40" />
-
       {/* Score List */}
-      <div className="w-full flex flex-col items-center pb-6">
+      <div className="max-w-2xl mx-auto w-full px-4 flex flex-col gap-3 pb-6 mt-4">
         {loading ? (
           /* Loading skeleton state */
-          <div className="w-[90%] md:w-[80%] flex flex-col gap-3">
+          <div className="flex flex-col gap-3">
             {[1, 2, 3, 4, 5].map((i) => (
               <div key={i} className="flex flex-row items-center gap-x-2 md:gap-x-4">
                 <Skeleton className="h-12 w-14 rounded-2xl bg-white/30" />
@@ -133,26 +116,29 @@ const Home = () => {
           </div>
         ) : sortedScores.length === 0 ? (
           /* Empty state */
-          <Card className="w-[90%] md:w-[80%] glass-card">
-            <CardContent className="p-6 text-center">
-              <p className="text-orange-700 text-lg font-medium">
-                No scores yet for this trick. Be the first!
-              </p>
-            </CardContent>
-          </Card>
+          <div className="flex flex-col items-center gap-3 py-8">
+            <FaTrophy className="text-6xl text-orange-300/40" />
+            <p className="text-orange-700 text-lg font-medium">No scores yet for this trick. Be the first!</p>
+          </div>
         ) : (
           /* Score rows */
           sortedScores.map((score, index) => {
             const [time, email] = score.split(" ");
+            const rank = index + 1;
+            const cardClass = rank === 1
+              ? "glass-card-elevated border-2 border-amber-400/40 animate-pulse-glow"
+              : rank === 2
+              ? "glass-card border border-gray-300/30"
+              : rank === 3
+              ? "glass-card border border-orange-700/20"
+              : "glass-card";
             return (
-              <Card
-                key={index}
-                className="my-1.5 w-[90%] md:w-[80%] glass-card"
-              >
+              <Card key={index} className={`${cardClass} animate-slide-in-right`} style={{ animationDelay: `${index * 60}ms`, animationFillMode: 'both' }}>
                 <CardContent className="p-0">
                   <div className="gap-x-2 md:gap-x-4 text-lg md:text-2xl flex flex-row items-center justify-between">
-                    <p className="bg-orange-500/20 px-4 text-orange-700 py-2 md:py-3 rounded-2xl font-bold text-center md:w-[4.1rem]">
-                      {index + 1}
+                    <p className="bg-orange-500/20 px-4 text-orange-700 py-2 md:py-3 rounded-2xl font-bold text-center md:w-[4.1rem] flex items-center gap-1">
+                      {rank === 1 && <FaCrown className="text-amber-400" />}
+                      {rank}
                     </p>
                     <p className="text-gray-800 py-2 md:py-3 font-bold text-center flex-grow">
                       {email.substring(0, email.indexOf("@"))}
@@ -167,7 +153,7 @@ const Home = () => {
           })
         )}
       </div>
-    </main>
+    </PageShell>
   );
 };
 
