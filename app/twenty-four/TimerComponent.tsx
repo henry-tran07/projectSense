@@ -29,10 +29,10 @@ const TimerComponent: React.FC<TimerProps> = ({ secondsLeft, setSecondsLeft, sco
 
   return (
     <div className="flex-row flex">
-      <div className="text-3xl mt-6 font-extrabold text-white w-full text-center">
+      <div className="text-3xl mt-6 font-extrabold text-white drop-shadow-md w-full text-center">
         Time: {formatTime(secondsLeft)}
       </div>
-      <div className="text-3xl mt-6 font-extrabold text-white w-full text-center">
+      <div className="text-3xl mt-6 font-extrabold text-white drop-shadow-md w-full text-center">
         Score: {score}
       </div>
     </div>

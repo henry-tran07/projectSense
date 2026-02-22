@@ -70,7 +70,7 @@ class MathGame {
 }
 
 const Highscore: React.FC<{ highscore: number }> = ({ highscore }) => (
-  <div className="text-2xl font-bold text-white mt-4">
+  <div className="text-2xl font-bold text-orange-600 mt-4">
     <p>Highscore: {highscore}</p>
   </div>
 );
@@ -147,32 +147,31 @@ const MathGameComponent: React.FC = () => {
   }, []);
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-orange-300 p-4">
+    <div className="relative min-h-screen flex flex-col page-gradient p-4">
       {!gameOver && (
         <>
-          <h1 className="absolute text-white top-4 left-1/2 transform -translate-x-1/2 text-3xl md:text-5xl font-bold underline">
+          <h1 className="absolute text-white top-4 left-1/2 transform -translate-x-1/2 text-3xl md:text-5xl font-bold drop-shadow-lg">
             Zetamac
           </h1>
-          <div className="absolute top-4 left-4 text-xl md:text-2xl font-semibold text-white">
+          <div className="absolute top-4 left-4 text-xl md:text-2xl font-semibold text-white drop-shadow-sm">
             Score: {score}
           </div>
         </>
       )}
       {gameOver ? (
         <div className="flex flex-col items-center justify-center flex-grow mt-16">
-          <h2 className="text-4xl font-bold text-white -mt-16 mb-4">Game Over</h2>
-          <p className="text-2xl text-white">Your Score: {score}</p>
-          <Highscore highscore={highscore} />
-          <button
-            onClick={handlePlayAgain}
-            className="font-semibold mt-8 px-8 py-4 bg-white text-orange-300 rounded hover:bg-white"
-          >
-            Play Again
-          </button>
+          <div className="glass-card p-8 flex flex-col items-center gap-4 -mt-16">
+            <h2 className="text-4xl font-bold text-orange-700">Game Over</h2>
+            <p className="text-2xl text-gray-800">Your Score: {score}</p>
+            <Highscore highscore={highscore} />
+            <button onClick={handlePlayAgain} className="glass-button font-semibold mt-4 px-8 py-4 text-orange-700 rounded-xl text-lg">
+              Play Again
+            </button>
+          </div>
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center flex-grow -mt-16">
-          <div className="text-2xl font-semibold text-white -mt-16 mb-4 underline">
+          <div className="text-2xl font-semibold text-white drop-shadow-md -mt-16 mb-4">
             Time Left: {timeLeft}
           </div>
           <div className="flex items-center">
@@ -183,7 +182,7 @@ const MathGameComponent: React.FC = () => {
               value={userAnswer}
               onChange={handleAnswerChange}
               placeholder=""
-              className="text-5xl font-semibold text-white border-b border-white bg-transparent outline-none w-32 md:w-64"
+              className="text-5xl font-semibold text-white border-b-2 border-white/60 bg-white/10 backdrop-blur-sm outline-none w-32 md:w-64"
             />
           </div>
         </div>

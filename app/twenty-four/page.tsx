@@ -55,16 +55,16 @@ export default function Home() {
   }, [selectedNums, symbol]);
 
   return (
-    <main className="w-screen h-screen bg-orange-300">
+    <main className="w-screen h-screen page-gradient">
       <button
         onClick={async () => {
           await Promise.all([router.prefetch("/home"), router.push("/home")]);
         }}
-        className="absolute left-3 text-orange-300 mt-4 hover:bg-orange-500 hover:text-gray-300 text-xl md:text-4xl px-3 rounded-2xl pb-1 bg-white "
+        className="absolute left-3 top-4 glass-button rounded-full h-10 w-10 md:h-12 md:w-12 flex items-center justify-center text-orange-700"
       >
-        {"⌂"}
+        <span className="text-xl md:text-2xl">&larr;</span>
       </button>
-      <div className="w-full text-center  pt-16 md:pt-8 text-white text-5xl md:text-6xl font-extrabold underline">
+      <div className="w-full text-center pt-16 md:pt-8 text-white text-5xl md:text-6xl font-extrabold drop-shadow-lg">
         24
       </div>
       <div className="animate-popUp ease-in-out duration-75 grid grid-cols-2 gap-x-12 gap-y-10 fixed top-1/2 left-[47%] md:left-[50%] transform -translate-x-1/2 md:-translate-y-[60%] -translate-y-[80%] items-center justify-center">
@@ -80,10 +80,10 @@ export default function Home() {
                 setSelectedNums([...selectedNums, index]);
               }
             }}
-            className={` overflow-clip w-28 h-28 md:h-36 rounded-2xl md:w-40 shadow-lg text-4xl md:text-7xl font-extrabold ${
+            className={`overflow-clip w-28 h-28 md:h-36 rounded-2xl md:w-40 text-4xl md:text-7xl font-extrabold ${
               selectedNums.includes(index)
-                ? "bg-gray-700 text-white"
-                : "hover:bg-gray-200 bg-white text-black"
+                ? "bg-orange-500/80 text-white backdrop-blur-xl shadow-2xl"
+                : "glass-card text-gray-800 hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-200"
             }`}
           >
             <MathComponent math={value} />
@@ -96,7 +96,7 @@ export default function Home() {
           setSelectedNums([]);
           setSymbol(""); // Reset ans to an empty string after evaluation
         }}
-        className="items-center text-center bg-white w-12 h-12 md:w-24 md:h-24 rounded-3xl md:text-5xl font-extrabold text-black hover:bg-gray-200 border-black border-4 fixed top-1/2 left-[10%] md:left-[20%] transform -translate-x-1/2 -translate-y-[60%]"
+        className="items-center text-center glass-button w-12 h-12 md:w-24 md:h-24 rounded-3xl md:text-5xl font-extrabold text-gray-800 border-2 border-white/40 fixed top-1/2 left-[10%] md:left-[20%] transform -translate-x-1/2 -translate-y-[60%]"
       >
         <MdOutlineRestartAlt className="mx-auto text-xl md:text-7xl" />
       </button>
@@ -109,7 +109,7 @@ export default function Home() {
             setSelectedNums([]);
             setSymbol(""); // Reset ans to an empty string after evaluation
           }}
-          className="items-center text-center bg-white w-12 h-12 md:w-24 md:h-24 rounded-3xl text-md md:text-3xl font-extrabold text-black hover:bg-gray-200 border-black border-4"
+          className="items-center text-center glass-button w-12 h-12 md:w-24 md:h-24 rounded-3xl text-md md:text-3xl font-extrabold text-gray-800 border-2 border-white/40"
         >
           Skip
         </button>
@@ -121,7 +121,11 @@ export default function Home() {
             onClick={() => {
               setSymbol(value === "x" ? "*" : value === "÷" ? "/" : value);
             }}
-            className={` w-20 h-20 md:w-28 md:h-28 rounded-3xl text-2xl md:text-5xl font-extrabold  border-black border-4 ${value === symbol || (value === "x" && symbol === "*") || (value === "÷" && symbol === "/") ? "bg-gray-700 text-white" : "bg-white hover:bg-gray-200 text-black"}`}
+            className={`w-20 h-20 md:w-28 md:h-28 rounded-3xl text-2xl md:text-5xl font-extrabold border-2 border-white/40 ${
+              value === symbol || (value === "x" && symbol === "*") || (value === "÷" && symbol === "/")
+                ? "bg-orange-500/80 text-white"
+                : "glass-card text-gray-800 hover:shadow-2xl"
+            }`}
           >
             <MathComponent math={value} />
           </button>
