@@ -1,78 +1,60 @@
+"use client";
+
 import React from "react";
-import {
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-} from "@chakra-ui/react";
 import { IoGameControllerOutline } from "react-icons/io5";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
-interface gameModalProps {
-  // Define any props you might want to pass, such as loading state or changelog data
-}
+interface gameModalProps {}
 
 export const GameModal: React.FC<gameModalProps> = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
-  return (
-    <>
-      <button
-        onClick={onOpen}
-        className="hover:text-orange-400 text-4xl md:text-5xl mr-5 hover:scale-110 ease-in-out duration-200"
-      >
-        <IoGameControllerOutline className="text-3xl md:text-4xl hover:text-orange-400 text-orange-300" />
-      </button>
 
-      <Modal size={{ base: "xs", md: "3xl" }} isOpen={isOpen} isCentered={true} onClose={onClose}>
-        <ModalOverlay className="" />
-        <ModalContent className="w-4/5 h-auto md:max-w-3xl md:h-auto">
-          <ModalHeader
-            fontSize={["3xl", null, "5xl"]}
-            className="text-white bg-orange-300 text-center"
-          >
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <button className="hover:text-orange-400 text-4xl md:text-5xl mr-5 hover:scale-110 ease-in-out duration-200">
+          <IoGameControllerOutline className="text-3xl md:text-4xl hover:text-orange-400 text-orange-300" />
+        </button>
+      </DialogTrigger>
+
+      <DialogContent className="w-[90%] max-w-md md:max-w-2xl rounded-xl border-none bg-orange-400 p-0 overflow-hidden">
+        <DialogHeader className="px-6 pt-6 pb-2 text-center">
+          <DialogTitle className="text-3xl md:text-5xl font-bold text-white text-center">
             Mini Games
-            <hr className=" mx-auto w-2/3"></hr>
-          </ModalHeader>
-          <ModalCloseButton fontSize="xl" className="text-white" />
-          <ModalBody
-            fontSize={["xl", null, "3xl"]}
-            className="overflow-y-auto max-h-[80vh] bg-orange-300"
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            Choose a mini game to play
+          </DialogDescription>
+          <Separator className="mx-auto w-2/3 bg-white/60 mt-2" />
+        </DialogHeader>
+
+        <div className="flex flex-col gap-4 px-6 pb-8 pt-2">
+          <Button
+            variant="ghost"
+            className="w-full h-16 md:h-20 rounded-2xl bg-white text-orange-400 text-xl md:text-2xl font-semibold hover:bg-gray-100 hover:text-orange-500 hover:scale-[1.02] transition-all duration-200"
+            onClick={() => router.push("/zetamac")}
           >
-            <div className="   h-23 md:h-24 overflow-y-hidden">
-              <div
-                className={`my-auto h-full duration-200 ease-in-out mx-12 md:mx-8 text-center items-center flex rounded-2xl justify-center text-3xl font-semibold `}
-              >
-                <button
-                  className="text-orange-300 p-2 md:p-4 px-[2.7rem] md:w-[26rem] w-full overflow-y-hidden hover:scale-105 hover:bg-gray-200  flex justify-center items-center h-full duration-200 ease-in-out rounded-2xl bg-white text-xl md:text-2xl"
-                  onClick={() => {
-                    router.push("/zetamac");
-                  }}
-                >
-                  Zetamac
-                </button>
-              </div>
-            </div>
-            <div className="  h-23 md:h-24 overflow-y-hidden mt-8 mb-12">
-              <div
-                className={`my-auto h-full duration-200 ease-in-out mx-12 md:mx-8 text-center items-center flex rounded-2xl justify-center text-3xl font-semibold `}
-              >
-                <button
-                  onClick={() => {
-                    router.push("/twenty-four");
-                  }}
-                  className="text-orange-300 p-2 md:p-4 px-[2.7rem] md:w-[26rem] w-full overflow-y-hidden hover:scale-105 hover:bg-gray-200  flex justify-center items-center h-full duration-200 ease-in-out rounded-2xl bg-white text-xl md:text-2xl"
-                >
-                  24
-                </button>
-              </div>
-            </div>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
+            Zetamac
+          </Button>
+          <Button
+            variant="ghost"
+            className="w-full h-16 md:h-20 rounded-2xl bg-white text-orange-400 text-xl md:text-2xl font-semibold hover:bg-gray-100 hover:text-orange-500 hover:scale-[1.02] transition-all duration-200"
+            onClick={() => router.push("/twenty-four")}
+          >
+            24
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
