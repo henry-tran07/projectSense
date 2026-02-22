@@ -64,14 +64,14 @@ export function AuthForm({ mode, onSubmit, onGoogleSignIn, error }: AuthFormProp
   const displayError = validationError || error;
 
   return (
-    <Card className="glass-card w-full max-w-md">
+    <Card className="glass-card w-full max-w-md p-1">
       <CardHeader className="text-center pb-2">
-        <CardTitle className="text-3xl font-bold font-sans text-orange-700">{title}</CardTitle>
+        <CardTitle className="text-3xl font-bold text-orange-700 tracking-tight">{title}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-5 pt-2">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-gray-700 font-medium">Email</Label>
             <Input
               id="email"
               type="email"
@@ -79,10 +79,11 @@ export function AuthForm({ mode, onSubmit, onGoogleSignIn, error }: AuthFormProp
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
+              className="h-11 bg-white/50 border-white/40 focus:bg-white/70 focus:border-orange-300 transition-all duration-200 rounded-xl"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-gray-700 font-medium">Password</Label>
             <Input
               id="password"
               type="password"
@@ -90,13 +91,14 @@ export function AuthForm({ mode, onSubmit, onGoogleSignIn, error }: AuthFormProp
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
+              className="h-11 bg-white/50 border-white/40 focus:bg-white/70 focus:border-orange-300 transition-all duration-200 rounded-xl"
             />
           </div>
 
           <div className="text-sm">
             <Link
               href={switchHref}
-              className="text-orange-500 hover:text-orange-600 underline underline-offset-2"
+              className="text-orange-600 hover:text-orange-700 underline underline-offset-2 transition-colors"
             >
               {switchText}
             </Link>
@@ -107,7 +109,8 @@ export function AuthForm({ mode, onSubmit, onGoogleSignIn, error }: AuthFormProp
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white text-base font-semibold h-11 shadow-lg"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white text-base font-semibold h-12 rounded-xl transition-all duration-200 hover:-translate-y-0.5"
+            style={{ boxShadow: '0 4px 20px rgba(249, 115, 22, 0.35)' }}
           >
             {loading ? (
               <>
@@ -121,9 +124,9 @@ export function AuthForm({ mode, onSubmit, onGoogleSignIn, error }: AuthFormProp
         </form>
 
         <div className="flex items-center gap-3">
-          <Separator className="flex-1" />
-          <span className="text-xs text-muted-foreground uppercase">or</span>
-          <Separator className="flex-1" />
+          <Separator className="flex-1 bg-gray-200/50" />
+          <span className="text-xs text-gray-500 uppercase tracking-wider">or</span>
+          <Separator className="flex-1 bg-gray-200/50" />
         </div>
 
         <Button
@@ -131,7 +134,7 @@ export function AuthForm({ mode, onSubmit, onGoogleSignIn, error }: AuthFormProp
           variant="outline"
           disabled={loading}
           onClick={handleGoogleSignIn}
-          className="w-full h-11 text-base font-medium gap-2"
+          className="w-full h-12 text-base font-medium gap-2 rounded-xl bg-white/50 border-white/40 hover:bg-white/70 transition-all duration-200"
         >
           {loading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

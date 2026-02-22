@@ -56,38 +56,49 @@ export default function LoginPage() {
 
   return (
     <main className="page-gradient w-full">
+      {/* Floating decorative orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="absolute -top-20 -left-20 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-float" />
+        <div className="absolute top-1/3 -right-16 w-96 h-96 bg-amber-200/20 rounded-full blur-3xl animate-float-slow" />
+        <div className="absolute -bottom-32 left-1/4 w-80 h-80 bg-orange-200/15 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+      </div>
+
       {/* User Guide link */}
       <div className="absolute top-4 right-4 z-10">
         <button
           onClick={() => {
             window.open("https://project-sense.vercel.app/manual.pdf");
           }}
-          className="glass-pill flex items-center gap-2 text-orange-700 hover:text-orange-800 font-bold text-sm font-sans transition-colors"
+          className="glass-pill flex items-center gap-2 text-orange-700 hover:text-orange-800 font-bold text-sm transition-colors"
         >
           User Guide
-          <MdMenuBook className="text-2xl" />
+          <MdMenuBook className="text-xl" />
         </button>
       </div>
 
-      <div className="flex flex-col md:flex-row min-h-screen">
+      <div className="flex flex-col md:flex-row min-h-screen relative z-[1]">
         {/* Left side: Hero */}
         <div className="flex flex-col items-center justify-center w-full md:w-1/2 px-6 py-12 md:py-0">
-          <h1 className="font-sans text-5xl md:text-6xl font-bold text-white drop-shadow-lg">
-            Project Sense
-          </h1>
-          <p className="mt-3 text-base md:text-lg text-white/80 text-center max-w-md">
-            Your go-to platform for mastering mental math and number sense
-          </p>
+          <div className="animate-fade-in-up">
+            <h1 className="text-5xl md:text-7xl font-bold text-white tracking-tight" style={{ textShadow: '0 4px 24px rgba(154, 52, 18, 0.3)' }}>
+              Project Sense
+            </h1>
+            <p className="mt-4 text-base md:text-lg text-white/70 text-center max-w-md leading-relaxed">
+              Your go-to platform for mastering mental math and number sense
+            </p>
+          </div>
         </div>
 
         {/* Right side: Auth form */}
         <div className="flex items-center justify-center w-full md:w-1/2 px-6 pb-12 md:py-0">
-          <AuthForm
-            mode="login"
-            onSubmit={onSubmit}
-            onGoogleSignIn={handleGoogleSignIn}
-            error={error}
-          />
+          <div className="animate-fade-in-up" style={{ animationDelay: '0.15s' }}>
+            <AuthForm
+              mode="login"
+              onSubmit={onSubmit}
+              onGoogleSignIn={handleGoogleSignIn}
+              error={error}
+            />
+          </div>
         </div>
       </div>
     </main>

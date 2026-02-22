@@ -102,6 +102,12 @@ export default function Home() {
 
   return (
     <main className="absolute page-gradient w-full flex flex-col items-center overflow-x-hidden overflow-y-auto">
+      {/* Floating decorative orbs */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        <div className="absolute -top-32 -right-32 w-96 h-96 bg-white/8 rounded-full blur-3xl animate-float" />
+        <div className="absolute top-1/2 -left-24 w-72 h-72 bg-amber-200/10 rounded-full blur-3xl animate-float-slow" />
+      </div>
+
       {/* Header */}
       <header className="sticky top-0 z-10 w-full glass-header">
         <div className="flex items-center justify-between px-4 py-3 max-w-7xl mx-auto">
@@ -140,7 +146,7 @@ export default function Home() {
       </p>
 
       {/* Navigation buttons */}
-      <div className="flex flex-row justify-center gap-x-2 px-2">
+      <div className="flex flex-row justify-center gap-x-3 px-3 mt-2">
         <Button
           onClick={() => router.push("/home/practice/randomizer")}
           className="gap-2 glass-button rounded-xl text-orange-700 font-semibold text-base md:text-lg px-4 md:px-8 py-2 md:py-5"
@@ -165,11 +171,11 @@ export default function Home() {
       <div className="w-full max-w-6xl px-4 mt-6 mb-24 md:mb-32 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {keys.map((value) => (
           <div key={value} className="animate-slideUp">
-            <Card className="group overflow-hidden glass-card hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-200">
+            <Card className="group overflow-hidden glass-card hover:-translate-y-1 transition-all duration-300" style={{ transitionTimingFunction: 'cubic-bezier(0.4, 0, 0.2, 1)' }}>
               <CardContent className="p-0 flex items-stretch">
                 <button
                   onClick={() => router.push(`/home/practice/${value}`)}
-                  className="flex-1 flex items-center justify-center p-4 md:p-5 text-lg md:text-xl font-semibold text-gray-800 hover:bg-orange-50 transition-colors duration-200 cursor-pointer"
+                  className="flex-1 flex items-center justify-center p-4 md:p-5 text-lg md:text-xl font-semibold text-gray-800 hover:bg-white/40 transition-colors duration-200 cursor-pointer"
                 >
                   <MathComponent math={problemSet[value]} />
                 </button>

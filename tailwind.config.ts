@@ -9,6 +9,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-body)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-mono)', 'monospace'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -80,6 +84,22 @@ const config: Config = {
         shine: {
           "100%": { left: "125%" },
         },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        'float-slow': {
+          '0%, 100%': { transform: 'translateY(0px) scale(1)' },
+          '50%': { transform: 'translateY(-30px) scale(1.05)' },
+        },
+        'glass-shimmer': {
+          '0%': { backgroundPosition: '-200% 0' },
+          '100%': { backgroundPosition: '200% 0' },
+        },
+        'fade-in-up': {
+          '0%': { opacity: '0', transform: 'translateY(24px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -93,6 +113,10 @@ const config: Config = {
         fadeIn: 'fadeInShrink 1650ms ease-in-out forwards ',
         slideUp: 'slideUp .8s ease-in-out forwards ',
         shine: "shine 1s",
+        float: "float 6s ease-in-out infinite",
+        'float-slow': "float-slow 8s ease-in-out infinite",
+        'glass-shimmer': "glass-shimmer 3s ease-in-out infinite",
+        'fade-in-up': "fade-in-up 0.5s ease-out forwards",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
