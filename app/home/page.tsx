@@ -85,7 +85,7 @@ export default function Home() {
 
   if (authLoading || settingsLoading) {
     return (
-      <div className="min-h-screen bg-orange-50 flex items-center justify-center">
+      <div className="min-h-screen page-gradient flex items-center justify-center">
         <div className="space-y-4 w-full max-w-md px-4">
           <Skeleton className="h-12 w-full" />
           <Skeleton className="h-8 w-3/4" />
@@ -101,20 +101,20 @@ export default function Home() {
   }
 
   return (
-    <main className="absolute bg-orange-50 min-h-screen w-full flex flex-col items-center overflow-x-hidden overflow-y-auto">
+    <main className="absolute page-gradient w-full flex flex-col items-center overflow-x-hidden overflow-y-auto">
       {/* Header */}
-      <header className="sticky top-0 z-10 w-full bg-white/95 backdrop-blur-sm border-b border-orange-100 shadow-sm">
+      <header className="sticky top-0 z-10 w-full glass-header">
         <div className="flex items-center justify-between px-4 py-3 max-w-7xl mx-auto">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => router.push("/leaderboard")}
-            className="h-10 w-10 rounded-full bg-orange-400 text-white hover:bg-orange-500 hover:text-white"
+            className="h-10 w-10 rounded-full bg-white/80 text-orange-600 hover:bg-white hover:text-orange-700 shadow-md"
           >
             <FaTrophy className="h-5 w-5" />
           </Button>
 
-          <h1 className="text-xl md:text-2xl font-bold text-orange-400 tracking-tight">
+          <h1 className="text-xl md:text-2xl font-bold text-white drop-shadow-md tracking-tight">
             Project Sense
           </h1>
 
@@ -135,30 +135,27 @@ export default function Home() {
       </header>
 
       {/* Info note */}
-      <p className="text-orange-600/80 font-medium text-sm md:text-base text-center px-4 py-3">
+      <p className="glass-pill text-orange-700 font-medium text-sm md:text-base text-center mx-auto mt-3 w-fit">
         Note: Timer starts once a bubble is pressed. Solve 5 questions as fast as you can.
       </p>
 
       {/* Navigation buttons */}
       <div className="flex flex-row justify-center gap-x-2 px-2">
         <Button
-          variant="outline"
           onClick={() => router.push("/home/practice/randomizer")}
-          className="gap-2 rounded-xl border-orange-300 text-orange-500 font-semibold text-base md:text-lg px-4 md:px-8 py-2 md:py-5 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-400 transition-all duration-200"
+          className="gap-2 glass-button rounded-xl text-orange-700 font-semibold text-base md:text-lg px-4 md:px-8 py-2 md:py-5"
         >
           <FaRandom className="h-4 w-4" /> Random
         </Button>
         <Button
-          variant="outline"
           onClick={() => router.push("/multiplayer")}
-          className="gap-2 rounded-xl border-orange-300 text-orange-500 font-semibold text-base md:text-lg px-4 md:px-8 py-2 md:py-5 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-400 transition-all duration-200"
+          className="gap-2 glass-button rounded-xl text-orange-700 font-semibold text-base md:text-lg px-4 md:px-8 py-2 md:py-5"
         >
           <GiRetroController className="h-4 w-4" /> Multiplayer
         </Button>
         <Button
-          variant="outline"
           onClick={() => router.push("/testGen")}
-          className="gap-2 rounded-xl border-orange-300 text-orange-500 font-semibold text-base md:text-lg px-4 md:px-8 py-2 md:py-5 hover:bg-orange-50 hover:text-orange-600 hover:border-orange-400 transition-all duration-200"
+          className="gap-2 glass-button rounded-xl text-orange-700 font-semibold text-base md:text-lg px-4 md:px-8 py-2 md:py-5"
         >
           <SiVitest className="h-4 w-4" /> AI Test
         </Button>
@@ -168,7 +165,7 @@ export default function Home() {
       <div className="w-full max-w-6xl px-4 mt-6 mb-24 md:mb-32 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {keys.map((value) => (
           <div key={value} className="animate-slideUp">
-            <Card className="group overflow-hidden border-orange-100 bg-white hover:shadow-lg hover:border-orange-300 transition-all duration-200">
+            <Card className="group overflow-hidden glass-card hover:shadow-2xl hover:-translate-y-0.5 transition-all duration-200">
               <CardContent className="p-0 flex items-stretch">
                 <button
                   onClick={() => router.push(`/home/practice/${value}`)}
@@ -187,22 +184,22 @@ export default function Home() {
       <hr ref={ref} className="my-4 border-transparent" />
 
       {/* Footer */}
-      <footer className="fixed bottom-0 z-10 w-full bg-white/95 backdrop-blur-sm border-t border-orange-100 shadow-sm">
-        <div className="flex items-center justify-center gap-2 px-4 py-2 md:py-3 text-orange-400 text-xs md:text-base font-medium">
+      <footer className="fixed bottom-0 z-10 w-full glass-header border-t border-b-0">
+        <div className="flex items-center justify-center gap-2 px-4 py-2 md:py-3 text-orange-700 text-xs md:text-base font-medium">
           <p>
             Built for <b>UIL Number Sense</b> by <b>Townview TAG&apos;s UIL Team 2025</b>
           </p>
-          <span className="text-orange-200">|</span>
+          <span className="text-orange-500/50">|</span>
           <a
             href="https://forms.gle/yneT5vZaBSaLX1vf8"
-            className="text-orange-400 hover:text-orange-500 transition-colors"
+            className="text-orange-700 hover:text-orange-500 transition-colors"
           >
             <MdOutlineHelpOutline className="h-4 w-4 md:h-5 md:w-5" />
           </a>
-          <span className="text-orange-200">|</span>
+          <span className="text-orange-500/50">|</span>
           <a
             href="mailto:projectsense.ns@gmail.com"
-            className="text-orange-400 hover:text-orange-500 transition-colors"
+            className="text-orange-700 hover:text-orange-500 transition-colors"
           >
             <MdOutlineMail className="h-4 w-4 md:h-5 md:w-5" />
           </a>
