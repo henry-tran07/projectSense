@@ -1,17 +1,19 @@
-import {
-  useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  FormControl,
-  FormLabel,
-  Switch,
-} from "@chakra-ui/react";
+"use client";
+
 import { IoMdSettings } from "react-icons/io";
 import { TbLogout2 } from "react-icons/tb";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 interface User {
   email: string | null;
@@ -38,96 +40,88 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   logout,
   setQuestionLimited,
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   return (
-    <>
-      <button
-        onClick={onOpen}
-        className="ml-5 md:text-5xl text-4xl hover:text-orange-400 hover:scale-110 ease-in-out duration-200"
-      >
-        <IoMdSettings className="text-4xl hover:text-orange-400 text-orange-300" />
-      </button>
+    <Dialog>
+      <DialogTrigger asChild>
+        <button className="ml-5 md:text-5xl text-4xl hover:scale-110 ease-in-out duration-200">
+          <IoMdSettings className="text-4xl text-orange-500 hover:text-orange-400" />
+        </button>
+      </DialogTrigger>
 
-      <Modal isCentered={true} size={["xs", "md", "xl"]} isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent className="h-auto md:h-auto rounded-2xl">
-          <ModalHeader
-            fontSize={["2xl", "md", "5xl"]}
-            className="mt-5 md:mt-4 text-orange-400 text-center"
-          >
+      <DialogContent className="w-[90vw] max-w-md sm:max-w-lg rounded-2xl bg-white p-6 shadow-xl">
+        <DialogHeader className="text-center">
+          <DialogTitle className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-500 text-center">
             Settings
-            <hr className="my-2"></hr>
-          </ModalHeader>
-          <ModalCloseButton fontSize="xl" className="text-orange-400" />
-          <ModalBody fontSize="3xl">
-            {loading ? (
-              <div>Loading...</div>
-            ) : (
-              <>
-                <FormControl
-                  display="flex"
-                  alignItems="center"
-                  justifyContent={"space-between"}
-                  textAlign="center"
-                  width={"80%"}
-                  marginTop={""}
-                  className="mx-auto items-center justify-center"
-                >
-                  <FormLabel fontSize={["xl", "md", "2rem"]} htmlFor="email-alerts" mb={[2, 0, 0]}>
-                    Answer Right to Left
-                  </FormLabel>
-                  <Switch
-                    defaultChecked={rightLeft}
-                    id="email-alerts"
-                    size="lg"
-                    onChange={() => {
-                      updateUser(user?.email ?? "", {
-                        rightLeft: !rightLeft,
-                      });
-                      setRightLeft(!rightLeft);
-                    }}
-                  />
-                </FormControl>
-                <FormControl
-                  display="flex"
-                  justifyContent={"space-between"}
-                  textAlign="center"
-                  width={"80%"}
-                  marginTop={2}
-                  className="mx-auto items-center justify-center"
-                >
-                  <FormLabel fontSize={["xl", "md", "2rem"]} htmlFor="email-alerts" mb="0">
-                    Infinite Questions
-                  </FormLabel>
-                  <Switch
-                    defaultChecked={!questionLimited}
-                    id="email-alerts"
-                    size="lg"
-                    onChange={() => {
-                      updateUser(user?.email ?? "", {
-                        questionLimited: !questionLimited,
-                      });
-                      setQuestionLimited(!questionLimited);
-                    }}
-                  />
-                </FormControl>
-              </>
-            )}
-            <div className="text-center text-lg md:text-xl mt-5 md:mt-4 ">
-              Currently Signed in as: {user ? user.email : ""}
-            </div>
-            <div className="flex justify-between w-full ">
-              <button
-                onClick={logout}
-                className="items-center flex justify-center text-center duration-200 mt-3 md:mt-2 ease-in-out hover:text-2xl hover:bg-red-900 hover:animate font-extrabold mx-auto mb-2 pr-2 text-lg p-2 rounded-xl text-white bg-red-500 md:p-3 md:text-2xl md:mb-4s"
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            Configure your application settings
+          </DialogDescription>
+        </DialogHeader>
+
+        <Separator className="my-1" />
+
+        {loading ? (
+          <div className="text-center text-lg py-4">Loading...</div>
+        ) : (
+          <div className="space-y-5 px-2 sm:px-6">
+            {/* Answer Right to Left toggle */}
+            <div className="flex items-center justify-between">
+              <Label
+                htmlFor="right-to-left"
+                className="text-base sm:text-lg md:text-xl font-medium cursor-pointer"
               >
-                <div className="pr-2">Sign out</div>
-                <TbLogout2 />
-              </button>
+                Answer Right to Left
+              </Label>
+              <Switch
+                id="right-to-left"
+                checked={rightLeft}
+                onCheckedChange={(checked) => {
+                  updateUser(user?.email ?? "", { rightLeft: checked });
+                  setRightLeft(checked);
+                }}
+              />
             </div>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-    </>
+
+            {/* Infinite Questions toggle */}
+            <div className="flex items-center justify-between">
+              <Label
+                htmlFor="infinite-questions"
+                className="text-base sm:text-lg md:text-xl font-medium cursor-pointer"
+              >
+                Infinite Questions
+              </Label>
+              <Switch
+                id="infinite-questions"
+                checked={!questionLimited}
+                onCheckedChange={(checked) => {
+                  updateUser(user?.email ?? "", { questionLimited: !checked });
+                  setQuestionLimited(!checked);
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        <Separator className="my-1" />
+
+        {/* Email display */}
+        <p className="text-center text-sm md:text-base text-muted-foreground">
+          Currently signed in as: {user?.email ?? ""}
+        </p>
+
+        {/* Sign out button */}
+        <div className="flex justify-center">
+          <Button
+            variant="destructive"
+            size="lg"
+            onClick={logout}
+            className="gap-2 text-base font-bold"
+          >
+            Sign out
+            <TbLogout2 className="h-5 w-5" />
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
